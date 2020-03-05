@@ -20,5 +20,5 @@ bool GameEntity::Intersect(GameEntity* aGameEntity)
 
 void GameEntity::Draw(Drawer* aDrawer)
 {
-	aDrawer->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+	//aDrawer->Draw(myImage, (int)myPosition.X + 220, (int)myPosition.Y + 60);
 }

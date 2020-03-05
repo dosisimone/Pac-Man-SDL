@@ -1,0 +1,13 @@
+PacMan
+
+pacman.cpp/h contiene il game loop (e` il gamemangager)
+
+Vector2f.cpp/h libreria Vector2
+
+22pp e` la tile size
+Centralizzare quel valore sarebbe top, magari astraendo la griglia dalla logica di gioco
+
+Drawer::Draw non rilasciava le risorse optimizedSurface e surface -> memory leak e crash
+
+Input di gioco sull'asse verticale invertito
+

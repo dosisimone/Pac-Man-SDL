@@ -104,7 +104,7 @@ bool World::InitBigDots()
 
 void World::Draw(Drawer* aDrawer)
 {
-	aDrawer->Draw("playfield.png");
+	//aDrawer->Draw("playfield.png");
 
 	for(std::list<Dot*>::iterator list_iter = myDots.begin(); list_iter != myDots.end(); list_iter++)
 	{
@@ -167,6 +167,10 @@ bool World::HasIntersectedBigDot(const Vector2f& aPosition)
 bool World::HasIntersectedCherry(const Vector2f& aPosition)
 {
 	return true;
+}
+
+void World::Update()
+{
 }
 
 void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTile*>& aList)

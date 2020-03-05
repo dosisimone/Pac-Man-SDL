@@ -6,9 +6,11 @@
 #include <fstream>
 #include <string>
 
+#include "Vector2f.h"
 #include "Avatar.h"
 #include "World.h"
 #include "Ghost.h"
+#include "dousi96/Components/SpriteRendererComponent.h"
 
 Pacman* Pacman::Create(Drawer* aDrawer)
 {
@@ -24,16 +26,16 @@ Pacman* Pacman::Create(Drawer* aDrawer)
 }
 
 Pacman::Pacman(Drawer* aDrawer)
-: myDrawer(aDrawer)
-, myTimeToNextUpdate(0.f)
-, myNextMovement(-1.f,0.f)
-, myScore(0)
-, myFps(0)
-, myLives(3)
-, myGhostGhostCounter(0.f)
+	: myDrawer(aDrawer)
+	, myTimeToNextUpdate(0.f)
+	, myNextMovement(-1.f, 0.f)
+	, myScore(0)
+	, myFps(0)
+	, myLives(3)
+	, myGhostGhostCounter(0.f)
 {
-	myAvatar = new Avatar(Vector2f(13*22,22*22));
-	myGhost = new Ghost(Vector2f(13*22,13*22));
+	myAvatar = new Avatar(Vector2f(13 * 22, 22 * 22));
+	myGhost = new Ghost(Vector2f(13 * 22, 13 * 22));
 	myWorld = new World();
 }
 
@@ -45,20 +47,28 @@ bool Pacman::Init()
 {
 	myWorld->Init();
 
+	GameObject* playerObject = new GameObject();
+	
+	player = playerObject;
+
 	return true;
 }
 
 bool Pacman::Update(float aTime)
 {
-	if (!UpdateInput())
+	//game loop
+	if (!UpdateInput()) 
+	{
 		return false;
+	}
 
 	if (CheckEndGameCondition())
 	{
 		myDrawer->DrawText("You win!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);
 		return true;
 	}
-	else if (myLives <= 0)
+	
+	if (myLives <= 0)
 	{
 		myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);	
 		return true;
@@ -68,8 +78,15 @@ bool Pacman::Update(float aTime)
 	myAvatar->Update(aTime);
 	myGhost->Update(aTime, myWorld);
 
-	if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
+	for (GameObject* obj : _gameObjects)
+	{
+		obj->Update(aTime);
+	}
+
+	if (myWorld->HasIntersectedDot(myAvatar->GetPosition())) 
+	{
 		myScore += 10;
+	}
 
 	myGhostGhostCounter -= aTime;
 
@@ -102,35 +119,46 @@ bool Pacman::Update(float aTime)
 		}
 	}
 	
-	if (aTime > 0)
-		myFps = (int) (1 / aTime);
+	if (aTime > 0) 
+	{
+		myFps = (int)(1 / aTime);
+	}
 
 	return true;
 }
 
 bool Pacman::UpdateInput()
 {
-	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+	const Uint8* keystate = SDL_GetKeyboardState(NULL);
+	if (keystate[SDL_SCANCODE_ESCAPE])
+	{
+		return false;
+	}
 
 	if (keystate[SDL_SCANCODE_UP])
-		myNextMovement = Vector2f(0.f, -1.f);
+	{
+		myNextMovement = Vector2f::UP;
+	}
 	else if (keystate[SDL_SCANCODE_DOWN])
-		myNextMovement = Vector2f(0.f, 1.f);
+	{
+		myNextMovement = Vector2f::DOWN;
+	}
 	else if (keystate[SDL_SCANCODE_RIGHT])
-		myNextMovement = Vector2f(1.f, 0.f);
+	{
+		myNextMovement = Vector2f::RIGHT;
+	}
 	else if (keystate[SDL_SCANCODE_LEFT])
-		myNextMovement = Vector2f(-1.f, 0.f);
-
-	if (keystate[SDL_SCANCODE_ESCAPE])
-		return false;
+	{
+		myNextMovement = Vector2f::LEFT;
+	}
 
 	return true;
 }
 
 void Pacman::MoveAvatar()
 {
-	int nextTileX = myAvatar->GetCurrentTileX() + myNextMovement.myX;
-	int nextTileY = myAvatar->GetCurrentTileY() + myNextMovement.myY;
+	int nextTileX = myAvatar->GetCurrentTileX() + myNextMovement.X;
+	int nextTileY = myAvatar->GetCurrentTileY() + myNextMovement.Y;
 
 	if (myAvatar->IsAtDestination())
 	{
@@ -143,14 +171,16 @@ void Pacman::MoveAvatar()
 
 bool Pacman::CheckEndGameCondition()
 {
-	return false;
+	return true;
 }
 
 bool Pacman::Draw()
 {
-	myWorld->Draw(myDrawer);
-	myAvatar->Draw(myDrawer);
-	myGhost->Draw(myDrawer);
+	//myWorld->Draw(myDrawer);
+	//myAvatar->Draw(myDrawer);
+	//myGhost->Draw(myDrawer);
+
+
 
 	std::string scoreString;
 	std::stringstream scoreStream;

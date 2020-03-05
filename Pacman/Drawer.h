@@ -4,14 +4,20 @@
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Surface;
+class Vector2f;
 
 class Drawer
 {
+private:
+	int pixelPerUnitX = 1;
+	int pixelPerUnitY = 1;
+
 public:
 	static Drawer* Create(SDL_Window* aWindow, SDL_Renderer* aRenderer);
 	~Drawer(void);
 
-	void Draw(const char* anImage, int aCellX = 0, int aCellY = 0);
+	void SetPixelPerUnit(const int ppuX, const int ppuY);
+	void Draw(const char* anImage, const Vector2f& pos, bool flipX = false, bool flipY = false, float angle = 0.f);
 	void DrawText(const char* aText, const char* aFontFile, int aX, int aY);
 
 private:

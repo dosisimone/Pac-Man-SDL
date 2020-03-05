@@ -21,32 +21,32 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{841BE521-B610-4C23-953E-F002F822B445}</ProjectGuid>
     <RootNamespace>Pacman</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -122,6 +122,14 @@
     <ClCompile Include="BigDot.cpp" />
     <ClCompile Include="Cherry.cpp" />
     <ClCompile Include="Dot.cpp" />
+    <ClCompile Include="dousi96\Components\Component.cpp" />
+    <ClCompile Include="dousi96\Components\PlayerBehaviourComponent.cpp" />
+    <ClCompile Include="dousi96\Components\SpriteAnimationRendererComponent.cpp" />
+    <ClCompile Include="dousi96\Components\SpriteRendererComponent.cpp" />
+    <ClCompile Include="dousi96\GameController.cpp" />
+    <ClCompile Include="dousi96\GameObject.cpp" />
+    <ClCompile Include="dousi96\Persistence\TileMapTxtReader.cpp" />
+    <ClCompile Include="dousi96\TileMap.cpp" />
     <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="GameEntity.cpp" />
     <ClCompile Include="Ghost.cpp" />
@@ -138,6 +146,14 @@
     <ClInclude Include="BigDot.h" />
     <ClInclude Include="Cherry.h" />
     <ClInclude Include="Dot.h" />
+    <ClInclude Include="dousi96\Components\Component.h" />
+    <ClInclude Include="dousi96\Components\PlayerBehaviourComponent.h" />
+    <ClInclude Include="dousi96\Components\SpriteAnimationRendererComponent.h" />
+    <ClInclude Include="dousi96\Components\SpriteRendererComponent.h" />
+    <ClInclude Include="dousi96\GameController.h" />
+    <ClInclude Include="dousi96\GameObject.h" />
+    <ClInclude Include="dousi96\Persistence\TileMapTxtReader.h" />
+    <ClInclude Include="dousi96\TileMap.h" />
     <ClInclude Include="Drawer.h" />
     <ClInclude Include="GameEntity.h" />
     <ClInclude Include="Ghost.h" />

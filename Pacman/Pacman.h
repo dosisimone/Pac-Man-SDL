@@ -1,16 +1,23 @@
 #ifndef PACMAN_H
 #define PACMAN_H
 
+#include <list>
 #include "Vector2f.h"
+#include "dousi96/GameObject.h"
 
 struct SDL_Surface;
 class Drawer;
 class Avatar;
 class World;
 class Ghost;
+class GameObject;
 
 class Pacman
 {
+private:
+	std::list<GameObject*> _gameObjects;
+	GameObject* player;
+
 public:
 	static Pacman* Create(Drawer* aDrawer);
 	~Pacman(void);
@@ -39,7 +46,6 @@ private:
 	Avatar* myAvatar;
 	Ghost* myGhost;
 	World* myWorld;
-
 };
 
 #endif // PACMAN_H

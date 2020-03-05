@@ -22,6 +22,15 @@
     <Filter Include="Math">
       <UniqueIdentifier>{407f4558-6586-4bc4-8b47-e4c33e7ecfdd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dousi96">
+      <UniqueIdentifier>{d1aea178-983f-45b3-85ff-15ad500cd042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dousi96\Components">
+      <UniqueIdentifier>{af19ae87-0596-4291-b39a-7d801c0e3c71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dousi96\Persistence">
+      <UniqueIdentifier>{dbe1b13b-fc8d-4b46-bcb9-96d036052687}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Pacman.cpp">
@@ -64,6 +73,30 @@
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="dousi96\GameObject.cpp">
+      <Filter>dousi96</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\SpriteRendererComponent.cpp">
+      <Filter>dousi96\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\Component.cpp">
+      <Filter>dousi96\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\GameController.cpp">
+      <Filter>dousi96</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\PlayerBehaviourComponent.cpp">
+      <Filter>dousi96\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\SpriteAnimationRendererComponent.cpp">
+      <Filter>dousi96\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\TileMap.cpp">
+      <Filter>dousi96</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Persistence\TileMapTxtReader.cpp">
+      <Filter>dousi96\Persistence</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -104,6 +137,30 @@
     </ClInclude>
     <ClInclude Include="Vector2f.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\GameObject.h">
+      <Filter>dousi96</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\SpriteRendererComponent.h">
+      <Filter>dousi96\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\Component.h">
+      <Filter>dousi96\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\GameController.h">
+      <Filter>dousi96</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\PlayerBehaviourComponent.h">
+      <Filter>dousi96\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\SpriteAnimationRendererComponent.h">
+      <Filter>dousi96\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\TileMap.h">
+      <Filter>dousi96</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Persistence\TileMapTxtReader.h">
+      <Filter>dousi96\Persistence</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
