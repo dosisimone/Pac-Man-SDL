@@ -47,9 +47,9 @@ bool Pacman::Init()
 {
 	myWorld->Init();
 
-	GameObject* playerObject = new GameObject();
+	//GameObject* playerObject = new GameObject();
 	
-	player = playerObject;
+	//player = playerObject;
 
 	return true;
 }

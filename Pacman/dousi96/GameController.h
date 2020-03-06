@@ -12,7 +12,7 @@ class GameController
 {
 private:
 	Drawer* drawer;
-	std::list<GameObject*> _gameObjects;
+	std::list<GameObject*> gameObjects;
 	Vector2f input;
 	TileMap* tileMap;
 
@@ -23,6 +23,7 @@ public:
 	bool Update(const float deltaTime);
 	void Draw() const;
 	Vector2f GetInput() const;
+	Drawer* GetDrawer() const;
 
 private:	
 	bool _UpdateInput();

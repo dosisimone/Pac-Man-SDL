@@ -1,3 +1,2 @@
-﻿  GameController.cpp
-D:\Documenti\Progetti\Pac-Man-sdl\Pacman\Vector2f.h(84,14): warning C4244: 'return': conversione da 'double' a 'float'. Possibile perdita di dati.
+﻿  PlayerBehaviourComponent.cpp
   Pacman.vcxproj -> D:\Documenti\Progetti\Pac-Man-sdl\Debug\Pacman.exe

@@ -14,13 +14,15 @@ private:
 	float rotation = 0.f;
 
 public:
-	SpriteRendererComponent() = default;
-	~SpriteRendererComponent() = default;
+	SpriteRendererComponent();
+	~SpriteRendererComponent();
 	void Draw() const override;
 	void Update(const float deltaTime) override {}
 	void SetSprite(const char* spritePath);
 	void SetDrawer(Drawer* drawer);
 	void SetFlip(const bool x, const bool y);
 	void SetRotation(const float angle);
+
+	//static ComponentType GetType() { return ComponentType::tSpriteRendererComponent; }
 };
 #endif // SPRITERENDERERCOMPONENT_H

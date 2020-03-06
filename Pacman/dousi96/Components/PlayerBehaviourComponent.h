@@ -1,21 +1,25 @@
-#ifndef PLAYERMOVEMENTCOMPONENT_H
-#define PLAYERMOVEMENTCOMPONENT_H
+#ifndef PLAYERBEHAVIOURCOMPONENT_H
+#define PLAYERBEHAVIOURCOMPONENT_H
 
 #include "Component.h"
 #include "../../Drawer.h"
 #include "../GameController.h"
 
+class SpriteAnimationRendererComponent;
+
 class PlayerBehaviourComponent : public Component
 {
-private:
-	GameController* gameController;
-	float speed = 1.0f;
+private:	
+	float speed = 1.0f;	
+	SpriteAnimationRendererComponent* animationRenderer;
 
 public:
-	PlayerBehaviourComponent() = default;
-	~PlayerBehaviourComponent() = default;
-	virtual void Update(const float deltaTime) override;
-	void SetGameController(GameController* gameController);
+	PlayerBehaviourComponent();
+	~PlayerBehaviourComponent();
+	void Start() override;
+	void Update(const float deltaTime) override;
 	void SetSpeed(const float speed);
+
+	//static ComponentType GetType() { return ComponentType::tPlayerBehaviourComponent; }
 };
-#endif // PLAYERMOVEMENTCOMPONENT_H
+#endif // PLAYERBEHAVIOURCOMPONENT_H

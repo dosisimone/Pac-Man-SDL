@@ -3,16 +3,16 @@
 
 #include "../GameObject.h"
 
+//enum ComponentType
+//{
+//	tNone,
+//	tSpriteRendererComponent,
+//	tSpriteAnimationRendererComponent,
+//	tPlayerBehaviourComponent,
+//};
+
 class Component 
 {
-public:
-	enum ComponentType
-	{
-		None = 0,
-		Renderer = 1,
-		Collider = 2,
-	};
-
 public:
 	GameObject* Owner = nullptr;
 
@@ -20,8 +20,11 @@ public:
 	Component() = default;
 	~Component() = default;
 	void Register(GameObject* gameObject);
+	virtual void Start() {};
 	virtual void Update(const float deltaTime) {};
 	virtual void Draw() const {};
-	virtual ComponentType GetType() const { return ComponentType::None; };
+
+	//static ComponentType GetType() { return ComponentType::tNone; }
 };
+
 #endif // COMPONENT_H

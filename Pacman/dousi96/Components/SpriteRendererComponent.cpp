@@ -1,6 +1,19 @@
 #include "Component.h"
 #include "SpriteRendererComponent.h"
 
+SpriteRendererComponent::SpriteRendererComponent()
+{
+	drawer = nullptr;
+	spritePath = nullptr;
+	flipX = false;
+	flipY = false;
+	rotation = 0.f;
+}
+
+SpriteRendererComponent::~SpriteRendererComponent()
+{
+}
+
 void SpriteRendererComponent::Draw() const
 {
 	drawer->Draw(spritePath, Owner->Position, flipX, flipY, rotation);
