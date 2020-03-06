@@ -15,11 +15,11 @@ public:
 	Vector2f Position;
 
 private:	
-	GameController* controller = nullptr;
 	bool isActive = false;
 	std::vector<Component*> components;	
 
 public:
+	GameObject(const Vector2f& position);
 	~GameObject();	
 	void Draw() const;
 	void Update(const float deltaTime);
@@ -29,11 +29,10 @@ public:
 	{
 		T* component = new T();
 		component->Register(this);
-		components.emplace_back(component);
+		components.push_back(component);
 		component->Start();
 		return component;
 	}
-
 	template<class T = Component>
 	T* GetComponent() 
 	{
@@ -49,14 +48,9 @@ public:
 		return nullptr;
 	}
 	void RemoveComponent(Component* component);	
-	GameController* GetController() const;
 	void SetActive(const bool active);
 
-	static GameObject* CreateGameObject(GameController* controller, const Vector2f& position = Vector2f::ZERO);
-
-private:
-	GameObject(const Vector2f& position);
-	void _Register(GameController* controller);
+private:	
 	void _UpdateComponents(const float deltaTime);
 };
 #endif // GAMEOBJECT_H

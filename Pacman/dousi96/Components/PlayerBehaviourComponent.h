@@ -2,16 +2,19 @@
 #define PLAYERBEHAVIOURCOMPONENT_H
 
 #include "Component.h"
-#include "../../Drawer.h"
-#include "../GameController.h"
 
 class SpriteAnimationRendererComponent;
+class TileMapPositionComponent;
+class TileMovementComponent;
 
 class PlayerBehaviourComponent : public Component
 {
 private:	
 	float speed = 1.0f;	
-	SpriteAnimationRendererComponent* animationRenderer;
+	SpriteAnimationRendererComponent* animationRenderer = nullptr;
+	TileMapPositionComponent* tilePosition = nullptr;
+	TileMovementComponent* tileMovement = nullptr;
+	Vector2f oldValidInput = Vector2f::ZERO;
 
 public:
 	PlayerBehaviourComponent();
@@ -19,7 +22,5 @@ public:
 	void Start() override;
 	void Update(const float deltaTime) override;
 	void SetSpeed(const float speed);
-
-	//static ComponentType GetType() { return ComponentType::tPlayerBehaviourComponent; }
 };
 #endif // PLAYERBEHAVIOURCOMPONENT_H

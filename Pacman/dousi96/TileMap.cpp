@@ -1,16 +1,15 @@
 #include "TileMap.h"
 
-TileMap::TileMap(int sizex, int sizey)
+TileMap::TileMap(unsigned int sizex, unsigned int sizey, float distanceBtwTiles)
 {
 	if (sizex < 1 || sizey < 1)
 	{
 		return;
 	}
-
-	rows = sizey;
-	cols = sizex;
-
-	map = new Tile[rows * cols];	
+	this->rows = sizey;
+	this->cols = sizex;	
+	this->map = new Tile[rows * cols];
+	this->distanceBtwTiles = distanceBtwTiles;
 }
 
 TileMap::~TileMap()
@@ -18,7 +17,21 @@ TileMap::~TileMap()
 	delete[] map;
 }
 
-Tile TileMap::GetTile(int x, int y) const
+float TileMap::GetDistanceBtwTiles() const
+{
+	return this->distanceBtwTiles;
+}
+
+void TileMap::SetDistanceBtwTiles(const float distanceBtwTiles)
+{
+	if (distanceBtwTiles < 0.f) 
+	{
+		return;
+	}
+	this->distanceBtwTiles = distanceBtwTiles;
+}
+
+Tile TileMap::GetTile(unsigned int x, unsigned int y) const
 {
 	if (x < 0 || x >= cols)
 	{
@@ -31,7 +44,7 @@ Tile TileMap::GetTile(int x, int y) const
 	return map[x + cols * y];
 }
 
-void TileMap::SetTile(int x, int y, const Tile& tile)
+void TileMap::SetTile(unsigned int x, unsigned int y, const Tile& tile)
 {
 	if (x < 0 || x >= cols)
 	{
@@ -42,16 +55,16 @@ void TileMap::SetTile(int x, int y, const Tile& tile)
 		return;
 	}
 	map[x + cols * y] = tile;
-	map[x + cols * y].x = x;
-	map[x + cols * y].y = y;
+	//map[x + cols * y].x = x;
+	//map[x + cols * y].y = y;
 }
 
-int TileMap::GetSizeX() const
+unsigned int TileMap::GetSizeX() const
 {
 	return cols;
 }
 
-int TileMap::GetSizeY() const
+unsigned int TileMap::GetSizeY() const
 {
 	return rows;
 }

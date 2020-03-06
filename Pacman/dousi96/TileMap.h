@@ -11,8 +11,8 @@ enum TileType
 
 struct Tile
 {
-	int x = 0;
-	int y = 0;
+	//unsigned int x = 0;
+	//unsigned int y = 0;
 	TileType type = TileType::None;
 	bool isWalkable = false;
 };
@@ -20,16 +20,19 @@ struct Tile
 class TileMap
 {
 private:
-	int rows = 0;
-	int cols = 0;
-	Tile* map;
+	unsigned int rows = 0;
+	unsigned int cols = 0;
+	float distanceBtwTiles = 1.f;
+	Tile* map = nullptr;
 
 public:
-	TileMap(int sizex, int sizey);
+	TileMap(unsigned int sizex, unsigned int sizey, float distanceBtwTiles = 1.f);
 	~TileMap();
-	Tile GetTile(int x, int y) const;
-	void SetTile(int x, int y, const Tile& tile);
-	int GetSizeX() const;
-	int GetSizeY() const;
+	float GetDistanceBtwTiles() const;
+	void SetDistanceBtwTiles(const float distanceBtwTiles);
+	Tile GetTile(unsigned int x, unsigned int y) const;
+	void SetTile(unsigned int x, unsigned int y, const Tile& tile);
+	unsigned int GetSizeX() const;
+	unsigned int GetSizeY() const;
 };
 #endif // TILEMAP_H

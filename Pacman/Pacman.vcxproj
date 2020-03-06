@@ -126,6 +126,10 @@
     <ClCompile Include="dousi96\Components\PlayerBehaviourComponent.cpp" />
     <ClCompile Include="dousi96\Components\SpriteAnimationRendererComponent.cpp" />
     <ClCompile Include="dousi96\Components\SpriteRendererComponent.cpp" />
+    <ClCompile Include="dousi96\Components\TileMapPositionComponent.cpp" />
+    <ClCompile Include="dousi96\Components\TileMovementComponent.cpp" />
+    <ClCompile Include="dousi96\EventSystem\Events.cpp" />
+    <ClCompile Include="dousi96\EventSystem\EventSystem.cpp" />
     <ClCompile Include="dousi96\GameController.cpp" />
     <ClCompile Include="dousi96\GameObject.cpp" />
     <ClCompile Include="dousi96\Persistence\TileMapTxtReader.cpp" />
@@ -150,6 +154,10 @@
     <ClInclude Include="dousi96\Components\PlayerBehaviourComponent.h" />
     <ClInclude Include="dousi96\Components\SpriteAnimationRendererComponent.h" />
     <ClInclude Include="dousi96\Components\SpriteRendererComponent.h" />
+    <ClInclude Include="dousi96\Components\TileMapPositionComponent.h" />
+    <ClInclude Include="dousi96\Components\TileMovementComponent.h" />
+    <ClInclude Include="dousi96\EventSystem\Events.h" />
+    <ClInclude Include="dousi96\EventSystem\EventSystem.h" />
     <ClInclude Include="dousi96\GameController.h" />
     <ClInclude Include="dousi96\GameObject.h" />
     <ClInclude Include="dousi96\Persistence\TileMapTxtReader.h" />

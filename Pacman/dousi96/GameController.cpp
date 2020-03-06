@@ -5,20 +5,29 @@
 #include "Components/PlayerBehaviourComponent.h"
 #include "Persistence/TileMapTxtReader.h"
 #include "Components/SpriteAnimationRendererComponent.h"
+#include "Components/TileMapPositionComponent.h"
+#include "Components/TileMovementComponent.h"
+
+GameController* GameController::Instance = nullptr;
 
 GameController::GameController(Drawer* drawer)
 {
+	this->Instance = this;
 	this->drawer = drawer;
 	this->tileMap = nullptr;
+	this->input = Vector2f::LEFT;
 }
 
 GameController::~GameController()
 {
-	if (tileMap != nullptr) 
+	delete tileMap;
+	tileMap = nullptr;
+
+	for (unsigned int i = 0; i < gameObjects.size(); ++i)
 	{
-		delete tileMap;
-		tileMap = nullptr;
+		Destroy(gameObjects[i]);
 	}
+	_DestroyScheduledGameObjects();
 }
 
 void GameController::Start()
@@ -27,23 +36,23 @@ void GameController::Start()
 	{
 		TileMapTxtReader mapTxtReader;
 		tileMap = mapTxtReader.Read("map.txt");
+		tileMap->SetDistanceBtwTiles(0.5f);
 	}
 
 	//background object
 	{
-		GameObject* backgroundObject = GameObject::CreateGameObject(this);
+		GameObject* backgroundObject = CreateGameObject();
 		SpriteRendererComponent* spriteRenderer = backgroundObject->AddComponent<SpriteRendererComponent>();
 		spriteRenderer->SetDrawer(drawer);
 		spriteRenderer->SetSprite("playfield.png");
-		gameObjects.push_back(backgroundObject);
 	}
 
 	{
 		float halfSizeTileMapXf = ((float)tileMap->GetSizeX()) / 2.f;
 		float halfSizeTileMapYf = ((float)tileMap->GetSizeY()) / 2.f;
-		for (int x = 0; x < tileMap->GetSizeX(); ++x)
+		for (unsigned int x = 0; x < tileMap->GetSizeX(); ++x)
 		{
-			for (int y = 0; y < tileMap->GetSizeY(); ++y)
+			for (unsigned int y = 0; y < tileMap->GetSizeY(); ++y)
 			{
 				const Tile& tile = tileMap->GetTile(x, y);
 				if (tile.type != TileType::Dot && tile.type != TileType::BigDot)
@@ -51,38 +60,35 @@ void GameController::Start()
 					continue;
 				}
 
-				Vector2f position{ (float)x , (float)y };
-				position /= 2.f;
-				position.X -= halfSizeTileMapXf / 2.f;
-				position.Y -= halfSizeTileMapYf / 2.f;
-				position.X += 0.75f;
-				position.Y += 0.25f;
-
-				GameObject* smallDotObject = GameObject::CreateGameObject(this, position);
+				GameObject* smallDotObject = CreateGameObject();
 				SpriteRendererComponent* spriteRenderer = smallDotObject->AddComponent<SpriteRendererComponent>();
 				spriteRenderer->SetDrawer(drawer);
 				spriteRenderer->SetSprite((tile.type == TileType::Dot) ? "Small_Dot_32.png" : "Big_Dot_32.png");
-				gameObjects.push_back(smallDotObject);
+				TileMapPositionComponent* tileMapPosition = smallDotObject->AddComponent<TileMapPositionComponent>();
+				tileMapPosition->SetTilePosition(x, y);
 			}
 		}
 	}
 
 	//player object
 	{
-		GameObject* playerObject = GameObject::CreateGameObject(this, Vector2f(0.f, +0.5f));
+		GameObject* playerObject = CreateGameObject();
 		SpriteAnimationRendererComponent* spriteAnimationRenderer = playerObject->AddComponent<SpriteAnimationRendererComponent>();
 		spriteAnimationRenderer->SetDrawer(drawer);
 		spriteAnimationRenderer->SetFrames({ "open_32.png" , "closed_32.png" });
 		spriteAnimationRenderer->SetSecondsBtwFrames(0.25f);
+		TileMapPositionComponent* tileMapPosition = playerObject->AddComponent<TileMapPositionComponent>();
+		tileMapPosition->SetTilePosition(13, 6);
+		TileMovementComponent* tileMovement = playerObject->AddComponent<TileMovementComponent>();
+		tileMovement->SetDestination(12, 6);
 		PlayerBehaviourComponent* playerBehaviourComponent = playerObject->AddComponent<PlayerBehaviourComponent>();
-		playerBehaviourComponent->SetSpeed(10.f);
-		gameObjects.push_back(playerObject);
+		playerBehaviourComponent->SetSpeed(4.f);
 	}
 }
 
 bool GameController::Update(const float deltaTime)
 {
-	if (!_UpdateInput()) 
+	if (!_UpdateInput())
 	{
 		return false;
 	}
@@ -91,6 +97,9 @@ bool GameController::Update(const float deltaTime)
 	{
 		obj->Update(deltaTime);
 	}
+
+	_DestroyScheduledGameObjects();
+
 	return true;
 }
 
@@ -112,10 +121,26 @@ Drawer* GameController::GetDrawer() const
 	return drawer;
 }
 
+TileMap* GameController::GetTileMap() const
+{
+	return tileMap;
+}
+
+GameObject* GameController::CreateGameObject(const Vector2f& position)
+{
+	GameObject* gameObject = new GameObject(position);
+	gameObjects.push_back(gameObject);
+	return gameObject;
+}
+
+void GameController::Destroy(GameObject* gameObject)
+{
+	gameObjectsToDestroy.push_back(gameObject);
+}
+
 bool GameController::_UpdateInput()
 {
 	input = Vector2f::ZERO;
-
 	const Uint8* keystate = SDL_GetKeyboardState(NULL);
 	if (keystate[SDL_SCANCODE_ESCAPE])
 	{
@@ -139,4 +164,14 @@ bool GameController::_UpdateInput()
 		input = Vector2f::LEFT;
 	}
 	return true;
+}
+
+void GameController::_DestroyScheduledGameObjects()
+{
+	for (unsigned int i = 0; i < gameObjectsToDestroy.size(); ++i) 
+	{
+		delete gameObjectsToDestroy[i];
+		gameObjectsToDestroy[i] = nullptr;
+	}
+	gameObjectsToDestroy.clear();
 }

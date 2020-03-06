@@ -1,6 +1,12 @@
 #include "Components/Component.h"
 #include "GameObject.h"
 
+GameObject::GameObject(const Vector2f& position)
+{
+	this->Position = position;
+	this->isActive = true;
+}
+
 GameObject::~GameObject()
 {
 	for (unsigned int i = 0; i < components.size(); ++i) 
@@ -34,49 +40,21 @@ void GameObject::Update(const float deltaTime)
 
 void GameObject::RemoveComponent(Component* component)
 {
-	unsigned int indexToErase = -1;
 	for (unsigned int i = 0; i < components.size(); ++i)
 	{
 		if (component == components[i]) 
 		{
-			indexToErase = i;
-			break;
+			components.erase(components.begin() + i);
+			delete component;
+			component = nullptr;
+			return;
 		}
-	}
-	if (indexToErase > -1)
-	{
-		components.erase(components.begin() + indexToErase);
-	}
-	delete component;
-}
-
-GameController* GameObject::GetController() const
-{
-	return controller;
+	}	
 }
 
 void GameObject::SetActive(const bool active)
 {
 	isActive = active;
-}
-
-GameObject* GameObject::CreateGameObject(GameController* controller, const Vector2f& position)
-{
-	GameObject* newGameObject = new GameObject(position);
-	newGameObject->_Register(controller);	
-	return newGameObject;
-}
-
-GameObject::GameObject(const Vector2f& position)
-{
-	this->controller = nullptr;
-	this->Position = position;
-	this->isActive = true;
-}
-
-void GameObject::_Register(GameController* controller)
-{
-	this->controller = controller;
 }
 
 void GameObject::_UpdateComponents(const float deltaTime)

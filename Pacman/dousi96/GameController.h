@@ -1,7 +1,7 @@
 #ifndef GAMECONTROLLER_H
 #define GAMECONTROLLER_H
 
-#include <list>
+#include <vector>
 #include "../Vector2f.h"
 #include "TileMap.h"
 
@@ -10,11 +10,15 @@ class GameObject;
 
 class GameController
 {
+public:
+	static GameController* Instance;
+
 private:
 	Drawer* drawer;
-	std::list<GameObject*> gameObjects;
+	std::vector<GameObject*> gameObjects;
+	std::vector<GameObject*> gameObjectsToDestroy;
 	Vector2f input;
-	TileMap* tileMap;
+	TileMap* tileMap;	
 
 public:
 	GameController(Drawer* drawer);
@@ -24,9 +28,13 @@ public:
 	void Draw() const;
 	Vector2f GetInput() const;
 	Drawer* GetDrawer() const;
+	TileMap* GetTileMap() const;
+	GameObject* CreateGameObject(const Vector2f& position = Vector2f::ZERO);
+	void Destroy(GameObject* gameObject);
 
 private:	
 	bool _UpdateInput();
-
+	void _DestroyScheduledGameObjects();
 };
+
 #endif // GAMECONTROLLER_H

@@ -31,6 +31,9 @@
     <Filter Include="dousi96\Persistence">
       <UniqueIdentifier>{dbe1b13b-fc8d-4b46-bcb9-96d036052687}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dousi96\EventSystem">
+      <UniqueIdentifier>{ebe86c7b-710c-468f-b52a-17991ef9b4d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Pacman.cpp">
@@ -97,6 +100,18 @@
     <ClCompile Include="dousi96\Persistence\TileMapTxtReader.cpp">
       <Filter>dousi96\Persistence</Filter>
     </ClCompile>
+    <ClCompile Include="dousi96\Components\TileMapPositionComponent.cpp">
+      <Filter>dousi96\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\EventSystem\EventSystem.cpp">
+      <Filter>dousi96\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\EventSystem\Events.cpp">
+      <Filter>dousi96\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\TileMovementComponent.cpp">
+      <Filter>dousi96\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -161,6 +176,18 @@
     </ClInclude>
     <ClInclude Include="dousi96\Persistence\TileMapTxtReader.h">
       <Filter>dousi96\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\TileMapPositionComponent.h">
+      <Filter>dousi96\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\EventSystem\EventSystem.h">
+      <Filter>dousi96\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\EventSystem\Events.h">
+      <Filter>dousi96\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\TileMovementComponent.h">
+      <Filter>dousi96\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

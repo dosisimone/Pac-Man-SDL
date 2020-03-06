@@ -3,14 +3,6 @@
 
 #include "../GameObject.h"
 
-//enum ComponentType
-//{
-//	tNone,
-//	tSpriteRendererComponent,
-//	tSpriteAnimationRendererComponent,
-//	tPlayerBehaviourComponent,
-//};
-
 class Component 
 {
 public:
@@ -23,8 +15,6 @@ public:
 	virtual void Start() {};
 	virtual void Update(const float deltaTime) {};
 	virtual void Draw() const {};
-
-	//static ComponentType GetType() { return ComponentType::tNone; }
 };
 
 #endif // COMPONENT_H
