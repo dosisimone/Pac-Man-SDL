@@ -52,6 +52,10 @@ TileMap* TileMapTxtReader::Read(const char* path)
 				tile.type = TileType::BigDot;
 				tile.isWalkable = true;
 				break;
+			case 'T':
+				tile.type = TileType::Teleport;
+				tile.isWalkable = true;
+				break;
 			default:
 				tile.type = TileType::None;
 				tile.isWalkable = true;

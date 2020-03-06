@@ -6,7 +6,8 @@ enum TileType
 	None,
 	Dot,
 	BigDot,
-	Wall
+	Wall,
+	Teleport
 };
 
 struct Tile

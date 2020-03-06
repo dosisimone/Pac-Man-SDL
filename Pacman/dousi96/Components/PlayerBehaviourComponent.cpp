@@ -52,8 +52,8 @@ void PlayerBehaviourComponent::Update(const float deltaTime)
 	Vector2f destination = tilePosition->GetTileWorldPosition(destX, destY);
 	Vector2f direction = destination - Owner->Position;
 
-	const float kDelta = deltaTime * speed;
-	if (direction.Length() < kDelta) 
+	const float kMoveDelta = deltaTime * speed;
+	if (direction.Length() < kMoveDelta) 
 	{
 		unsigned int currX = tileMovement->GetDestinationTileX();
 		unsigned int currY = tileMovement->GetDestinationTileY();
@@ -64,7 +64,7 @@ void PlayerBehaviourComponent::Update(const float deltaTime)
 	{
 		//update position
 		direction.Normalize();
-		Owner->Position += direction * (speed * deltaTime);
+		Owner->Position += direction * kMoveDelta;
 	}	
 
 	//update renderer	
