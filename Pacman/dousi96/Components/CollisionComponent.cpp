@@ -25,10 +25,34 @@ void CollisionComponent::Update(const float deltaTime)
 		distanceVector = this->Owner->Position - targets[i]->Position;
 		if (distanceVector.Length() < 0.5f) 
 		{
+			CollisionStatus status = CollisionStatus::Enter;
+			if (collisionsStatus.count(targets[i]) == 0) 
+			{
+				collisionsStatus.insert({ targets[i], status });
+			}	
+			else 
+			{
+				status = CollisionStatus::Stay;
+				collisionsStatus[targets[i]] = status;
+			}
+
 			CollisionEventArgs args;
 			args.sender = this->Owner;
 			args.hit = targets[i];
+			args.status = status;
 			Dispatch(args);
+		}
+		else 
+		{
+			if (collisionsStatus.count(targets[i]) > 0)
+			{
+				CollisionEventArgs args;
+				args.sender = this->Owner;
+				args.hit = targets[i];
+				args.status = CollisionStatus::Exit;
+				Dispatch(args);
+				collisionsStatus.erase(targets[i]);
+			}
 		}
 	}
 }

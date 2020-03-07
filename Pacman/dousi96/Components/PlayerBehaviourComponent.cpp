@@ -4,6 +4,7 @@
 #include "TileMovementComponent.h"
 #include "CollisionComponent.h"
 #include "../GameController.h"
+#include "TeleportComponent.h"
 
 PlayerBehaviourComponent::PlayerBehaviourComponent()
 {
@@ -12,6 +13,7 @@ PlayerBehaviourComponent::PlayerBehaviourComponent()
 	this->tileMovement = nullptr;
 	this->speed = 1.f;
 	this->oldValidInput = Vector2f::LEFT;
+	this->teleportedTo = nullptr;
 }
 
 PlayerBehaviourComponent::~PlayerBehaviourComponent()
@@ -101,6 +103,31 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 		case GameObjectTag::Dot:
 		{
 			GameController::Instance->Destroy(event.hit);
+		}
+		break;
+		case GameObjectTag::Teleport:
+		{
+			if (event.status == CollisionStatus::Enter && teleportedTo == nullptr)
+			{
+				TeleportComponent* teleportComponent = event.hit->GetComponent<TeleportComponent>();
+				TeleportComponent* linkedTeleportComponent = teleportComponent->GetLinkedTeleport();
+				teleportedTo = linkedTeleportComponent;
+				this->Owner->Position = linkedTeleportComponent->Owner->Position;
+				const unsigned int kCurrX = tilePosition->GetTilePositionX();
+				const unsigned int kCurrY = tilePosition->GetTilePositionY();
+				const unsigned int kNextDestinationX = (unsigned int)((int)kCurrX + (int)oldValidInput.X);
+				const unsigned int kNextDestinationY = (unsigned int)((int)kCurrY + (int)oldValidInput.Y);
+				tileMovement->SetDestination(kNextDestinationX, kNextDestinationY);
+			}
+			else if (event.status == CollisionStatus::Exit && event.hit == teleportedTo->Owner) 
+			{
+				teleportedTo = nullptr;
+			}
+		}
+		break;
+		case GameObjectTag::Ghost:
+		{
+
 		}
 		break;
 	}

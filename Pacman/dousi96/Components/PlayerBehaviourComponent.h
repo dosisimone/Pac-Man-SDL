@@ -7,15 +7,17 @@
 class SpriteAnimationRendererComponent;
 class TileMapPositionComponent;
 class TileMovementComponent;
+class TeleportComponent;
 
 class PlayerBehaviourComponent : public Component, CollisionEventListener
 {
-private:	
+private:		
 	float speed = 1.0f;	
 	SpriteAnimationRendererComponent* animationRenderer = nullptr;
 	TileMapPositionComponent* tilePosition = nullptr;
 	TileMovementComponent* tileMovement = nullptr;
-	Vector2f oldValidInput = Vector2f::ZERO;
+	Vector2f oldValidInput = Vector2f::ZERO; 
+	TeleportComponent* teleportedTo = nullptr;
 
 public:
 	PlayerBehaviourComponent();

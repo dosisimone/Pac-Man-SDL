@@ -115,6 +115,9 @@
     <ClCompile Include="dousi96\Components\CollisionComponent.cpp">
       <Filter>dousi96\Components</Filter>
     </ClCompile>
+    <ClCompile Include="dousi96\Components\TeleportComponent.cpp">
+      <Filter>dousi96\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -193,6 +196,9 @@
       <Filter>dousi96\Components</Filter>
     </ClInclude>
     <ClInclude Include="dousi96\Components\CollisionComponent.h">
+      <Filter>dousi96\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\TeleportComponent.h">
       <Filter>dousi96\Components</Filter>
     </ClInclude>
   </ItemGroup>

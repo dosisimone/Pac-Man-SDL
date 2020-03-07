@@ -2,6 +2,7 @@
 #define COLLISIONCOMPONENT_H
 
 #include <vector>
+#include <map> 
 #include "Component.h"
 #include "../EventSystem/Events.h"
 
@@ -9,6 +10,7 @@ class CollisionComponent : public Component, CollisionEventDispatcher
 {
 private:
 	std::vector<GameObject*> targets;
+	std::map<GameObject*, CollisionStatus> collisionsStatus;
 
 public:
 	CollisionComponent();

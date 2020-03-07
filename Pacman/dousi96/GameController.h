@@ -31,6 +31,7 @@ public:
 	TileMap* GetTileMap() const;
 	GameObject* CreateGameObject(const Vector2f& position = Vector2f::ZERO);
 	void Destroy(GameObject* gameObject);
+	/*std::vector<GameObject*> GetGameObjectsByTag(const GameObjectTag& tag) const;*/
 
 private:	
 	bool _UpdateInput();

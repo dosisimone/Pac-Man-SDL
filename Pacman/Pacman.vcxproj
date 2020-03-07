@@ -127,6 +127,7 @@
     <ClCompile Include="dousi96\Components\SpriteAnimationRendererComponent.cpp" />
     <ClCompile Include="dousi96\Components\SpriteRendererComponent.cpp" />
     <ClCompile Include="dousi96\Components\CollisionComponent.cpp" />
+    <ClCompile Include="dousi96\Components\TeleportComponent.cpp" />
     <ClCompile Include="dousi96\Components\TileMapPositionComponent.cpp" />
     <ClCompile Include="dousi96\Components\TileMovementComponent.cpp" />
     <ClCompile Include="dousi96\EventSystem\Events.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="dousi96\Components\SpriteAnimationRendererComponent.h" />
     <ClInclude Include="dousi96\Components\SpriteRendererComponent.h" />
     <ClInclude Include="dousi96\Components\CollisionComponent.h" />
+    <ClInclude Include="dousi96\Components\TeleportComponent.h" />
     <ClInclude Include="dousi96\Components\TileMapPositionComponent.h" />
     <ClInclude Include="dousi96\Components\TileMovementComponent.h" />
     <ClInclude Include="dousi96\EventSystem\Events.h" />

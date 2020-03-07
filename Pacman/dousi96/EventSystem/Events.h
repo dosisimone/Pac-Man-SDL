@@ -5,10 +5,19 @@
 
 class GameObject;
 
-struct CollisionEventArgs 
+enum class CollisionStatus : short
 {
+	Enter,
+	Stay,
+	Exit
+};
+
+
+struct CollisionEventArgs 
+{	
 	GameObject* sender;
 	GameObject* hit;
+	CollisionStatus status;
 };
 
 typedef EventDispatcher<CollisionEventArgs> CollisionEventDispatcher;

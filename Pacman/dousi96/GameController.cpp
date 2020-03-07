@@ -8,6 +8,7 @@
 #include "Components/TileMapPositionComponent.h"
 #include "Components/TileMovementComponent.h"
 #include "Components/CollisionComponent.h"
+#include "Components/TeleportComponent.h"
 #include "EventSystem/Events.h"
 #include "EventSystem/EventSystem.h"
 
@@ -53,6 +54,9 @@ void GameController::Start()
 	//init tiles
 	std::vector<GameObject*> tileObjects;
 	{		
+		TeleportComponent* firstTeleport = nullptr;
+		TeleportComponent* previousTeleport = nullptr;
+
 		float halfSizeTileMapXf = ((float)tileMap->GetSizeX()) / 2.f;
 		float halfSizeTileMapYf = ((float)tileMap->GetSizeY()) / 2.f;
 		for (unsigned int x = 0; x < tileMap->GetSizeX(); ++x)
@@ -90,12 +94,26 @@ void GameController::Start()
 				case TileType::Teleport:
 				{
 					tileObject->Tag = GameObjectTag::Teleport;
+					TeleportComponent* teleportComponent = tileObject->AddComponent<TeleportComponent>();
+					if (firstTeleport == nullptr) 
+					{
+						firstTeleport = teleportComponent;
+					}
+					else 
+					{
+						previousTeleport->SetLinkedTeleport(teleportComponent);
+					}
+					previousTeleport = teleportComponent;
 				}
 					break;
 				}
-
 				tileObjects.push_back(tileObject);
 			}
+		}
+
+		if (firstTeleport != nullptr && previousTeleport != nullptr && firstTeleport != previousTeleport) 
+		{
+			previousTeleport->SetLinkedTeleport(firstTeleport);
 		}
 	}
 
@@ -174,8 +192,30 @@ GameObject* GameController::CreateGameObject(const Vector2f& position)
 
 void GameController::Destroy(GameObject* gameObject)
 {
+	if (gameObject == nullptr) 
+	{
+		return;
+	}
+	gameObject->SetActive(false);
 	gameObjectsToDestroy.push_back(gameObject);
 }
+
+//std::vector<GameObject*> GameController::GetGameObjectsByTag(const GameObjectTag& tag) const
+//{
+//	std::vector<GameObject*> result;
+//	for (GameObject* obj : gameObjects)
+//	{
+//		if (obj == nullptr)
+//		{
+//			continue;
+//		}
+//		if (obj->Tag == tag)
+//		{
+//			result.push_back(obj);
+//		}
+//	}
+//	return result;
+//}
 
 bool GameController::_UpdateInput()
 {
@@ -209,6 +249,15 @@ void GameController::_DestroyScheduledGameObjects()
 {
 	for (unsigned int i = 0; i < gameObjectsToDestroy.size(); ++i) 
 	{
+		for (unsigned int j = 0; j < gameObjects.size(); ++j) 
+		{
+			if (gameObjects[j] == gameObjectsToDestroy[i]) 
+			{
+				gameObjects.erase(gameObjects.begin() + j);
+				break;
+			}
+		}
+
 		delete gameObjectsToDestroy[i];
 		gameObjectsToDestroy[i] = nullptr;
 	}
