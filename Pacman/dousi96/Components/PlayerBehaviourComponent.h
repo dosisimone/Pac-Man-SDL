@@ -21,7 +21,7 @@ private:
 
 public:
 	PlayerBehaviourComponent();
-	~PlayerBehaviourComponent();
+	~PlayerBehaviourComponent() override;
 	void Start() override;
 	void Update(const float deltaTime) override;
 	void SetSpeed(const float speed);

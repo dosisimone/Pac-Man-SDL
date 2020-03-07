@@ -10,7 +10,7 @@ public:
 
 public:
 	Component() = default;
-	~Component() = default;
+	virtual ~Component() = default;
 	void Register(GameObject* gameObject);
 	virtual void Start() {};
 	virtual void Update(const float deltaTime) {};

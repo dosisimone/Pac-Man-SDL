@@ -14,7 +14,7 @@ private:
 
 public:
 	CollisionComponent();
-	~CollisionComponent();
+	~CollisionComponent() override;
 	void Start() override;
 	void Update(const float deltaTime) override;
 	void AddTarget(GameObject* newTarget);

@@ -15,7 +15,7 @@ private:
 
 public:
 	SpriteRendererComponent();
-	~SpriteRendererComponent();
+	~SpriteRendererComponent() override;
 	void Draw() const override;
 	void Update(const float deltaTime) override {}
 	void SetSprite(const char* spritePath);

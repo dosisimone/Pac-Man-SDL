@@ -123,8 +123,12 @@ void GameController::Start()
 		playerObject->Tag = GameObjectTag::Player;
 		SpriteAnimationRendererComponent* spriteAnimationRenderer = playerObject->AddComponent<SpriteAnimationRendererComponent>();
 		spriteAnimationRenderer->SetDrawer(drawer);
-		spriteAnimationRenderer->SetFrames({ "open_32.png" , "closed_32.png" });
-		spriteAnimationRenderer->SetSecondsBtwFrames(0.25f);
+		SpriteAnimationRendererComponent::Animation defaultPlayerAnimation;
+		defaultPlayerAnimation.name = "default";
+		defaultPlayerAnimation.sprites = { "open_32.png" , "closed_32.png" },
+		defaultPlayerAnimation.secondsBtwFrames = 0.25f;
+		spriteAnimationRenderer->AddAnimation(defaultPlayerAnimation);
+		spriteAnimationRenderer->SetCurrentAnimation("default");
 		TileMapPositionComponent* tileMapPosition = playerObject->AddComponent<TileMapPositionComponent>();
 		tileMapPosition->SetTilePosition(13, 6);
 		TileMovementComponent* tileMovement = playerObject->AddComponent<TileMovementComponent>();

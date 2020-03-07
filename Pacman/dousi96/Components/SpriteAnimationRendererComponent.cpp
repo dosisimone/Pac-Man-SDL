@@ -1,11 +1,11 @@
 #include "Component.h"
+#include "../../Drawer.h"
 #include "SpriteAnimationRendererComponent.h"
 
 SpriteAnimationRendererComponent::SpriteAnimationRendererComponent()
 {
 	this->drawer = nullptr;
 	this->actualFrameIndex = 0;
-	this->secondsBtwFrames = 1.f;
 	this->secondsCounter = 0.f;
 	this->flipX = false;
 	this->flipY = false;
@@ -18,35 +18,43 @@ SpriteAnimationRendererComponent::~SpriteAnimationRendererComponent()
 
 void SpriteAnimationRendererComponent::Draw() const
 {
-	drawer->Draw(frames[actualFrameIndex], Owner->Position, flipX, flipY, rotation);
+	if (animations.size() < 1) 
+	{
+		return;
+	}
+	drawer->Draw(animations[actualAnimationIndex].sprites[actualFrameIndex], Owner->Position, flipX, flipY, rotation);
 }
 
 void SpriteAnimationRendererComponent::Update(const float deltaTime)
 {
 	secondsCounter += deltaTime;
-	if (secondsCounter >= secondsBtwFrames) 
+	if (secondsCounter >= animations[actualAnimationIndex].secondsBtwFrames)
 	{
-		actualFrameIndex = (actualFrameIndex + 1) % frames.size();
+		actualFrameIndex = (actualFrameIndex + 1) % animations[actualAnimationIndex].sprites.size();
 		secondsCounter = 0.f;
 	}
 }
 
-void SpriteAnimationRendererComponent::SetFrames(const std::vector<char*>& frames)
+void SpriteAnimationRendererComponent::AddAnimation(const Animation& animation)
 {
-	if (frames.size() == 0) 
+	if (animation.sprites.size() < 1) 
 	{
 		return;
 	}
-	this->frames = frames;
+	animations.push_back(animation);
 }
 
-void SpriteAnimationRendererComponent::SetSecondsBtwFrames(const float secondsBtwFrames)
+void SpriteAnimationRendererComponent::SetCurrentAnimation(const std::string& name)
 {
-	if (secondsBtwFrames <= 0.f) 
+	for (unsigned int i = 0; i < animations.size(); ++i) 
 	{
-		return;
+		if (name.compare(animations[i].name) == 0) 
+		{
+			actualAnimationIndex = i;
+			actualFrameIndex = 0;
+		}
 	}
-	this->secondsBtwFrames = secondsBtwFrames;
+
 }
 
 void SpriteAnimationRendererComponent::SetDrawer(Drawer* drawer)

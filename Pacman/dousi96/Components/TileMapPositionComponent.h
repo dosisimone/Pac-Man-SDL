@@ -12,7 +12,7 @@ private:
 
 public:
 	TileMapPositionComponent();
-	~TileMapPositionComponent();
+	~TileMapPositionComponent() override;
 	void Start() override;
 	void Update(const float deltaTime) override {};
 

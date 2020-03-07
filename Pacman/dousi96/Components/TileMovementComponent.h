@@ -18,11 +18,11 @@ private:
 
 public:
 	TileMovementComponent();
-	~TileMovementComponent();
+	~TileMovementComponent() override;
 	void Start() override;
 	void Update(const float deltaTime) override {};
 	bool IsAtDestination() const;
-
+	
 	void SetCurrentTile(const unsigned int x, const unsigned int y);
 	unsigned int GetCurrentTileX() const;
 	unsigned int GetCurrentTileY() const;
