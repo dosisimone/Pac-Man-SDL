@@ -105,6 +105,16 @@ void PlayerBehaviourComponent::SetSpeed(const float speed)
 	this->speed = speed;
 }
 
+unsigned int PlayerBehaviourComponent::GetLives() const
+{
+	return this->lives;
+}
+
+unsigned int PlayerBehaviourComponent::GetPoints() const
+{
+	return this->points;
+}
+
 void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const CollisionEventDispatcher& sender)
 {
 	switch (event.hit->Tag) 

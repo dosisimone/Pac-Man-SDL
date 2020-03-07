@@ -15,6 +15,7 @@
 #include "EventSystem/Events.h"
 #include "EventSystem/EventSystem.h"
 #include "Components/UI/UILivesLabelComponent.h"
+#include "Components/GhostBehaviourComponent.h"
 
 GameController* GameController::Instance = nullptr;
 
@@ -90,8 +91,9 @@ void GameController::Start()
 		livesLabelUIComponent = livesLabelValueUIObject->AddComponent<UILivesLabelComponent>();
 	}
 
-	//init tiles
-	std::vector<GameObject*> tileObjects;
+	std::vector<GameObject*> collisionTargets;
+
+	//init tiles	
 	{		
 		TeleportComponent* firstTeleport = nullptr;
 		TeleportComponent* previousTeleport = nullptr;
@@ -147,7 +149,7 @@ void GameController::Start()
 				}
 					break;
 				}
-				tileObjects.push_back(tileObject);
+				collisionTargets.push_back(tileObject);
 			}
 		}
 
@@ -170,6 +172,7 @@ void GameController::Start()
 		frightenedGhostAnimation.secondsBtwFrames = 60.f;
 
 		GameObject* ghost1Object = CreateGameObject();
+		ghost1Object->Tag = GameObjectTag::Ghost;
 		SpriteRendererComponent* spriteRenderer = ghost1Object->AddComponent<SpriteRendererComponent>();
 		SpriteAnimationComponent* spriteAnimationRenderer = ghost1Object->AddComponent<SpriteAnimationComponent>();
 		SpriteAnimationComponent::Animation defaultGhost1Animation;
@@ -181,6 +184,9 @@ void GameController::Start()
 		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
 		spriteAnimationRenderer->SetCurrentAnimation("default");		
 
+		GhostBehaviourComponent* ghost1BehaviourComponent = ghost1Object->AddComponent<GhostBehaviourComponent>();
+
+		collisionTargets.push_back(ghost1Object);
 	}
 
 	//player object
@@ -204,9 +210,9 @@ void GameController::Start()
 		CollisionComponent* collisionComponent = playerObject->AddComponent<CollisionComponent>();
 		collisionComponent->Subscribe((CollisionEventListener*)playerBehaviourComponent);		
 		//Init collision system
-		for (unsigned int i = 0; i < tileObjects.size(); ++i)
+		for (unsigned int i = 0; i < collisionTargets.size(); ++i)
 		{
-			collisionComponent->AddTarget(tileObjects[i]);
+			collisionComponent->AddTarget(collisionTargets[i]);
 		}
 		//events
 		playerBehaviourComponent->Subscribe((PointsValueUpdatedEventListener*)pointsLabelUIComponent);

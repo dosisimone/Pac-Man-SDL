@@ -30,6 +30,8 @@ public:
 	void Start() override;
 	void Update(const float deltaTime) override;
 	void SetSpeed(const float speed);
+	unsigned int GetLives() const;
+	unsigned int GetPoints() const;
 	//events
 	void OnEvent(const CollisionEventArgs& event, const CollisionEventDispatcher& sender) override;	
 	void Subscribe(PointsValueUpdatedEventListener* listener) { PointsValueUpdatedEventDispatcher::Subscribe(listener); }
