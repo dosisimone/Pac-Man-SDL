@@ -5,9 +5,9 @@
 #include <string>
 #include "Component.h"
 
-class Drawer;
+class SpriteRendererComponent;
 
-class SpriteAnimationRendererComponent : public Component
+class SpriteAnimationComponent : public Component
 {
 public:
 	struct Animation
@@ -18,23 +18,19 @@ public:
 	};
 
 private:
-	Drawer* drawer;	
+	SpriteRendererComponent* spriteRenderer;
 	std::vector<Animation> animations;
 	unsigned int actualAnimationIndex = 0;
 	unsigned int actualFrameIndex = 0;
 	float secondsCounter = 0.f;
-	bool flipX = false;
-	bool flipY = false;
-	float rotation = 0.f;	
 
 public:
-	SpriteAnimationRendererComponent();
-	~SpriteAnimationRendererComponent() override;
-	void Draw() const override;
+	SpriteAnimationComponent();
+	~SpriteAnimationComponent() override;
+	void Start() override;
 	void Update(const float deltaTime) override;
 	void AddAnimation(const Animation& animation);
 	void SetCurrentAnimation(const std::string& name);
-	void SetDrawer(Drawer* drawer);
 	void SetFlip(const bool x, const bool y);
 	void SetRotation(const float angle);
 };

@@ -42,7 +42,7 @@ public:
 		}
 	}
 
-	void Dispatch(const EventArgs& eventArgs)
+	void Invoke(const EventArgs& eventArgs)
 	{
 		for (unsigned int i = 0; i < listeners.size(); ++i)
 		{

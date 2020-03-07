@@ -12,7 +12,6 @@ enum class CollisionStatus : short
 	Exit
 };
 
-
 struct CollisionEventArgs 
 {	
 	GameObject* sender;
@@ -22,5 +21,13 @@ struct CollisionEventArgs
 
 typedef EventDispatcher<CollisionEventArgs> CollisionEventDispatcher;
 typedef EventDispatcher<CollisionEventArgs>::Listener CollisionEventListener;
+
+struct DotCollectedEventArgs 
+{
+	unsigned int pointsToAdd;
+};
+
+typedef EventDispatcher<DotCollectedEventArgs> DotCollectedEventDispatcher;
+typedef EventDispatcher<DotCollectedEventArgs>::Listener DotCollectedEventListener;
 
 #endif // EVENTS_H

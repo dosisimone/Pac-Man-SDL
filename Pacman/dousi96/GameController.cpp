@@ -4,11 +4,12 @@
 #include "Components/SpriteRendererComponent.h"
 #include "Components/PlayerBehaviourComponent.h"
 #include "Persistence/TileMapTxtReader.h"
-#include "Components/SpriteAnimationRendererComponent.h"
+#include "Components/SpriteAnimationComponent.h"
 #include "Components/TileMapPositionComponent.h"
 #include "Components/TileMovementComponent.h"
 #include "Components/CollisionComponent.h"
 #include "Components/TeleportComponent.h"
+#include "Components/DotComponent.h"
 #include "EventSystem/Events.h"
 #include "EventSystem/EventSystem.h"
 
@@ -78,9 +79,11 @@ void GameController::Start()
 				case TileType::Dot: 
 				{
 					tileObject->Tag = GameObjectTag::Dot;
-					SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();
+					SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();					
 					spriteRenderer->SetDrawer(drawer);
 					spriteRenderer->SetSprite("Small_Dot_32.png");
+					DotComponent* dot = tileObject->AddComponent<DotComponent>();
+					dot->SetPointsToAdd(1);
 				}
 					break;
 				case TileType::BigDot:
@@ -89,6 +92,8 @@ void GameController::Start()
 					SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();
 					spriteRenderer->SetDrawer(drawer);
 					spriteRenderer->SetSprite("Big_Dot_32.png");
+					DotComponent* dot = tileObject->AddComponent<DotComponent>();
+					dot->SetPointsToAdd(1);
 				}
 					break;
 				case TileType::Teleport:
@@ -121,9 +126,10 @@ void GameController::Start()
 	{
 		GameObject* playerObject = CreateGameObject();
 		playerObject->Tag = GameObjectTag::Player;
-		SpriteAnimationRendererComponent* spriteAnimationRenderer = playerObject->AddComponent<SpriteAnimationRendererComponent>();
-		spriteAnimationRenderer->SetDrawer(drawer);
-		SpriteAnimationRendererComponent::Animation defaultPlayerAnimation;
+		SpriteRendererComponent* spriteRenderer = playerObject->AddComponent<SpriteRendererComponent>();
+		spriteRenderer->SetDrawer(drawer);
+		SpriteAnimationComponent* spriteAnimationRenderer = playerObject->AddComponent<SpriteAnimationComponent>();
+		SpriteAnimationComponent::Animation defaultPlayerAnimation;
 		defaultPlayerAnimation.name = "default";
 		defaultPlayerAnimation.sprites = { "open_32.png" , "closed_32.png" },
 		defaultPlayerAnimation.secondsBtwFrames = 0.25f;

@@ -40,7 +40,7 @@ void CollisionComponent::Update(const float deltaTime)
 			args.sender = this->Owner;
 			args.hit = targets[i];
 			args.status = status;
-			Dispatch(args);
+			Invoke(args);
 		}
 		else 
 		{
@@ -50,7 +50,7 @@ void CollisionComponent::Update(const float deltaTime)
 				args.sender = this->Owner;
 				args.hit = targets[i];
 				args.status = CollisionStatus::Exit;
-				Dispatch(args);
+				Invoke(args);
 				collisionsStatus.erase(targets[i]);
 			}
 		}

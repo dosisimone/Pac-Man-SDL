@@ -1,10 +1,11 @@
 #include "PlayerBehaviourComponent.h"
-#include "SpriteAnimationRendererComponent.h"
+#include "../GameController.h"
+#include "SpriteAnimationComponent.h"
 #include "TileMapPositionComponent.h"
 #include "TileMovementComponent.h"
 #include "CollisionComponent.h"
-#include "../GameController.h"
 #include "TeleportComponent.h"
+#include "DotComponent.h"
 
 PlayerBehaviourComponent::PlayerBehaviourComponent()
 {
@@ -22,7 +23,7 @@ PlayerBehaviourComponent::~PlayerBehaviourComponent()
 
 void PlayerBehaviourComponent::Start()
 {
-	this->animationRenderer = Owner->GetComponent<SpriteAnimationRendererComponent>();
+	this->animationRenderer = Owner->GetComponent<SpriteAnimationComponent>();
 	this->tilePosition = Owner->GetComponent<TileMapPositionComponent>();
 	this->tileMovement = Owner->GetComponent<TileMovementComponent>();
 }
@@ -102,6 +103,10 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 		case GameObjectTag::BigDot:
 		case GameObjectTag::Dot:
 		{
+			DotComponent* dot = event.hit->GetComponent<DotComponent>();
+			DotCollectedEventArgs dotCollectedArgs;
+			dotCollectedArgs.pointsToAdd = dot->GetPointsToAdd();
+			Invoke(dotCollectedArgs);
 			GameController::Instance->Destroy(event.hit);
 		}
 		break;
