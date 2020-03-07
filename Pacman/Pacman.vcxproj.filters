@@ -34,6 +34,9 @@
     <Filter Include="dousi96\EventSystem">
       <UniqueIdentifier>{ebe86c7b-710c-468f-b52a-17991ef9b4d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dousi96\Components\UI">
+      <UniqueIdentifier>{e908b1ad-ba60-4c21-9eed-632620de64ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Pacman.cpp">
@@ -91,9 +94,6 @@
     <ClCompile Include="dousi96\Components\PlayerBehaviourComponent.cpp">
       <Filter>dousi96\Components</Filter>
     </ClCompile>
-    <ClCompile Include="dousi96\Components\SpriteAnimationRendererComponent.cpp">
-      <Filter>dousi96\Components</Filter>
-    </ClCompile>
     <ClCompile Include="dousi96\TileMap.cpp">
       <Filter>dousi96</Filter>
     </ClCompile>
@@ -117,6 +117,18 @@
     </ClCompile>
     <ClCompile Include="dousi96\Components\TeleportComponent.cpp">
       <Filter>dousi96\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\DotComponent.cpp">
+      <Filter>dousi96\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\SpriteAnimationComponent.cpp">
+      <Filter>dousi96\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\UI\UITextComponent.cpp">
+      <Filter>dousi96\Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\UI\UIPointsLabelComponent.cpp">
+      <Filter>dousi96\Components\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -174,9 +186,6 @@
     <ClInclude Include="dousi96\Components\PlayerBehaviourComponent.h">
       <Filter>dousi96\Components</Filter>
     </ClInclude>
-    <ClInclude Include="dousi96\Components\SpriteAnimationRendererComponent.h">
-      <Filter>dousi96\Components</Filter>
-    </ClInclude>
     <ClInclude Include="dousi96\TileMap.h">
       <Filter>dousi96</Filter>
     </ClInclude>
@@ -200,6 +209,18 @@
     </ClInclude>
     <ClInclude Include="dousi96\Components\TeleportComponent.h">
       <Filter>dousi96\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\DotComponent.h">
+      <Filter>dousi96\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\SpriteAnimationComponent.h">
+      <Filter>dousi96\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\UI\UITextComponent.h">
+      <Filter>dousi96\Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\UI\UIPointsLabelComponent.h">
+      <Filter>dousi96\Components\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

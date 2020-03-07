@@ -22,7 +22,5 @@ public:
 	void SetDrawer(Drawer* drawer);
 	void SetFlip(const bool x, const bool y);
 	void SetRotation(const float angle);
-
-	//static ComponentType GetType() { return ComponentType::tSpriteRendererComponent; }
 };
 #endif // SPRITERENDERERCOMPONENT_H

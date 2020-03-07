@@ -15,7 +15,8 @@ enum class GameObjectTag : short
 	BigDot,
 	Dot, 
 	Background,
-	Teleport
+	Teleport,
+	UI
 };
 
 class GameObject

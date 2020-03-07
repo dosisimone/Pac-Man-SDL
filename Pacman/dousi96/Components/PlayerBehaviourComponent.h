@@ -10,9 +10,10 @@ class TileMapPositionComponent;
 class TileMovementComponent;
 class TeleportComponent;
 
-class PlayerBehaviourComponent : public Component, CollisionEventListener, DotCollectedEventDispatcher
+class PlayerBehaviourComponent : public Component, CollisionEventListener, PointsValueUpdatedEventDispatcher
 {
 private:		
+	unsigned int points = 0;
 	float speed = 1.0f;	
 	SpriteAnimationComponent* animationRenderer = nullptr;
 	TileMapPositionComponent* tilePosition = nullptr;
@@ -26,9 +27,8 @@ public:
 	void Start() override;
 	void Update(const float deltaTime) override;
 	void SetSpeed(const float speed);
-	virtual void OnEvent(const CollisionEventArgs& event, const CollisionEventDispatcher& sender) override;
-	void Subscribe(DotCollectedEventListener* listener) { DotCollectedEventDispatcher::Subscribe(listener); }
-	void Unsubscribe(DotCollectedEventListener* listener) { DotCollectedEventDispatcher::Unsubscribe(listener); }
-
+	void OnEvent(const CollisionEventArgs& event, const CollisionEventDispatcher& sender) override;
+	void Subscribe(PointsValueUpdatedEventListener* listener) { PointsValueUpdatedEventDispatcher::Subscribe(listener); }
+	void Unsubscribe(PointsValueUpdatedEventListener* listener) { PointsValueUpdatedEventDispatcher::Unsubscribe(listener); }
 };
 #endif // PLAYERBEHAVIOURCOMPONENT_H

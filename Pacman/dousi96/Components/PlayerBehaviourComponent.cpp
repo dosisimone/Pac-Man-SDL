@@ -9,6 +9,7 @@
 
 PlayerBehaviourComponent::PlayerBehaviourComponent()
 {
+	this->points = 0;
 	this->animationRenderer = nullptr;
 	this->tilePosition = nullptr;
 	this->tileMovement = nullptr;
@@ -104,9 +105,12 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 		case GameObjectTag::Dot:
 		{
 			DotComponent* dot = event.hit->GetComponent<DotComponent>();
-			DotCollectedEventArgs dotCollectedArgs;
-			dotCollectedArgs.pointsToAdd = dot->GetPointsToAdd();
-			Invoke(dotCollectedArgs);
+			this->points += dot->GetPointsToAdd();
+			//invoke the points update event
+			PointsValueUpdatedEventArgs pointsUpdatedEventArgs;
+			pointsUpdatedEventArgs.points = this->points;
+			Invoke(pointsUpdatedEventArgs);
+			//destroy the dot on the map
 			GameController::Instance->Destroy(event.hit);
 		}
 		break;

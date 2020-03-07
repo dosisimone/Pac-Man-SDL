@@ -10,6 +10,8 @@
 #include "Components/CollisionComponent.h"
 #include "Components/TeleportComponent.h"
 #include "Components/DotComponent.h"
+#include "Components/UI/UITextComponent.h"
+#include "Components/UI/UIPointsLabelComponent.h"
 #include "EventSystem/Events.h"
 #include "EventSystem/EventSystem.h"
 
@@ -47,9 +49,47 @@ void GameController::Start()
 	//background object
 	{
 		GameObject* backgroundObject = CreateGameObject();
+		backgroundObject->Tag = GameObjectTag::Background;
 		SpriteRendererComponent* spriteRenderer = backgroundObject->AddComponent<SpriteRendererComponent>();
 		spriteRenderer->SetDrawer(drawer);
 		spriteRenderer->SetSprite("playfield.png");
+	}
+
+	//UI
+	UIPointsLabelComponent* pointsLabelUIComponent;
+	{
+		GameObject* scoreLabelTextUIObject = CreateGameObject();
+		scoreLabelTextUIObject->Tag = GameObjectTag::UI;
+		UITextComponent* scoreLabelTextUIComponent = scoreLabelTextUIObject->AddComponent<UITextComponent>();
+		scoreLabelTextUIComponent->SetDrawer(drawer);
+		scoreLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+		scoreLabelTextUIComponent->SetScreenPosition(20, 50);
+		scoreLabelTextUIComponent->SetText("Score: ");
+
+		GameObject* scoreLabelValueUIObject = CreateGameObject();
+		scoreLabelValueUIObject->Tag = GameObjectTag::UI;
+		UITextComponent* scoreLabelValueUIComponent = scoreLabelValueUIObject->AddComponent<UITextComponent>();
+		scoreLabelValueUIComponent->SetDrawer(drawer);
+		scoreLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+		scoreLabelValueUIComponent->SetScreenPosition(110, 50);
+		scoreLabelValueUIComponent->SetText("0");
+		pointsLabelUIComponent = scoreLabelValueUIObject->AddComponent<UIPointsLabelComponent>();
+
+		GameObject* livesLabelTextUIObject = CreateGameObject();
+		livesLabelTextUIObject->Tag = GameObjectTag::UI;
+		UITextComponent* livesLabelTextUIComponent = livesLabelTextUIObject->AddComponent<UITextComponent>();
+		livesLabelTextUIComponent->SetDrawer(drawer);
+		livesLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+		livesLabelTextUIComponent->SetScreenPosition(20, 90);
+		livesLabelTextUIComponent->SetText("Lives: ");
+
+		GameObject* livesLabelValueUIObject = CreateGameObject();
+		livesLabelValueUIObject->Tag = GameObjectTag::UI;
+		UITextComponent* livesLabelValueUIComponent = livesLabelValueUIObject->AddComponent<UITextComponent>();
+		livesLabelValueUIComponent->SetDrawer(drawer);
+		livesLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+		livesLabelValueUIComponent->SetScreenPosition(110, 90);
+		livesLabelValueUIComponent->SetText("0");
 	}
 
 	//init tiles
@@ -73,7 +113,6 @@ void GameController::Start()
 				GameObject* tileObject = CreateGameObject();
 				TileMapPositionComponent* tileMapPosition = tileObject->AddComponent<TileMapPositionComponent>();
 				tileMapPosition->SetTilePosition(x, y);
-
 				switch (tile.type) 
 				{
 				case TileType::Dot: 
@@ -83,7 +122,7 @@ void GameController::Start()
 					spriteRenderer->SetDrawer(drawer);
 					spriteRenderer->SetSprite("Small_Dot_32.png");
 					DotComponent* dot = tileObject->AddComponent<DotComponent>();
-					dot->SetPointsToAdd(1);
+					dot->SetPointsToAdd(10);
 				}
 					break;
 				case TileType::BigDot:
@@ -93,7 +132,7 @@ void GameController::Start()
 					spriteRenderer->SetDrawer(drawer);
 					spriteRenderer->SetSprite("Big_Dot_32.png");
 					DotComponent* dot = tileObject->AddComponent<DotComponent>();
-					dot->SetPointsToAdd(1);
+					dot->SetPointsToAdd(50);
 				}
 					break;
 				case TileType::Teleport:
@@ -136,13 +175,14 @@ void GameController::Start()
 		spriteAnimationRenderer->AddAnimation(defaultPlayerAnimation);
 		spriteAnimationRenderer->SetCurrentAnimation("default");
 		TileMapPositionComponent* tileMapPosition = playerObject->AddComponent<TileMapPositionComponent>();
-		tileMapPosition->SetTilePosition(13, 6);
+		tileMapPosition->SetTilePosition(13, 7);
 		TileMovementComponent* tileMovement = playerObject->AddComponent<TileMovementComponent>();
-		tileMovement->SetDestination(12, 6);
+		tileMovement->SetDestination(12, 7);
 		PlayerBehaviourComponent* playerBehaviourComponent = playerObject->AddComponent<PlayerBehaviourComponent>();
 		playerBehaviourComponent->SetSpeed(4.f);
 		CollisionComponent* collisionComponent = playerObject->AddComponent<CollisionComponent>();
 		collisionComponent->Subscribe((CollisionEventListener*)playerBehaviourComponent);
+		playerBehaviourComponent->Subscribe((PointsValueUpdatedEventListener*)pointsLabelUIComponent);
 		//Init collision system
 		for (unsigned int i = 0; i < tileObjects.size(); ++i) 
 		{

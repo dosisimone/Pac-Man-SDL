@@ -18,16 +18,21 @@ struct CollisionEventArgs
 	GameObject* hit;
 	CollisionStatus status;
 };
-
 typedef EventDispatcher<CollisionEventArgs> CollisionEventDispatcher;
 typedef EventDispatcher<CollisionEventArgs>::Listener CollisionEventListener;
 
-struct DotCollectedEventArgs 
+struct PointsValueUpdatedEventArgs 
 {
-	unsigned int pointsToAdd;
+	unsigned int points;
 };
+typedef EventDispatcher<PointsValueUpdatedEventArgs> PointsValueUpdatedEventDispatcher;
+typedef EventDispatcher<PointsValueUpdatedEventArgs>::Listener PointsValueUpdatedEventListener;
 
-typedef EventDispatcher<DotCollectedEventArgs> DotCollectedEventDispatcher;
-typedef EventDispatcher<DotCollectedEventArgs>::Listener DotCollectedEventListener;
+struct LivesValueUpdatedEventArgs
+{
+	unsigned int lives;
+};
+typedef EventDispatcher<LivesValueUpdatedEventArgs> LivesValueUpdatedEventDispatcher;
+typedef EventDispatcher<LivesValueUpdatedEventArgs>::Listener LivesValueUpdatedEventListener;
 
 #endif // EVENTS_H
