@@ -6,11 +6,9 @@
 #include <vector>
 #include "../TileMap.h"
 
-using namespace std;
-
 TileMap* TileMapTxtReader::Read(const char* path)
 {
-	std:vector<std::string> lines;
+	std::vector<std::string> lines;
 
 	std::ifstream myfile(path);
 	if (!myfile.is_open())
@@ -18,8 +16,8 @@ TileMap* TileMapTxtReader::Read(const char* path)
 		return nullptr;
 	}
 
-	int rows = 0;
-	int cols = 0;
+	unsigned int rows = 0;
+	unsigned int cols = 0;
 	std::string line;	
 	while (!myfile.eof())
 	{
@@ -32,10 +30,10 @@ TileMap* TileMapTxtReader::Read(const char* path)
 
 	TileMap* tileMap = new TileMap(cols, rows);
 
-	for (int y = 0; y < lines.size(); ++y) 
+	for (unsigned int y = 0; y < lines.size(); ++y) 
 	{
-		int myY = lines.size() - 1 - y;
-		for (int x = 0; x < lines[y].length(); x++)
+		unsigned int myY = lines.size() - 1 - y;
+		for (unsigned int x = 0; x < lines[y].length(); x++)
 		{
 			Tile tile;
 			switch (lines[y][x])
