@@ -2,12 +2,13 @@
 #define PLAYERBEHAVIOURCOMPONENT_H
 
 #include "Component.h"
+#include "CollisionComponent.h"
 
 class SpriteAnimationRendererComponent;
 class TileMapPositionComponent;
 class TileMovementComponent;
 
-class PlayerBehaviourComponent : public Component
+class PlayerBehaviourComponent : public Component, CollisionEventListener
 {
 private:	
 	float speed = 1.0f;	
@@ -22,5 +23,7 @@ public:
 	void Start() override;
 	void Update(const float deltaTime) override;
 	void SetSpeed(const float speed);
+
+	virtual void OnEvent(const CollisionEventArgs& event, const CollisionEventDispatcher& sender) override;
 };
 #endif // PLAYERBEHAVIOURCOMPONENT_H

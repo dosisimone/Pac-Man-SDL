@@ -7,6 +7,9 @@
 #include "Components/SpriteAnimationRendererComponent.h"
 #include "Components/TileMapPositionComponent.h"
 #include "Components/TileMovementComponent.h"
+#include "Components/CollisionComponent.h"
+#include "EventSystem/Events.h"
+#include "EventSystem/EventSystem.h"
 
 GameController* GameController::Instance = nullptr;
 
@@ -47,7 +50,9 @@ void GameController::Start()
 		spriteRenderer->SetSprite("playfield.png");
 	}
 
-	{
+	//init tiles
+	std::vector<GameObject*> tileObjects;
+	{		
 		float halfSizeTileMapXf = ((float)tileMap->GetSizeX()) / 2.f;
 		float halfSizeTileMapYf = ((float)tileMap->GetSizeY()) / 2.f;
 		for (unsigned int x = 0; x < tileMap->GetSizeX(); ++x)
@@ -55,17 +60,41 @@ void GameController::Start()
 			for (unsigned int y = 0; y < tileMap->GetSizeY(); ++y)
 			{
 				const Tile& tile = tileMap->GetTile(x, y);
-				if (tile.type != TileType::Dot && tile.type != TileType::BigDot)
+				if (!tile.isWalkable)
 				{
 					continue;
 				}
 
-				GameObject* smallDotObject = CreateGameObject();
-				SpriteRendererComponent* spriteRenderer = smallDotObject->AddComponent<SpriteRendererComponent>();
-				spriteRenderer->SetDrawer(drawer);
-				spriteRenderer->SetSprite((tile.type == TileType::Dot) ? "Small_Dot_32.png" : "Big_Dot_32.png");
-				TileMapPositionComponent* tileMapPosition = smallDotObject->AddComponent<TileMapPositionComponent>();
+				GameObject* tileObject = CreateGameObject();
+				TileMapPositionComponent* tileMapPosition = tileObject->AddComponent<TileMapPositionComponent>();
 				tileMapPosition->SetTilePosition(x, y);
+
+				switch (tile.type) 
+				{
+				case TileType::Dot: 
+				{
+					tileObject->Tag = GameObjectTag::Dot;
+					SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();
+					spriteRenderer->SetDrawer(drawer);
+					spriteRenderer->SetSprite("Small_Dot_32.png");
+				}
+					break;
+				case TileType::BigDot:
+				{
+					tileObject->Tag = GameObjectTag::BigDot;
+					SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();
+					spriteRenderer->SetDrawer(drawer);
+					spriteRenderer->SetSprite("Big_Dot_32.png");
+				}
+					break;
+				case TileType::Teleport:
+				{
+					tileObject->Tag = GameObjectTag::Teleport;
+				}
+					break;
+				}
+
+				tileObjects.push_back(tileObject);
 			}
 		}
 	}
@@ -73,6 +102,7 @@ void GameController::Start()
 	//player object
 	{
 		GameObject* playerObject = CreateGameObject();
+		playerObject->Tag = GameObjectTag::Player;
 		SpriteAnimationRendererComponent* spriteAnimationRenderer = playerObject->AddComponent<SpriteAnimationRendererComponent>();
 		spriteAnimationRenderer->SetDrawer(drawer);
 		spriteAnimationRenderer->SetFrames({ "open_32.png" , "closed_32.png" });
@@ -83,7 +113,16 @@ void GameController::Start()
 		tileMovement->SetDestination(12, 6);
 		PlayerBehaviourComponent* playerBehaviourComponent = playerObject->AddComponent<PlayerBehaviourComponent>();
 		playerBehaviourComponent->SetSpeed(4.f);
+		CollisionComponent* collisionComponent = playerObject->AddComponent<CollisionComponent>();
+		collisionComponent->Subscribe((CollisionEventListener*)playerBehaviourComponent);
+		//Init collision system
+		for (unsigned int i = 0; i < tileObjects.size(); ++i) 
+		{
+			collisionComponent->AddTarget(tileObjects[i]);
+		}
 	}
+
+	
 }
 
 bool GameController::Update(const float deltaTime)

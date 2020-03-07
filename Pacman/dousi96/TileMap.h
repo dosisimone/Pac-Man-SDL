@@ -1,7 +1,7 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-enum TileType
+enum class TileType : short
 {
 	None,
 	Dot,

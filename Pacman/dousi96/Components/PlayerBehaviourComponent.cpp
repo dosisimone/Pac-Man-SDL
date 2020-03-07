@@ -2,6 +2,7 @@
 #include "SpriteAnimationRendererComponent.h"
 #include "TileMapPositionComponent.h"
 #include "TileMovementComponent.h"
+#include "CollisionComponent.h"
 #include "../GameController.h"
 
 PlayerBehaviourComponent::PlayerBehaviourComponent()
@@ -90,4 +91,17 @@ void PlayerBehaviourComponent::Update(const float deltaTime)
 void PlayerBehaviourComponent::SetSpeed(const float speed)
 {
 	this->speed = speed;
+}
+
+void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const CollisionEventDispatcher& sender)
+{
+	switch (event.hit->Tag) 
+	{
+		case GameObjectTag::BigDot:
+		case GameObjectTag::Dot:
+		{
+			GameController::Instance->Destroy(event.hit);
+		}
+		break;
+	}
 }

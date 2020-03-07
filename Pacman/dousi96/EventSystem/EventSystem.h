@@ -27,7 +27,7 @@ public:
 				return;
 			}
 		}
-		listeners..push_back(listeners);
+		listeners.push_back(listener);
 	}
 
 	void Unsubscribe(Listener* listener) 

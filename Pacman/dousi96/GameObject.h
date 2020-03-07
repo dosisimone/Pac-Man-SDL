@@ -7,12 +7,22 @@
 class Component;
 class RendererComponent;
 class GameController;
-enum ComponentType;
+
+enum class GameObjectTag : short
+{
+	Player,
+	Ghost,
+	BigDot,
+	Dot, 
+	Background,
+	Teleport
+};
 
 class GameObject
 {
 public:	
 	Vector2f Position;
+	GameObjectTag Tag;
 
 private:	
 	bool isActive = false;
