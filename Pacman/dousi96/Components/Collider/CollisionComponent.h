@@ -3,8 +3,8 @@
 
 #include <vector>
 #include <map> 
-#include "Component.h"
-#include "../EventSystem/Events.h"
+#include "../Component.h"
+#include "../../EventSystem/Events.h"
 
 class CollisionComponent : public Component, CollisionEventDispatcher 
 {

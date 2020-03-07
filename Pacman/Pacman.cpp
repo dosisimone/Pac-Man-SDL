@@ -10,7 +10,6 @@
 #include "Avatar.h"
 #include "World.h"
 #include "Ghost.h"
-#include "dousi96/Components/SpriteRendererComponent.h"
 
 Pacman* Pacman::Create(Drawer* aDrawer)
 {

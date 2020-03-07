@@ -1,5 +1,5 @@
 #include "TileMapPositionComponent.h"
-#include "../GameController.h"
+#include "../../GameController.h"
 
 TileMapPositionComponent::TileMapPositionComponent()
 {

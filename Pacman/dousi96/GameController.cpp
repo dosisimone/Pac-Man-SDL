@@ -1,19 +1,20 @@
 #include "SDL.h"
 #include "GameController.h"
 #include "GameObject.h"
-#include "Components/SpriteRendererComponent.h"
-#include "Components/PlayerBehaviourComponent.h"
-#include "Persistence/TileMapTxtReader.h"
-#include "Components/SpriteAnimationComponent.h"
-#include "Components/TileMapPositionComponent.h"
-#include "Components/TileMovementComponent.h"
-#include "Components/CollisionComponent.h"
-#include "Components/TeleportComponent.h"
-#include "Components/DotComponent.h"
+#include "Components/Renderer/SpriteRendererComponent.h"
+#include "Components/Renderer/SpriteAnimationComponent.h"
+#include "Components/TileMap/TileMapPositionComponent.h"
+#include "Components/TileMap/TileMovementComponent.h"
+#include "Components/TileMap/TeleportComponent.h"
+#include "Components/TileMap/DotComponent.h"
+#include "Components/Collider/CollisionComponent.h"
 #include "Components/UI/UITextComponent.h"
 #include "Components/UI/UIPointsLabelComponent.h"
+#include "Components/PlayerBehaviourComponent.h"
+#include "Persistence/TileMapTxtReader.h"
 #include "EventSystem/Events.h"
 #include "EventSystem/EventSystem.h"
+#include "Components/UI/UILivesLabelComponent.h"
 
 GameController* GameController::Instance = nullptr;
 
@@ -51,17 +52,16 @@ void GameController::Start()
 		GameObject* backgroundObject = CreateGameObject();
 		backgroundObject->Tag = GameObjectTag::Background;
 		SpriteRendererComponent* spriteRenderer = backgroundObject->AddComponent<SpriteRendererComponent>();
-		spriteRenderer->SetDrawer(drawer);
 		spriteRenderer->SetSprite("playfield.png");
 	}
 
 	//UI
 	UIPointsLabelComponent* pointsLabelUIComponent;
+	UILivesLabelComponent* livesLabelUIComponent;
 	{
 		GameObject* scoreLabelTextUIObject = CreateGameObject();
 		scoreLabelTextUIObject->Tag = GameObjectTag::UI;
 		UITextComponent* scoreLabelTextUIComponent = scoreLabelTextUIObject->AddComponent<UITextComponent>();
-		scoreLabelTextUIComponent->SetDrawer(drawer);
 		scoreLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
 		scoreLabelTextUIComponent->SetScreenPosition(20, 50);
 		scoreLabelTextUIComponent->SetText("Score: ");
@@ -69,7 +69,6 @@ void GameController::Start()
 		GameObject* scoreLabelValueUIObject = CreateGameObject();
 		scoreLabelValueUIObject->Tag = GameObjectTag::UI;
 		UITextComponent* scoreLabelValueUIComponent = scoreLabelValueUIObject->AddComponent<UITextComponent>();
-		scoreLabelValueUIComponent->SetDrawer(drawer);
 		scoreLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
 		scoreLabelValueUIComponent->SetScreenPosition(110, 50);
 		scoreLabelValueUIComponent->SetText("0");
@@ -78,7 +77,6 @@ void GameController::Start()
 		GameObject* livesLabelTextUIObject = CreateGameObject();
 		livesLabelTextUIObject->Tag = GameObjectTag::UI;
 		UITextComponent* livesLabelTextUIComponent = livesLabelTextUIObject->AddComponent<UITextComponent>();
-		livesLabelTextUIComponent->SetDrawer(drawer);
 		livesLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
 		livesLabelTextUIComponent->SetScreenPosition(20, 90);
 		livesLabelTextUIComponent->SetText("Lives: ");
@@ -86,10 +84,10 @@ void GameController::Start()
 		GameObject* livesLabelValueUIObject = CreateGameObject();
 		livesLabelValueUIObject->Tag = GameObjectTag::UI;
 		UITextComponent* livesLabelValueUIComponent = livesLabelValueUIObject->AddComponent<UITextComponent>();
-		livesLabelValueUIComponent->SetDrawer(drawer);
 		livesLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
 		livesLabelValueUIComponent->SetScreenPosition(110, 90);
-		livesLabelValueUIComponent->SetText("0");
+		livesLabelValueUIComponent->SetText("2");
+		livesLabelUIComponent = livesLabelValueUIObject->AddComponent<UILivesLabelComponent>();
 	}
 
 	//init tiles
@@ -119,7 +117,6 @@ void GameController::Start()
 				{
 					tileObject->Tag = GameObjectTag::Dot;
 					SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();					
-					spriteRenderer->SetDrawer(drawer);
 					spriteRenderer->SetSprite("Small_Dot_32.png");
 					DotComponent* dot = tileObject->AddComponent<DotComponent>();
 					dot->SetPointsToAdd(10);
@@ -129,7 +126,6 @@ void GameController::Start()
 				{
 					tileObject->Tag = GameObjectTag::BigDot;
 					SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();
-					spriteRenderer->SetDrawer(drawer);
 					spriteRenderer->SetSprite("Big_Dot_32.png");
 					DotComponent* dot = tileObject->AddComponent<DotComponent>();
 					dot->SetPointsToAdd(50);
@@ -161,16 +157,41 @@ void GameController::Start()
 		}
 	}
 
+	//init ghosts
+	{
+		SpriteAnimationComponent::Animation deadGhostAnimation;
+		deadGhostAnimation.name = "dead";
+		deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
+		deadGhostAnimation.secondsBtwFrames = 60.f;
+
+		SpriteAnimationComponent::Animation frightenedGhostAnimation;
+		frightenedGhostAnimation.name = "frightened";
+		frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
+		frightenedGhostAnimation.secondsBtwFrames = 60.f;
+
+		GameObject* ghost1Object = CreateGameObject();
+		SpriteRendererComponent* spriteRenderer = ghost1Object->AddComponent<SpriteRendererComponent>();
+		SpriteAnimationComponent* spriteAnimationRenderer = ghost1Object->AddComponent<SpriteAnimationComponent>();
+		SpriteAnimationComponent::Animation defaultGhost1Animation;
+		defaultGhost1Animation.name = "default";
+		defaultGhost1Animation.sprites = { "ghost_32_red.png" };
+		defaultGhost1Animation.secondsBtwFrames = 60.f;
+		spriteAnimationRenderer->AddAnimation(defaultGhost1Animation);
+		spriteAnimationRenderer->AddAnimation(frightenedGhostAnimation);
+		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
+		spriteAnimationRenderer->SetCurrentAnimation("default");		
+
+	}
+
 	//player object
 	{
 		GameObject* playerObject = CreateGameObject();
 		playerObject->Tag = GameObjectTag::Player;
 		SpriteRendererComponent* spriteRenderer = playerObject->AddComponent<SpriteRendererComponent>();
-		spriteRenderer->SetDrawer(drawer);
 		SpriteAnimationComponent* spriteAnimationRenderer = playerObject->AddComponent<SpriteAnimationComponent>();
 		SpriteAnimationComponent::Animation defaultPlayerAnimation;
 		defaultPlayerAnimation.name = "default";
-		defaultPlayerAnimation.sprites = { "open_32.png" , "closed_32.png" },
+		defaultPlayerAnimation.sprites = { "open_32.png" , "closed_32.png" };
 		defaultPlayerAnimation.secondsBtwFrames = 0.25f;
 		spriteAnimationRenderer->AddAnimation(defaultPlayerAnimation);
 		spriteAnimationRenderer->SetCurrentAnimation("default");
@@ -181,13 +202,15 @@ void GameController::Start()
 		PlayerBehaviourComponent* playerBehaviourComponent = playerObject->AddComponent<PlayerBehaviourComponent>();
 		playerBehaviourComponent->SetSpeed(4.f);
 		CollisionComponent* collisionComponent = playerObject->AddComponent<CollisionComponent>();
-		collisionComponent->Subscribe((CollisionEventListener*)playerBehaviourComponent);
-		playerBehaviourComponent->Subscribe((PointsValueUpdatedEventListener*)pointsLabelUIComponent);
+		collisionComponent->Subscribe((CollisionEventListener*)playerBehaviourComponent);		
 		//Init collision system
-		for (unsigned int i = 0; i < tileObjects.size(); ++i) 
+		for (unsigned int i = 0; i < tileObjects.size(); ++i)
 		{
 			collisionComponent->AddTarget(tileObjects[i]);
 		}
+		//events
+		playerBehaviourComponent->Subscribe((PointsValueUpdatedEventListener*)pointsLabelUIComponent);
+		playerBehaviourComponent->Subscribe((LivesValueUpdatedEventListener*)livesLabelUIComponent);
 	}
 
 	

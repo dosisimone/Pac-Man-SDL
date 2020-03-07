@@ -1,7 +1,7 @@
 #ifndef TILEMOVEMENTCOMPONENT_H
 #define TILEMOVEMENTCOMPONENT_H
 
-#include "Component.h"
+#include "../Component.h"
 
 class TileMap;
 class TileMapPositionComponent;

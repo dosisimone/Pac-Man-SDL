@@ -1,7 +1,7 @@
 #include "TileMovementComponent.h"
 #include "TileMapPositionComponent.h"
-#include "../TileMap.h"
-#include "../GameController.h"
+#include "../../TileMap.h"
+#include "../../GameController.h"
 
 TileMovementComponent::TileMovementComponent()
 {

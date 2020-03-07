@@ -7,6 +7,7 @@
 
 class Drawer;
 class GameObject;
+class PlayerBehaviourComponent;
 
 class GameController
 {
@@ -18,7 +19,7 @@ private:
 	std::vector<GameObject*> gameObjects;
 	std::vector<GameObject*> gameObjectsToDestroy;
 	Vector2f input;
-	TileMap* tileMap;	
+	TileMap* tileMap;
 
 public:
 	GameController(Drawer* drawer);
@@ -31,7 +32,6 @@ public:
 	TileMap* GetTileMap() const;
 	GameObject* CreateGameObject(const Vector2f& position = Vector2f::ZERO);
 	void Destroy(GameObject* gameObject);
-	/*std::vector<GameObject*> GetGameObjectsByTag(const GameObjectTag& tag) const;*/
 
 private:	
 	bool _UpdateInput();

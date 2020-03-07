@@ -35,4 +35,10 @@ struct LivesValueUpdatedEventArgs
 typedef EventDispatcher<LivesValueUpdatedEventArgs> LivesValueUpdatedEventDispatcher;
 typedef EventDispatcher<LivesValueUpdatedEventArgs>::Listener LivesValueUpdatedEventListener;
 
+struct BigDotCollectedEventArgs
+{
+};
+typedef EventDispatcher<BigDotCollectedEventArgs> BigDotCollectedEventDispatcher;
+typedef EventDispatcher<BigDotCollectedEventArgs>::Listener BigDotCollectedEventListener;
+
 #endif // EVENTS_H

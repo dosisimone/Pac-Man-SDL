@@ -1,7 +1,7 @@
 #ifndef TELEPORTCOMPONENT_H
 #define TELEPORTCOMPONENT_H
 
-#include "Component.h"
+#include "../Component.h"
 
 class TeleportComponent : public Component
 {

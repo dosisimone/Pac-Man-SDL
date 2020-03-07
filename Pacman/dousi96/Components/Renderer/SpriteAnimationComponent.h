@@ -3,7 +3,8 @@
 
 #include <vector>
 #include <string>
-#include "Component.h"
+#include "../Component.h"
+#include "../../Timer.h"
 
 class SpriteRendererComponent;
 
@@ -22,7 +23,7 @@ private:
 	std::vector<Animation> animations;
 	unsigned int actualAnimationIndex = 0;
 	unsigned int actualFrameIndex = 0;
-	float secondsCounter = 0.f;
+	Timer animationTimer;
 
 public:
 	SpriteAnimationComponent();

@@ -37,6 +37,15 @@
     <Filter Include="dousi96\Components\UI">
       <UniqueIdentifier>{e908b1ad-ba60-4c21-9eed-632620de64ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dousi96\Components\Renderer">
+      <UniqueIdentifier>{924e259b-574e-4eaf-af81-2a01986c5679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dousi96\Components\Collider">
+      <UniqueIdentifier>{436effa1-6307-4457-b9f7-84cc562e7a8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dousi96\Components\TileMap">
+      <UniqueIdentifier>{b7cf3afd-e302-49f1-9fdb-8f4cf3bc3c04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Pacman.cpp">
@@ -82,9 +91,6 @@
     <ClCompile Include="dousi96\GameObject.cpp">
       <Filter>dousi96</Filter>
     </ClCompile>
-    <ClCompile Include="dousi96\Components\SpriteRendererComponent.cpp">
-      <Filter>dousi96\Components</Filter>
-    </ClCompile>
     <ClCompile Include="dousi96\Components\Component.cpp">
       <Filter>dousi96\Components</Filter>
     </ClCompile>
@@ -100,35 +106,47 @@
     <ClCompile Include="dousi96\Persistence\TileMapTxtReader.cpp">
       <Filter>dousi96\Persistence</Filter>
     </ClCompile>
-    <ClCompile Include="dousi96\Components\TileMapPositionComponent.cpp">
-      <Filter>dousi96\Components</Filter>
-    </ClCompile>
     <ClCompile Include="dousi96\EventSystem\EventSystem.cpp">
       <Filter>dousi96\EventSystem</Filter>
     </ClCompile>
     <ClCompile Include="dousi96\EventSystem\Events.cpp">
       <Filter>dousi96\EventSystem</Filter>
     </ClCompile>
-    <ClCompile Include="dousi96\Components\TileMovementComponent.cpp">
-      <Filter>dousi96\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="dousi96\Components\CollisionComponent.cpp">
-      <Filter>dousi96\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="dousi96\Components\TeleportComponent.cpp">
-      <Filter>dousi96\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="dousi96\Components\DotComponent.cpp">
-      <Filter>dousi96\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="dousi96\Components\SpriteAnimationComponent.cpp">
-      <Filter>dousi96\Components</Filter>
-    </ClCompile>
     <ClCompile Include="dousi96\Components\UI\UITextComponent.cpp">
       <Filter>dousi96\Components\UI</Filter>
     </ClCompile>
     <ClCompile Include="dousi96\Components\UI\UIPointsLabelComponent.cpp">
       <Filter>dousi96\Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\Renderer\SpriteAnimationComponent.cpp">
+      <Filter>dousi96\Components\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\Renderer\SpriteRendererComponent.cpp">
+      <Filter>dousi96\Components\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\Collider\CollisionComponent.cpp">
+      <Filter>dousi96\Components\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\TileMap\DotComponent.cpp">
+      <Filter>dousi96\Components\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\TileMap\TeleportComponent.cpp">
+      <Filter>dousi96\Components\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\TileMap\TileMapPositionComponent.cpp">
+      <Filter>dousi96\Components\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\TileMap\TileMovementComponent.cpp">
+      <Filter>dousi96\Components\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\GhostBehaviourComponent.cpp">
+      <Filter>dousi96\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Components\UI\UILivesLabelComponent.cpp">
+      <Filter>dousi96\Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="dousi96\Timer.cpp">
+      <Filter>dousi96</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -174,9 +192,6 @@
     <ClInclude Include="dousi96\GameObject.h">
       <Filter>dousi96</Filter>
     </ClInclude>
-    <ClInclude Include="dousi96\Components\SpriteRendererComponent.h">
-      <Filter>dousi96\Components</Filter>
-    </ClInclude>
     <ClInclude Include="dousi96\Components\Component.h">
       <Filter>dousi96\Components</Filter>
     </ClInclude>
@@ -192,35 +207,47 @@
     <ClInclude Include="dousi96\Persistence\TileMapTxtReader.h">
       <Filter>dousi96\Persistence</Filter>
     </ClInclude>
-    <ClInclude Include="dousi96\Components\TileMapPositionComponent.h">
-      <Filter>dousi96\Components</Filter>
-    </ClInclude>
     <ClInclude Include="dousi96\EventSystem\EventSystem.h">
       <Filter>dousi96\EventSystem</Filter>
     </ClInclude>
     <ClInclude Include="dousi96\EventSystem\Events.h">
       <Filter>dousi96\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="dousi96\Components\TileMovementComponent.h">
-      <Filter>dousi96\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="dousi96\Components\CollisionComponent.h">
-      <Filter>dousi96\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="dousi96\Components\TeleportComponent.h">
-      <Filter>dousi96\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="dousi96\Components\DotComponent.h">
-      <Filter>dousi96\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="dousi96\Components\SpriteAnimationComponent.h">
-      <Filter>dousi96\Components</Filter>
-    </ClInclude>
     <ClInclude Include="dousi96\Components\UI\UITextComponent.h">
       <Filter>dousi96\Components\UI</Filter>
     </ClInclude>
     <ClInclude Include="dousi96\Components\UI\UIPointsLabelComponent.h">
       <Filter>dousi96\Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\Renderer\SpriteAnimationComponent.h">
+      <Filter>dousi96\Components\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\Renderer\SpriteRendererComponent.h">
+      <Filter>dousi96\Components\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\Collider\CollisionComponent.h">
+      <Filter>dousi96\Components\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\TileMap\DotComponent.h">
+      <Filter>dousi96\Components\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\TileMap\TeleportComponent.h">
+      <Filter>dousi96\Components\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\TileMap\TileMapPositionComponent.h">
+      <Filter>dousi96\Components\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\TileMap\TileMovementComponent.h">
+      <Filter>dousi96\Components\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\GhostBehaviourComponent.h">
+      <Filter>dousi96\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Components\UI\UILivesLabelComponent.h">
+      <Filter>dousi96\Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="dousi96\Timer.h">
+      <Filter>dousi96</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

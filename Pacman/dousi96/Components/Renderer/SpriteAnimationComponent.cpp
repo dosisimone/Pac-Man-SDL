@@ -5,7 +5,7 @@ SpriteAnimationComponent::SpriteAnimationComponent()
 {
 	this->spriteRenderer = nullptr;
 	this->actualFrameIndex = 0;
-	this->secondsCounter = 0.f;
+	animationTimer.Reset();
 }
 
 SpriteAnimationComponent::~SpriteAnimationComponent()
@@ -19,12 +19,12 @@ void SpriteAnimationComponent::Start()
 
 void SpriteAnimationComponent::Update(const float deltaTime)
 {
-	secondsCounter += deltaTime;
-	if (secondsCounter >= animations[actualAnimationIndex].secondsBtwFrames)
+	animationTimer.Increment(deltaTime);
+	if (animationTimer.Check())
 	{
 		actualFrameIndex = (actualFrameIndex + 1) % animations[actualAnimationIndex].sprites.size();
-		secondsCounter = 0.f;
 		this->spriteRenderer->SetSprite(animations[actualAnimationIndex].sprites[actualFrameIndex]);
+		animationTimer.Reset();
 	}
 }
 
@@ -45,7 +45,10 @@ void SpriteAnimationComponent::SetCurrentAnimation(const std::string& name)
 		{
 			actualAnimationIndex = i;
 			actualFrameIndex = 0;
+			animationTimer.SetDuration(animations[actualAnimationIndex].secondsBtwFrames);
+			animationTimer.Reset();			
 			this->spriteRenderer->SetSprite(animations[actualAnimationIndex].sprites[actualFrameIndex]);
+			return;
 		}
 	}
 }

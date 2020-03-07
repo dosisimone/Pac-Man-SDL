@@ -1,7 +1,7 @@
 #ifndef DOTCOMPONENT_H
 #define DOTCOMPONENT_H
 
-#include "Component.h"
+#include "../Component.h"
 
 class DotComponent : public Component
 {

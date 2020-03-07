@@ -9,7 +9,6 @@ class Drawer;
 class UITextComponent : public Component
 {
 private:
-	Drawer* drawer = nullptr;
 	const char* fontPath;
 	std::string text;
 	unsigned int screenPositionX = 0;
@@ -20,7 +19,6 @@ public:
 	~UITextComponent() override;
 	void Draw() const override;
 	void Update(const float deltaTime) override {}
-	void SetDrawer(Drawer* drawer);
 	void SetFont(const char* fontPath);
 	unsigned int GetScreenPositionX() const;
 	unsigned int GetScreenPositionY() const;

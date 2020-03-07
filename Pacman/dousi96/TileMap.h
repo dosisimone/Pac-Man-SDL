@@ -7,7 +7,9 @@ enum class TileType : short
 	Dot,
 	BigDot,
 	Wall,
-	Teleport
+	Teleport,
+	GhostPen,
+	GhostPenPortal
 };
 
 struct Tile

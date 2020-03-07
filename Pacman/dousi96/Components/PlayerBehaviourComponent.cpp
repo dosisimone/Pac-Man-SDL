@@ -1,15 +1,16 @@
 #include "PlayerBehaviourComponent.h"
+#include "GhostBehaviourComponent.h"
 #include "../GameController.h"
-#include "SpriteAnimationComponent.h"
-#include "TileMapPositionComponent.h"
-#include "TileMovementComponent.h"
-#include "CollisionComponent.h"
-#include "TeleportComponent.h"
-#include "DotComponent.h"
+#include "Renderer/SpriteAnimationComponent.h"
+#include "TileMap/TileMapPositionComponent.h"
+#include "TileMap/TileMovementComponent.h"
+#include "TileMap/TeleportComponent.h"
+#include "TileMap/DotComponent.h"
 
 PlayerBehaviourComponent::PlayerBehaviourComponent()
 {
 	this->points = 0;
+	this->lives = 2;
 	this->animationRenderer = nullptr;
 	this->tilePosition = nullptr;
 	this->tileMovement = nullptr;
@@ -27,6 +28,13 @@ void PlayerBehaviourComponent::Start()
 	this->animationRenderer = Owner->GetComponent<SpriteAnimationComponent>();
 	this->tilePosition = Owner->GetComponent<TileMapPositionComponent>();
 	this->tileMovement = Owner->GetComponent<TileMovementComponent>();
+	//update the UI
+	LivesValueUpdatedEventArgs livesValueUpdatedEventArgs;
+	livesValueUpdatedEventArgs.lives = this->lives;
+	LivesValueUpdatedEventDispatcher::Invoke(livesValueUpdatedEventArgs);
+	PointsValueUpdatedEventArgs pointsUpdatedEventArgs;
+	pointsUpdatedEventArgs.points = this->points;
+	PointsValueUpdatedEventDispatcher::Invoke(pointsUpdatedEventArgs);
 }
 
 void PlayerBehaviourComponent::Update(const float deltaTime)
@@ -102,14 +110,13 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 	switch (event.hit->Tag) 
 	{
 		case GameObjectTag::BigDot:
+		{
+			_BigDotCollected();
+		}
 		case GameObjectTag::Dot:
 		{
 			DotComponent* dot = event.hit->GetComponent<DotComponent>();
-			this->points += dot->GetPointsToAdd();
-			//invoke the points update event
-			PointsValueUpdatedEventArgs pointsUpdatedEventArgs;
-			pointsUpdatedEventArgs.points = this->points;
-			Invoke(pointsUpdatedEventArgs);
+			_AddPoints(dot->GetPointsToAdd());
 			//destroy the dot on the map
 			GameController::Instance->Destroy(event.hit);
 		}
@@ -136,8 +143,42 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 		break;
 		case GameObjectTag::Ghost:
 		{
+			GhostBehaviourComponent* ghost = event.hit->GetComponent<GhostBehaviourComponent>();
+			if (ghost->GetStatus() != GhostBehaviourComponent::GhostStatus::Dead)
+			{
+				if (ghost->GetStatus() == GhostBehaviourComponent::GhostStatus::Frightened)
+				{
 
+				}
+				else 
+				{
+					_Death();
+				}
+			}			
 		}
 		break;
 	}
+}
+
+void PlayerBehaviourComponent::_AddPoints(const unsigned int pointsToAdd)
+{
+	this->points += pointsToAdd;
+	//invoke the event
+	PointsValueUpdatedEventArgs pointsUpdatedEventArgs;
+	pointsUpdatedEventArgs.points = this->points;
+	PointsValueUpdatedEventDispatcher::Invoke(pointsUpdatedEventArgs);
+}
+
+void PlayerBehaviourComponent::_BigDotCollected()
+{
+	BigDotCollectedEventArgs bigDotCollectedEventArgs;
+	BigDotCollectedEventDispatcher::Invoke(bigDotCollectedEventArgs);
+}
+
+void PlayerBehaviourComponent::_Death()
+{
+	this->lives -= 1;
+	LivesValueUpdatedEventArgs livesValueUpdatedEventArgs;
+	livesValueUpdatedEventArgs.lives = this->lives;
+	LivesValueUpdatedEventDispatcher::Invoke(livesValueUpdatedEventArgs);
 }

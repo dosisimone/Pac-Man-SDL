@@ -1,9 +1,8 @@
-#include "Component.h"
 #include "SpriteRendererComponent.h"
+#include "../../GameController.h"
 
 SpriteRendererComponent::SpriteRendererComponent()
-{
-	drawer = nullptr;
+{	
 	spritePath = nullptr;
 	flipX = false;
 	flipY = false;
@@ -16,17 +15,12 @@ SpriteRendererComponent::~SpriteRendererComponent()
 
 void SpriteRendererComponent::Draw() const
 {
-	drawer->Draw(spritePath, Owner->Position, flipX, flipY, rotation);
+	GameController::Instance->GetDrawer()->Draw(spritePath, Owner->Position, flipX, flipY, rotation);
 }
 
 void SpriteRendererComponent::SetSprite(const char* spritePath)
 {
 	this->spritePath = spritePath;
-}
-
-void SpriteRendererComponent::SetDrawer(Drawer* drawer)
-{
-	this->drawer = drawer;
 }
 
 void SpriteRendererComponent::SetFlip(const bool x, const bool y)

@@ -1,9 +1,9 @@
 #include "UITextComponent.h"
+#include "../../GameController.h"
 #include "../../../Drawer.h"
 
 UITextComponent::UITextComponent()
 {
-	this->drawer = nullptr;
 	this->screenPositionX = 0;
 	this->screenPositionY = 0;
 }
@@ -14,16 +14,7 @@ UITextComponent::~UITextComponent()
 
 void UITextComponent::Draw() const
 {
-	this->drawer->DrawText(text.c_str(), fontPath, screenPositionX, screenPositionY);
-}
-
-void UITextComponent::SetDrawer(Drawer* drawer)
-{
-	if (drawer == nullptr) 
-	{
-		return;
-	}
-	this->drawer = drawer;
+	GameController::Instance->GetDrawer()->DrawText(text.c_str(), fontPath, screenPositionX, screenPositionY);
 }
 
 void UITextComponent::SetFont(const char* fontPath)
