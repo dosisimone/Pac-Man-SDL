@@ -2,7 +2,6 @@
 #define SPRITERENDERERCOMPONENT_H
 
 #include "../Component.h"
-#include "../../../Drawer.h"
 
 class SpriteRendererComponent : public Component
 {	

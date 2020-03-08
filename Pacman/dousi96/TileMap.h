@@ -1,6 +1,8 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
+class Vector2f;
+
 enum class TileType : short
 {
 	None,
@@ -35,5 +37,6 @@ public:
 	void SetTile(unsigned int x, unsigned int y, const Tile& tile);
 	unsigned int GetSizeX() const;
 	unsigned int GetSizeY() const;
+	Vector2f GetTileWorldPosition(const unsigned int x, const unsigned int y) const;
 };
 #endif // TILEMAP_H

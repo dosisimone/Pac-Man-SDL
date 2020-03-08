@@ -1,4 +1,5 @@
 #include "CollisionComponent.h"
+#include "../../GameController.h"
 
 CollisionComponent::CollisionComponent()
 {
@@ -31,7 +32,7 @@ void CollisionComponent::_Update(const float& deltaTime)
 			continue;
 		}
 
-		distanceVector = this->Owner->Position - targets[i]->Position;
+		distanceVector = GetOwner()->Position - targets[i]->Position;
 		if (distanceVector.Length() < 0.5f)
 		{
 			CollisionStatus status = CollisionStatus::Enter;
@@ -46,7 +47,7 @@ void CollisionComponent::_Update(const float& deltaTime)
 			}
 
 			CollisionEventArgs args;
-			args.sender = this->Owner;
+			args.sender = GetOwner();
 			args.hit = targets[i];
 			args.status = status;
 			Invoke(args);
@@ -56,7 +57,7 @@ void CollisionComponent::_Update(const float& deltaTime)
 			if (collisionsStatus.count(targets[i]) > 0)
 			{
 				CollisionEventArgs args;
-				args.sender = this->Owner;
+				args.sender = GetOwner();
 				args.hit = targets[i];
 				args.status = CollisionStatus::Exit;
 				Invoke(args);

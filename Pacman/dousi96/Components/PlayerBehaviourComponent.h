@@ -2,7 +2,6 @@
 #define PLAYERBEHAVIOURCOMPONENT_H
 
 #include "Component.h"
-#include "Collider/CollisionComponent.h"
 #include "../EventSystem/Events.h"
 
 class SpriteAnimationComponent;
@@ -17,7 +16,6 @@ class PlayerBehaviourComponent : public Component,
 private:		
 	unsigned int points = 0;
 	unsigned int lives = 2;
-	float speed = 1.0f;	
 	SpriteAnimationComponent* animationRenderer = nullptr;
 	TileMapPositionComponent* tilePosition = nullptr;
 	TileMovementComponent* tileMovement = nullptr;
@@ -27,7 +25,6 @@ public:
 	PlayerBehaviourComponent();
 	~PlayerBehaviourComponent() override;
 	void Start() override;	
-	void SetSpeed(const float speed);
 	unsigned int GetLives() const;
 	unsigned int GetPoints() const;
 	//events

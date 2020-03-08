@@ -136,8 +136,6 @@
     <ClCompile Include="dousi96\Components\UI\UILivesLabelComponent.cpp" />
     <ClCompile Include="dousi96\Components\UI\UIPointsLabelComponent.cpp" />
     <ClCompile Include="dousi96\Components\UI\UITextComponent.cpp" />
-    <ClCompile Include="dousi96\EventSystem\Events.cpp" />
-    <ClCompile Include="dousi96\EventSystem\EventSystem.cpp" />
     <ClCompile Include="dousi96\GameController.cpp" />
     <ClCompile Include="dousi96\GameObject.cpp" />
     <ClCompile Include="dousi96\Persistence\TileMapTxtReader.cpp" />

@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "../Vector2f.h"
-#include "TileMap.h"
 #include "GameObject.h"
 
 class Drawer;
@@ -15,11 +14,10 @@ public:
 	static GameController* Instance;
 
 private:
+	Vector2f input;
 	Drawer* drawer;
 	std::vector<GameObject*> gameObjects;
-	std::vector<GameObject*> gameObjectsToDestroy;
-	Vector2f input;
-	TileMap* tileMap;
+	std::vector<GameObject*> gameObjectsToDestroy;	
 
 public:
 	GameController(Drawer* drawer);
@@ -29,7 +27,6 @@ public:
 	void Draw() const;
 	Vector2f GetInput() const;
 	Drawer* GetDrawer() const;
-	TileMap* GetTileMap() const;
 	GameObject* CreateGameObject(const Vector2f& position = Vector2f::ZERO);
 	void Destroy(GameObject* gameObject);
 	std::vector<GameObject*> GetGameObjectsByTag(const GameObjectTag& tag);
@@ -66,6 +63,42 @@ public:
 		}
 		return nullptr;
 	}
+	template<class T = Component>
+	std::vector<T*> GetComponents() 
+	{
+		std::vector<T*> result;
+		for (GameObject* obj : gameObjects)
+		{
+			if (obj == nullptr)
+			{
+				continue;
+			}
+			T* component = obj->GetComponent<T>();
+			if (component != nullptr)
+			{
+				result.push_back(component);
+			}
+		}
+		return result;
+	}
+	template<class T = Component>
+	T* GetComponent()
+	{
+		for (GameObject* obj : gameObjects)
+		{
+			if (obj == nullptr)
+			{
+				continue;
+			}
+			T* component = obj->GetComponent<T>();
+			if (component != nullptr)
+			{
+				return component;
+			}
+		}
+		return nullptr;
+	}
+
 private:	
 	bool _UpdateInput();
 	void _DestroyScheduledGameObjects();

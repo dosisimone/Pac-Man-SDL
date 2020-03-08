@@ -1,6 +1,9 @@
 #include "PlayerBehaviourComponent.h"
-#include "GhostBehaviourComponent.h"
+#include <vector>
+#include "../GameObject.h"
 #include "../GameController.h"
+#include "GhostBehaviourComponent.h"
+#include "Collider/CollisionComponent.h"
 #include "Renderer/SpriteAnimationComponent.h"
 #include "TileMap/TileMapPositionComponent.h"
 #include "TileMap/TileMovementComponent.h"
@@ -14,7 +17,6 @@ PlayerBehaviourComponent::PlayerBehaviourComponent()
 	this->animationRenderer = nullptr;
 	this->tilePosition = nullptr;
 	this->tileMovement = nullptr;
-	this->speed = 1.f;
 	this->teleportedTo = nullptr;
 }
 
@@ -24,10 +26,44 @@ PlayerBehaviourComponent::~PlayerBehaviourComponent()
 
 void PlayerBehaviourComponent::Start()
 {
-	this->animationRenderer = Owner->GetComponent<SpriteAnimationComponent>();
-	this->tilePosition = Owner->GetComponent<TileMapPositionComponent>();
-	this->tileMovement = Owner->GetComponent<TileMovementComponent>();
-	//update the UI
+	this->tilePosition = GetOwner()->GetComponent<TileMapPositionComponent>();
+	this->tileMovement = GetOwner()->GetComponent<TileMovementComponent>();
+	this->animationRenderer = GetOwner()->GetComponent<SpriteAnimationComponent>();
+	
+	SpriteAnimationComponent::Animation defaultPlayerAnimation;
+	defaultPlayerAnimation.name = "default";
+	defaultPlayerAnimation.sprites = { "open_32.png" , "closed_32.png" };
+	defaultPlayerAnimation.secondsBtwFrames = 0.25f;
+	this->animationRenderer->AddAnimation(defaultPlayerAnimation);
+	this->animationRenderer->SetCurrentAnimation("default");	
+	// setup collisions
+	CollisionComponent* collisionComponent = GetOwner()->GetComponent<CollisionComponent>();
+	std::vector<GameObject*> ghostObjects = GameController::Instance->GetGameObjectsByTag(GameObjectTag::Ghost);
+	for (GameObject* ghostObject : ghostObjects) 
+	{
+		collisionComponent->AddTarget(ghostObject);
+	}
+	std::vector<GameObject*> bigDotObjects = GameController::Instance->GetGameObjectsByTag(GameObjectTag::BigDot);
+	for (GameObject* bigDotObject : bigDotObjects)
+	{
+		collisionComponent->AddTarget(bigDotObject);
+	}
+	std::vector<GameObject*> teleportObjects = GameController::Instance->GetGameObjectsByTag(GameObjectTag::Teleport);
+	for (GameObject* teleportObject : teleportObjects)
+	{
+		collisionComponent->AddTarget(teleportObject);
+	}
+	std::vector<GameObject*> dotObjects = GameController::Instance->GetGameObjectsByTag(GameObjectTag::Dot);
+	for (GameObject* dotObject : dotObjects)
+	{
+		collisionComponent->AddTarget(dotObject);
+	}
+	collisionComponent->Subscribe((CollisionEventListener*)this);
+
+	// subscribe to events
+
+
+	// update the UI
 	LivesValueUpdatedEventArgs livesValueUpdatedEventArgs;
 	livesValueUpdatedEventArgs.lives = this->lives;
 	LivesValueUpdatedEventDispatcher::Invoke(livesValueUpdatedEventArgs);
@@ -73,11 +109,6 @@ void PlayerBehaviourComponent::_Update(const float& deltaTime)
 	this->animationRenderer->SetFlip(kFlipX, false);	
 }
 
-void PlayerBehaviourComponent::SetSpeed(const float speed)
-{
-	this->speed = speed;
-}
-
 unsigned int PlayerBehaviourComponent::GetLives() const
 {
 	return this->lives;
@@ -111,14 +142,14 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 				TeleportComponent* teleportComponent = event.hit->GetComponent<TeleportComponent>();
 				TeleportComponent* linkedTeleportComponent = teleportComponent->GetLinkedTeleport();
 				teleportedTo = linkedTeleportComponent;
-				this->Owner->Position = linkedTeleportComponent->Owner->Position;
+				this->GetOwner()->Position = linkedTeleportComponent->GetOwner()->Position;
 				const int kCurrX = (int)tilePosition->GetTilePositionX();
 				const int kCurrY = (int)tilePosition->GetTilePositionY();
 				const unsigned int kNextDestinationX = (unsigned int)(kCurrX + tileMovement->GetMovementDirectionX());
 				const unsigned int kNextDestinationY = (unsigned int)(kCurrY + tileMovement->GetMovementDirectionY());
 				tileMovement->SetDestination(kNextDestinationX, kNextDestinationY);
 			}
-			else if (event.status == CollisionStatus::Exit && event.hit == teleportedTo->Owner) 
+			else if (event.status == CollisionStatus::Exit && event.hit == teleportedTo->GetOwner())
 			{
 				teleportedTo = nullptr;
 			}

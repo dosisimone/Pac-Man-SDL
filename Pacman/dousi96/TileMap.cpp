@@ -1,4 +1,5 @@
 #include "TileMap.h"
+#include "../Vector2f.h"
 
 TileMap::TileMap(unsigned int sizex, unsigned int sizey, float distanceBtwTiles)
 {
@@ -55,8 +56,6 @@ void TileMap::SetTile(unsigned int x, unsigned int y, const Tile& tile)
 		return;
 	}
 	map[x + cols * y] = tile;
-	//map[x + cols * y].x = x;
-	//map[x + cols * y].y = y;
 }
 
 unsigned int TileMap::GetSizeX() const
@@ -67,4 +66,16 @@ unsigned int TileMap::GetSizeX() const
 unsigned int TileMap::GetSizeY() const
 {
 	return rows;
+}
+
+Vector2f TileMap::GetTileWorldPosition(const unsigned int x, const unsigned int y) const
+{
+	float tileMapSizeX = (float)GetSizeX() - 1;
+	float tileMapSizeY = (float)GetSizeY() - 1;
+	float Xf = (float)x;
+	float Yf = (float)y;
+	Vector2f position;
+	position.X = (Xf - tileMapSizeX / 2.f) * distanceBtwTiles;
+	position.Y = (Yf - tileMapSizeY / 2.f) * distanceBtwTiles;
+	return position;
 }

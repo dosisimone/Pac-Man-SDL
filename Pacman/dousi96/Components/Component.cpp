@@ -1,4 +1,5 @@
 #include "Component.h"
+#include "../GameController.h"
 
 Component::Component()
 {
@@ -34,5 +35,10 @@ void Component::SetActive(const bool active)
 bool Component::IsActive() const
 {
 	return this->isActive;
+}
+
+GameObject* Component::GetOwner() const
+{
+	return this->Owner;
 }
 

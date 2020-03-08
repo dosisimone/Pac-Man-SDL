@@ -10,6 +10,7 @@ class GameController;
 
 enum class GameObjectTag : short
 {
+	Default,
 	Player,
 	Ghost,
 	BigDot,
@@ -29,6 +30,7 @@ public:
 private:	
 	bool isActive = false;
 	std::vector<Component*> components;	
+	std::vector<Component*> componentsToStart;
 
 public:
 	GameObject(const Vector2f& position);
@@ -41,8 +43,9 @@ public:
 	{
 		T* component = new T();
 		component->Register(this);
+		componentsToStart.push_back(component);
 		components.push_back(component);
-		component->Start();
+		component->Awake();
 		return component;
 	}
 	template<class T = Component>
@@ -63,6 +66,8 @@ public:
 	void SetActive(const bool active);
 
 private:	
+	void _StartComponents();
+	void _DrawComponents() const;
 	void _UpdateComponents(const float deltaTime);
 };
 #endif // GAMEOBJECT_H

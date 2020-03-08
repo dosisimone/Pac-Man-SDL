@@ -1,6 +1,4 @@
 #include "TeleportComponent.h"
-#include <vector>
-#include "../../GameController.h"
 
 TeleportComponent::TeleportComponent()
 {

@@ -13,9 +13,8 @@ private:
 public:
 	TileMapPositionComponent();
 	~TileMapPositionComponent() override;
-	void Start() override;
-
-	Vector2f GetTileWorldPosition(const unsigned int x, const unsigned int y) const;
+	TileMap* GetTileMap() const;
+	void SetTileMap(TileMap* tileMap);
 	void SetTilePosition(const unsigned int x, const unsigned int y);
 	unsigned int GetTilePositionX() const;
 	unsigned int GetTilePositionY() const;	

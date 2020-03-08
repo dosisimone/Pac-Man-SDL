@@ -1,5 +1,7 @@
 #include "SpriteRendererComponent.h"
+#include "../../GameObject.h"
 #include "../../GameController.h"
+#include "../../../Drawer.h"
 
 SpriteRendererComponent::SpriteRendererComponent()
 {	
@@ -15,7 +17,7 @@ SpriteRendererComponent::~SpriteRendererComponent()
 
 void SpriteRendererComponent::_Draw() const
 {
-	GameController::Instance->GetDrawer()->Draw(spritePath, Owner->Position, flipX, flipY, rotation);
+	GameController::Instance->GetDrawer()->Draw(spritePath, GetOwner()->Position, flipX, flipY, rotation);
 }
 
 void SpriteRendererComponent::SetSprite(const char* spritePath)

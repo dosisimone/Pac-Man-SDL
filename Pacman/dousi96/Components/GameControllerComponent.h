@@ -2,10 +2,10 @@
 #define GAMECONTROLLERCOMPONENT_H
 
 #include "Component.h"
-#include <vector>
-#include "../EventSystem/Events.h"
+#include "../GameObject.h"
 #include "../Timer.h"
 
+class TileMap;
 class PlayerBehaviourComponent;
 class GhostBehaviourComponent;
 
@@ -21,19 +21,29 @@ public:
 	};
 
 private:
+	TileMap* tileMap = nullptr;
+
 	GameState state = GameState::Paused;
 	Timer changeStateTimer;
 
-	GameObject* playerObject = nullptr;
-	std::vector<GameObject*> ghostObjects;
+	PlayerBehaviourComponent* playerBehaviour = nullptr;
+	std::vector<GhostBehaviourComponent*> ghostBehaviours;
 
 public:
 	GameControllerComponent();
 	~GameControllerComponent() override;
 	void Start() override;	
 	void SetDurationChangeState(const float duration);
+	TileMap* GetTileMap() const;
 
 protected:
 	void _Update(const float& deltaTime) override;
+
+private:
+	void _LoadMap();	
+	void _InstanceMapObjects();
+	void _InstanceUIObjects();
+	void _InstancePlayer();
+	void _InstanceGhosts();
 };
 #endif // GAMECONTROLLERCOMPONENT_H

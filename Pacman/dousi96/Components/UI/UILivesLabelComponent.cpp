@@ -1,4 +1,5 @@
 #include "UILivesLabelComponent.h"
+#include "../../GameObject.h"
 #include "../../../Drawer.h"
 #include "UITextComponent.h"
 #include <string>
@@ -15,7 +16,7 @@ UILivesLabelComponent::~UILivesLabelComponent()
 
 void UILivesLabelComponent::Start()
 {
-	this->textComponent = Owner->GetComponent<UITextComponent>();
+	this->textComponent = GetOwner()->GetComponent<UITextComponent>();
 }
 
 void UILivesLabelComponent::OnEvent(const LivesValueUpdatedEventArgs& event, const LivesValueUpdatedEventDispatcher& sender)

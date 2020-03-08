@@ -2,6 +2,8 @@
 #include "TileMapPositionComponent.h"
 #include "../../TileMap.h"
 #include "../../GameController.h"
+#include "../../GameObject.h"
+#include "../GameControllerComponent.h"
 
 TileMovementComponent::TileMovementComponent()
 {
@@ -14,7 +16,6 @@ TileMovementComponent::TileMovementComponent()
 	this->inputY = 0;
 	this->directionX = 0;
 	this->directionY = 0;
-	this->tileMap = nullptr;
 	this->tileMapPositionComponent = nullptr;
 }
 
@@ -22,14 +23,13 @@ TileMovementComponent::~TileMovementComponent()
 {
 }
 
-void TileMovementComponent::Start()
+void TileMovementComponent::Awake()
 {
-	this->tileMap = GameController::Instance->GetTileMap();
-	this->tileMapPositionComponent = Owner->GetComponent<TileMapPositionComponent>();
+	this->tileMapPositionComponent = GetOwner()->GetComponent<TileMapPositionComponent>();
 	this->currTilePositionX = this->tileMapPositionComponent->GetTilePositionX();
 	this->currTilePositionY = this->tileMapPositionComponent->GetTilePositionY();
 	this->destTilePositionX = this->tileMapPositionComponent->GetTilePositionX();
-	this->destTilePositionY = this->tileMapPositionComponent->GetTilePositionY();	
+	this->destTilePositionY = this->tileMapPositionComponent->GetTilePositionY();
 }
 
 void TileMovementComponent::MoveUp()
@@ -132,14 +132,14 @@ void TileMovementComponent::_Update(const float& deltaTime)
 {	
 	const unsigned int kOldDestinationTileX = GetDestinationTileX();
 	const unsigned int kOldDestinationTileY = GetDestinationTileY();
-	Vector2f destination = tileMapPositionComponent->GetTileWorldPosition(kOldDestinationTileX, kOldDestinationTileY);
-	Vector2f distance = destination - Owner->Position;	
+	Vector2f destination = this->tileMapPositionComponent->GetTileMap()->GetTileWorldPosition(kOldDestinationTileX, kOldDestinationTileY);
+	Vector2f distance = destination - GetOwner()->Position;
 
 	const float kMoveDelta = deltaTime * speed;
 	if (kMoveDelta > distance.Length())
 	{
 		// arrived at destination
-		Owner->Position = destination;			
+		GetOwner()->Position = destination;
 		const bool kInputIsNull = (inputX == 0 && inputY == 0);
 		if (!SetDestination(kOldDestinationTileX + inputX, kOldDestinationTileY + inputY) || kInputIsNull)
 		{					
@@ -157,7 +157,7 @@ void TileMovementComponent::_Update(const float& deltaTime)
 	{
 		//update position
 		distance.Normalize();
-		Owner->Position += distance * kMoveDelta;
+		GetOwner()->Position += distance * kMoveDelta;
 	}
 }
 
@@ -169,14 +169,14 @@ void TileMovementComponent::_SetMovementDirection(const int x, const int y)
 
 bool TileMovementComponent::_IsTileWalkable(const unsigned int x, const unsigned int y) const
 {
-	if (x >= this->tileMap->GetSizeX())
+	if (x >= this->tileMapPositionComponent->GetTileMap()->GetSizeX())
 	{
 		return false;
 	}
-	if (y >= this->tileMap->GetSizeY())
+	if (y >= this->tileMapPositionComponent->GetTileMap()->GetSizeY())
 	{
 		return false;
 	}
-	const Tile& tile = tileMap->GetTile(x, y);
+	const Tile& tile = this->tileMapPositionComponent->GetTileMap()->GetTile(x, y);
 	return tile.isWalkable;
 }

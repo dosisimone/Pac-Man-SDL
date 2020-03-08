@@ -4,6 +4,7 @@
 
 UITextComponent::UITextComponent()
 {
+	this->fontPath = "";
 	this->screenPositionX = 0;
 	this->screenPositionY = 0;
 }

@@ -2,7 +2,6 @@
 #define GHOSTBEHAVIOURCOMPONENT_H
 
 #include "Component.h"
-#include "Collider/CollisionComponent.h"
 #include "../EventSystem/Events.h"
 #include "../Timer.h"
 
@@ -11,13 +10,12 @@ class TileMapPositionComponent;
 class TileMovementComponent;
 class TeleportComponent;
 
-class GhostBehaviourComponent : public Component
+class GhostBehaviourComponent : public Component, BigDotCollectedEventListener
 {
 public:
 	enum class GhostStatus : short
 	{
 		Chase,
-		Scatter,
 		Frightened,
 		Dead,
 		Paused
@@ -25,8 +23,7 @@ public:
 
 private:
 	GhostStatus status = GhostStatus::Paused;
-	float speed = 1.0f;
-	Timer frightenedStatusTimer;
+	Timer statusTimer;
 
 	SpriteAnimationComponent* animationRenderer = nullptr;
 	TileMapPositionComponent* tilePosition = nullptr;
@@ -38,8 +35,13 @@ public:
 	~GhostBehaviourComponent() override;
 	void Start() override;	
 	GhostStatus GetStatus() const;
+	void OnEvent(const BigDotCollectedEventArgs& event, const BigDotCollectedEventDispatcher& sender) override;
 
 protected:
 	void _Update(const float& deltaTime) override;
+
+private:
+	void _SetChaseStatus();
+	void _SetFrightenedStatus();
 };
 #endif // GHOSTBEHAVIOURCOMPONENT_H

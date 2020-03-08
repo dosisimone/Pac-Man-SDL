@@ -1,22 +1,9 @@
 #include "SDL.h"
-#include <vector>
 #include "GameController.h"
 #include "GameObject.h"
-#include "Components/Renderer/SpriteRendererComponent.h"
-#include "Components/Renderer/SpriteAnimationComponent.h"
-#include "Components/TileMap/TileMapPositionComponent.h"
-#include "Components/TileMap/TileMovementComponent.h"
-#include "Components/TileMap/TeleportComponent.h"
-#include "Components/TileMap/DotComponent.h"
-#include "Components/Collider/CollisionComponent.h"
 #include "Components/UI/UITextComponent.h"
 #include "Components/UI/UIPointsLabelComponent.h"
-#include "Components/PlayerBehaviourComponent.h"
-#include "Persistence/TileMapTxtReader.h"
-#include "EventSystem/Events.h"
-#include "EventSystem/EventSystem.h"
 #include "Components/UI/UILivesLabelComponent.h"
-#include "Components/GhostBehaviourComponent.h"
 #include "Components/GameControllerComponent.h"
 
 GameController* GameController::Instance = nullptr;
@@ -25,15 +12,11 @@ GameController::GameController(Drawer* drawer)
 {
 	this->Instance = this;
 	this->drawer = drawer;
-	this->tileMap = nullptr;
 	this->input = Vector2f::LEFT;
 }
 
 GameController::~GameController()
 {
-	delete tileMap;
-	tileMap = nullptr;
-
 	for (unsigned int i = 0; i < gameObjects.size(); ++i)
 	{
 		Destroy(gameObjects[i]);
@@ -45,17 +28,12 @@ void GameController::Start()
 {
 	//load the map
 	{
-		TileMapTxtReader mapTxtReader;
-		tileMap = mapTxtReader.Read("map.txt");
-		tileMap->SetDistanceBtwTiles(0.5f);
+		
 	}
 
 	//background object
 	{
-		GameObject* backgroundObject = CreateGameObject();
-		backgroundObject->Tag = GameObjectTag::Background;
-		SpriteRendererComponent* spriteRenderer = backgroundObject->AddComponent<SpriteRendererComponent>();
-		spriteRenderer->SetSprite("playfield.png");
+		
 	}
 
 	//UI
@@ -91,134 +69,6 @@ void GameController::Start()
 		livesLabelValueUIComponent->SetScreenPosition(110, 90);
 		livesLabelValueUIComponent->SetText("2");
 		livesLabelUIComponent = livesLabelValueUIObject->AddComponent<UILivesLabelComponent>();
-	}
-
-	std::vector<GameObject*> collisionTargets;
-
-	//init tiles	
-	{		
-		TeleportComponent* firstTeleport = nullptr;
-		TeleportComponent* previousTeleport = nullptr;
-
-		float halfSizeTileMapXf = ((float)tileMap->GetSizeX()) / 2.f;
-		float halfSizeTileMapYf = ((float)tileMap->GetSizeY()) / 2.f;
-		for (unsigned int x = 0; x < tileMap->GetSizeX(); ++x)
-		{
-			for (unsigned int y = 0; y < tileMap->GetSizeY(); ++y)
-			{
-				const Tile& tile = tileMap->GetTile(x, y);
-				if (!tile.isWalkable)
-				{
-					continue;
-				}
-
-				GameObject* tileObject = CreateGameObject();
-				TileMapPositionComponent* tileMapPosition = tileObject->AddComponent<TileMapPositionComponent>();
-				tileMapPosition->SetTilePosition(x, y);
-				switch (tile.type) 
-				{
-				case TileType::Dot: 
-				{
-					tileObject->Tag = GameObjectTag::Dot;
-					SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();					
-					spriteRenderer->SetSprite("Small_Dot_32.png");
-					DotComponent* dot = tileObject->AddComponent<DotComponent>();
-					dot->SetPointsToAdd(10);
-				}
-					break;
-				case TileType::BigDot:
-				{
-					tileObject->Tag = GameObjectTag::BigDot;
-					SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();
-					spriteRenderer->SetSprite("Big_Dot_32.png");
-					DotComponent* dot = tileObject->AddComponent<DotComponent>();
-					dot->SetPointsToAdd(50);
-				}
-					break;
-				case TileType::Teleport:
-				{
-					tileObject->Tag = GameObjectTag::Teleport;
-					TeleportComponent* teleportComponent = tileObject->AddComponent<TeleportComponent>();
-					if (firstTeleport == nullptr) 
-					{
-						firstTeleport = teleportComponent;
-					}
-					else 
-					{
-						previousTeleport->SetLinkedTeleport(teleportComponent);
-					}
-					previousTeleport = teleportComponent;
-				}
-					break;
-				}
-				collisionTargets.push_back(tileObject);
-			}
-		}
-
-		if (firstTeleport != nullptr && previousTeleport != nullptr && firstTeleport != previousTeleport) 
-		{
-			previousTeleport->SetLinkedTeleport(firstTeleport);
-		}
-	}
-
-	//init ghosts
-	{
-		SpriteAnimationComponent::Animation deadGhostAnimation;
-		deadGhostAnimation.name = "dead";
-		deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
-		deadGhostAnimation.secondsBtwFrames = 60.f;
-
-		SpriteAnimationComponent::Animation frightenedGhostAnimation;
-		frightenedGhostAnimation.name = "frightened";
-		frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
-		frightenedGhostAnimation.secondsBtwFrames = 60.f;
-
-		GameObject* ghost1Object = CreateGameObject();
-		ghost1Object->Tag = GameObjectTag::Ghost;
-		SpriteRendererComponent* spriteRenderer = ghost1Object->AddComponent<SpriteRendererComponent>();
-		SpriteAnimationComponent* spriteAnimationRenderer = ghost1Object->AddComponent<SpriteAnimationComponent>();
-		SpriteAnimationComponent::Animation defaultGhost1Animation;
-		defaultGhost1Animation.name = "default";
-		defaultGhost1Animation.sprites = { "ghost_32_red.png" };
-		defaultGhost1Animation.secondsBtwFrames = 60.f;
-		spriteAnimationRenderer->AddAnimation(defaultGhost1Animation);
-		spriteAnimationRenderer->AddAnimation(frightenedGhostAnimation);
-		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
-		spriteAnimationRenderer->SetCurrentAnimation("default");		
-
-		GhostBehaviourComponent* ghost1BehaviourComponent = ghost1Object->AddComponent<GhostBehaviourComponent>();
-
-		collisionTargets.push_back(ghost1Object);
-	}
-
-	//player object
-	{
-		GameObject* playerObject = CreateGameObject();
-		playerObject->Tag = GameObjectTag::Player;
-		SpriteRendererComponent* spriteRenderer = playerObject->AddComponent<SpriteRendererComponent>();
-		SpriteAnimationComponent* spriteAnimationRenderer = playerObject->AddComponent<SpriteAnimationComponent>();
-		SpriteAnimationComponent::Animation defaultPlayerAnimation;
-		defaultPlayerAnimation.name = "default";
-		defaultPlayerAnimation.sprites = { "open_32.png" , "closed_32.png" };
-		defaultPlayerAnimation.secondsBtwFrames = 0.25f;
-		spriteAnimationRenderer->AddAnimation(defaultPlayerAnimation);
-		spriteAnimationRenderer->SetCurrentAnimation("default");
-		TileMapPositionComponent* tileMapPosition = playerObject->AddComponent<TileMapPositionComponent>();
-		tileMapPosition->SetTilePosition(14, 7);
-		TileMovementComponent* tileMovement = playerObject->AddComponent<TileMovementComponent>();
-		tileMovement->MoveLeft();
-		tileMovement->SetSpeed(4.f);
-		PlayerBehaviourComponent* playerBehaviourComponent = playerObject->AddComponent<PlayerBehaviourComponent>();
-		CollisionComponent* collisionComponent = playerObject->AddComponent<CollisionComponent>();
-		collisionComponent->Subscribe((CollisionEventListener*)playerBehaviourComponent);		
-		//Init collision system
-		for (GameObject* collisionTarget : collisionTargets)
-		{
-			collisionComponent->AddTarget(collisionTarget);
-		}
-		//events
-		playerBehaviourComponent->Subscribe((PointsValueUpdatedEventListener*)pointsLabelUIComponent);
-		playerBehaviourComponent->Subscribe((LivesValueUpdatedEventListener*)livesLabelUIComponent);
 	}
 
 	//init game controller component
@@ -263,11 +113,6 @@ Vector2f GameController::GetInput() const
 Drawer* GameController::GetDrawer() const
 {
 	return drawer;
-}
-
-TileMap* GameController::GetTileMap() const
-{
-	return tileMap;
 }
 
 GameObject* GameController::CreateGameObject(const Vector2f& position)

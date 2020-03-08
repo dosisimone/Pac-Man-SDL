@@ -2,8 +2,9 @@
 #define UILIVESLABELCOMPONENT_H
 
 #include "../Component.h"
-#include "UITextComponent.h"
 #include "../../EventSystem/Events.h"
+
+class UITextComponent;
 
 class UILivesLabelComponent : public Component, LivesValueUpdatedEventListener
 {

@@ -1,11 +1,11 @@
 #include "SpriteAnimationComponent.h"
 #include "SpriteRendererComponent.h"
+#include "../../GameObject.h"
 
 SpriteAnimationComponent::SpriteAnimationComponent()
 {
 	this->spriteRenderer = nullptr;
 	this->actualFrameIndex = 0;
-	animationTimer.Reset();
 }
 
 SpriteAnimationComponent::~SpriteAnimationComponent()
@@ -14,7 +14,7 @@ SpriteAnimationComponent::~SpriteAnimationComponent()
 
 void SpriteAnimationComponent::Start()
 {
-	this->spriteRenderer = Owner->GetComponent<SpriteRendererComponent>();
+	this->spriteRenderer = GetOwner()->GetComponent<SpriteRendererComponent>();
 }
 
 void SpriteAnimationComponent::AddAnimation(const Animation& animation)

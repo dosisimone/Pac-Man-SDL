@@ -3,13 +3,11 @@
 
 #include "../Component.h"
 
-class TileMap;
 class TileMapPositionComponent;
 
 class TileMovementComponent : public Component
 {
 private:
-	TileMap* tileMap = nullptr;
 	TileMapPositionComponent* tileMapPositionComponent = nullptr;
 	unsigned int currTilePositionX = 0;
 	unsigned int currTilePositionY = 0;
@@ -24,7 +22,7 @@ private:
 public:
 	TileMovementComponent();
 	~TileMovementComponent() override;
-	void Start() override;
+	void Awake() override;
 	void MoveUp();
 	void MoveDown();
 	void MoveRight();

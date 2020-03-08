@@ -2,8 +2,9 @@
 #define UIPOINTSLABELCOMPONENT_H
 
 #include "../Component.h"
-#include "UITextComponent.h"
 #include "../../EventSystem/Events.h"
+
+class UITextComponent;
 
 class UIPointsLabelComponent : public Component, PointsValueUpdatedEventListener
 {

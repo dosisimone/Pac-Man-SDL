@@ -106,12 +106,6 @@
     <ClCompile Include="dousi96\Persistence\TileMapTxtReader.cpp">
       <Filter>dousi96\Persistence</Filter>
     </ClCompile>
-    <ClCompile Include="dousi96\EventSystem\EventSystem.cpp">
-      <Filter>dousi96\EventSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="dousi96\EventSystem\Events.cpp">
-      <Filter>dousi96\EventSystem</Filter>
-    </ClCompile>
     <ClCompile Include="dousi96\Components\UI\UITextComponent.cpp">
       <Filter>dousi96\Components\UI</Filter>
     </ClCompile>
