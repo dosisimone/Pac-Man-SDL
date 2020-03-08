@@ -7,7 +7,7 @@
 GameControllerComponent::GameControllerComponent()
 {
 	this->state = GameState::Paused;
-	this->playerBehaviour = nullptr;
+	this->playerObject = nullptr;
 }
 
 GameControllerComponent::~GameControllerComponent()
@@ -16,16 +16,14 @@ GameControllerComponent::~GameControllerComponent()
 
 void GameControllerComponent::Start()
 {
-	GameObject* playerGameObject = GameController::Instance->GetGameObjectByComponent<PlayerBehaviourComponent>();
-	this->playerBehaviour = playerGameObject->GetComponent<PlayerBehaviourComponent>();
-	this->playerBehaviour->SetActive(false);
+	playerObject = GameController::Instance->GetGameObjectByComponent<PlayerBehaviourComponent>();
+	playerObject->SetActive(false);
 
 	std::vector<GameObject*> ghostGameObjects = GameController::Instance->GetGameObjectsByComponent<GhostBehaviourComponent>();
 	for (GameObject* ghostGameObject : ghostGameObjects) 
 	{
-		GhostBehaviourComponent* ghostBehaviour = ghostGameObject->GetComponent<GhostBehaviourComponent>();
-		this->ghostBehaviours.push_back(ghostBehaviour);
-		ghostBehaviour->SetActive(false);
+		ghostObjects.push_back(ghostGameObject);
+		ghostGameObject->SetActive(false);
 	}
 }
 
@@ -46,7 +44,7 @@ void GameControllerComponent::_Update(const float& deltaTime)
 		{
 			changeStateTimer.Reset();
 
-			playerBehaviour->SetActive(true);
+			playerObject->SetActive(true);
 
 
 

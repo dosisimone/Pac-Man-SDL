@@ -15,7 +15,6 @@ PlayerBehaviourComponent::PlayerBehaviourComponent()
 	this->tilePosition = nullptr;
 	this->tileMovement = nullptr;
 	this->speed = 1.f;
-	this->oldValidInput = Vector2f::LEFT;
 	this->teleportedTo = nullptr;
 }
 
@@ -44,64 +43,34 @@ void PlayerBehaviourComponent::_Update(const float& deltaTime)
 		return;
 	}
 
-	if (tileMovement->IsAtDestination()) 
+	const Vector2f kInput = GameController::Instance->GetInput();
+	if (kInput.X > 0) 
 	{
-		const Vector2f kInput = GameController::Instance->GetInput();
-		const unsigned int kCurrX = tileMovement->GetCurrentTileX();
-		const unsigned int kCurrY = tileMovement->GetCurrentTileY();
-		unsigned int nextDestinationX = (unsigned int)((int)kCurrX + (int)kInput.X);
-		unsigned int nextDestinationY = (unsigned int)((int)kCurrY + (int)kInput.Y);
-
-		if (!tileMovement->SetDestination(nextDestinationX, nextDestinationY) || kInput.Length() == 0.f)
-		{
-			nextDestinationX = (unsigned int)((int)kCurrX + (int)oldValidInput.X);
-			nextDestinationY = (unsigned int)((int)kCurrY + (int)oldValidInput.Y);
-			tileMovement->SetDestination(nextDestinationX, nextDestinationY);
-		}
-		else 
-		{
-			oldValidInput = kInput;
-		}
+		tileMovement->MoveRight();
 	}
-
-	unsigned int destX = tileMovement->GetDestinationTileX();
-	unsigned int destY = tileMovement->GetDestinationTileY();
-	Vector2f destination = tilePosition->GetTileWorldPosition(destX, destY);
-	Vector2f direction = destination - Owner->Position;
-
-	const float kMoveDelta = deltaTime * speed;
-	if (direction.Length() < kMoveDelta) 
+	else if (kInput.X < 0) 
 	{
-		unsigned int currX = tileMovement->GetDestinationTileX();
-		unsigned int currY = tileMovement->GetDestinationTileY();
-		tileMovement->SetCurrentTile(currX, currY);
-		Owner->Position = destination;
+		tileMovement->MoveLeft();
 	}
-	else 
+	else if (kInput.Y > 0) 
 	{
-		//update position
-		direction.Normalize();
-		Owner->Position += direction * kMoveDelta;
-	}	
+		tileMovement->MoveUp();
+	}
+	else if (kInput.Y < 0) 
+	{
+		tileMovement->MoveDown();
+	}
 
 	//update renderer	
-	float rotation = 0.f;
-	if (oldValidInput.Y < 0.f)
-	{
-		rotation = 90.f;
-	}
-	else if (oldValidInput.Y > 0.f)
-	{
-		rotation = -90.f;
-	}
-	this->animationRenderer->SetRotation(rotation);
-
-	bool flipX = (oldValidInput.X < 0.f);
-	if (!flipX)
+	float rotation = 90.f * (float)tileMovement->GetMovementDirectionY();
+	const int kMovementDirX = tileMovement->GetMovementDirectionX();
+	const bool kFlipX = (kMovementDirX < 0);
+	if (!kFlipX)
 	{
 		rotation *= -1;
 	}
-	this->animationRenderer->SetFlip(flipX, false);	
+	this->animationRenderer->SetRotation(rotation);
+	this->animationRenderer->SetFlip(kFlipX, false);	
 }
 
 void PlayerBehaviourComponent::SetSpeed(const float speed)
@@ -143,10 +112,10 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 				TeleportComponent* linkedTeleportComponent = teleportComponent->GetLinkedTeleport();
 				teleportedTo = linkedTeleportComponent;
 				this->Owner->Position = linkedTeleportComponent->Owner->Position;
-				const unsigned int kCurrX = tilePosition->GetTilePositionX();
-				const unsigned int kCurrY = tilePosition->GetTilePositionY();
-				const unsigned int kNextDestinationX = (unsigned int)((int)kCurrX + (int)oldValidInput.X);
-				const unsigned int kNextDestinationY = (unsigned int)((int)kCurrY + (int)oldValidInput.Y);
+				const int kCurrX = (int)tilePosition->GetTilePositionX();
+				const int kCurrY = (int)tilePosition->GetTilePositionY();
+				const unsigned int kNextDestinationX = (unsigned int)(kCurrX + tileMovement->GetMovementDirectionX());
+				const unsigned int kNextDestinationY = (unsigned int)(kCurrY + tileMovement->GetMovementDirectionY());
 				tileMovement->SetDestination(kNextDestinationX, kNextDestinationY);
 			}
 			else if (event.status == CollisionStatus::Exit && event.hit == teleportedTo->Owner) 

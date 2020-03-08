@@ -9,6 +9,11 @@ TileMovementComponent::TileMovementComponent()
 	this->currTilePositionY = 0;
 	this->destTilePositionX = 0;
 	this->destTilePositionY = 0;
+	this->speed = 1.0f;
+	this->inputX = 0;
+	this->inputY = 0;
+	this->directionX = 0;
+	this->directionY = 0;
 	this->tileMap = nullptr;
 	this->tileMapPositionComponent = nullptr;
 }
@@ -27,10 +32,55 @@ void TileMovementComponent::Start()
 	this->destTilePositionY = this->tileMapPositionComponent->GetTilePositionY();	
 }
 
-bool TileMovementComponent::IsAtDestination() const
+void TileMovementComponent::MoveUp()
 {
-	return this->currTilePositionX == this->destTilePositionX 
-		&& this->currTilePositionY == this->destTilePositionY;
+	if (_IsTileWalkable(GetDestinationTileX(), GetDestinationTileY() + 1))
+	{
+		inputX = +0;
+		inputY = +1;		
+	}
+}
+
+void TileMovementComponent::MoveDown()
+{
+	if (_IsTileWalkable(GetDestinationTileX(), GetDestinationTileY() - 1))
+	{
+		inputX = +0;
+		inputY = -1;
+	}
+}
+
+void TileMovementComponent::MoveRight()
+{
+	if (_IsTileWalkable(GetDestinationTileX() + 1, GetDestinationTileY()))
+	{
+		inputX = +1;
+		inputY = +0;
+	}
+}
+
+void TileMovementComponent::MoveLeft()
+{
+	if (_IsTileWalkable(GetDestinationTileX() - 1, GetDestinationTileY()))
+	{
+		inputX = -1;
+		inputY = +0;
+	}
+}
+
+void TileMovementComponent::SetSpeed(const float& speed)
+{
+	this->speed = speed;
+}
+
+unsigned int TileMovementComponent::GetCurrentTileX() const
+{
+	return this->currTilePositionX;
+}
+
+unsigned int TileMovementComponent::GetCurrentTileY() const
+{
+	return this->currTilePositionY;
 }
 
 void TileMovementComponent::SetCurrentTile(const unsigned int x, const unsigned int y)
@@ -42,14 +92,14 @@ void TileMovementComponent::SetCurrentTile(const unsigned int x, const unsigned 
 	}
 }
 
-unsigned int TileMovementComponent::GetCurrentTileX() const
+unsigned int TileMovementComponent::GetDestinationTileX() const
 {
-	return this->currTilePositionX;
+	return this->destTilePositionX;
 }
 
-unsigned int TileMovementComponent::GetCurrentTileY() const
+unsigned int TileMovementComponent::GetDestinationTileY() const
 {
-	return this->currTilePositionY;
+	return this->destTilePositionY;
 }
 
 bool TileMovementComponent::SetDestination(const unsigned int x, const unsigned int y)
@@ -63,14 +113,58 @@ bool TileMovementComponent::SetDestination(const unsigned int x, const unsigned 
 	return false;
 }
 
-unsigned int TileMovementComponent::GetDestinationTileX() const
+int TileMovementComponent::GetMovementDirectionX() const
 {
-	return this->destTilePositionX;
+	return this->directionX;
 }
 
-unsigned int TileMovementComponent::GetDestinationTileY() const
+int TileMovementComponent::GetMovementDirectionY() const
 {
-	return this->destTilePositionY;
+	return this->directionY;
+}
+
+bool TileMovementComponent::IsAtDestination() const
+{
+	return (GetDestinationTileX() == GetCurrentTileX() && GetDestinationTileY() == GetCurrentTileY());
+}
+
+void TileMovementComponent::_Update(const float& deltaTime)
+{	
+	const unsigned int kOldDestinationTileX = GetDestinationTileX();
+	const unsigned int kOldDestinationTileY = GetDestinationTileY();
+	Vector2f destination = tileMapPositionComponent->GetTileWorldPosition(kOldDestinationTileX, kOldDestinationTileY);
+	Vector2f distance = destination - Owner->Position;	
+
+	const float kMoveDelta = deltaTime * speed;
+	if (kMoveDelta > distance.Length())
+	{
+		// arrived at destination
+		Owner->Position = destination;			
+		const bool kInputIsNull = (inputX == 0 && inputY == 0);
+		if (!SetDestination(kOldDestinationTileX + inputX, kOldDestinationTileY + inputY) || kInputIsNull)
+		{					
+			const int kOldDirectionX = GetMovementDirectionX();
+			const int kOldDirectionY = GetMovementDirectionY();
+			SetDestination(kOldDestinationTileX + kOldDirectionX, kOldDestinationTileY + kOldDirectionY);			
+		}	
+		else 
+		{
+			_SetMovementDirection(inputX, inputY);
+		}
+		SetCurrentTile(kOldDestinationTileX, kOldDestinationTileY);
+	}
+	else
+	{
+		//update position
+		distance.Normalize();
+		Owner->Position += distance * kMoveDelta;
+	}
+}
+
+void TileMovementComponent::_SetMovementDirection(const int x, const int y)
+{
+	this->directionX = x;
+	this->directionY = y;
 }
 
 bool TileMovementComponent::_IsTileWalkable(const unsigned int x, const unsigned int y) const

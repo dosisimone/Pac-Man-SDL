@@ -21,7 +21,6 @@ private:
 	SpriteAnimationComponent* animationRenderer = nullptr;
 	TileMapPositionComponent* tilePosition = nullptr;
 	TileMovementComponent* tileMovement = nullptr;
-	Vector2f oldValidInput = Vector2f::ZERO; 
 	TeleportComponent* teleportedTo = nullptr;
 
 public:

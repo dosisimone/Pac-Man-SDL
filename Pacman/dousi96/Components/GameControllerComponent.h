@@ -24,8 +24,8 @@ private:
 	GameState state = GameState::Paused;
 	Timer changeStateTimer;
 
-	PlayerBehaviourComponent* playerBehaviour = nullptr;
-	std::vector<GhostBehaviourComponent*> ghostBehaviours;
+	GameObject* playerObject = nullptr;
+	std::vector<GameObject*> ghostObjects;
 
 public:
 	GameControllerComponent();

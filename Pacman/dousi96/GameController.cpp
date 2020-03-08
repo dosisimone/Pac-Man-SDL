@@ -204,17 +204,17 @@ void GameController::Start()
 		spriteAnimationRenderer->AddAnimation(defaultPlayerAnimation);
 		spriteAnimationRenderer->SetCurrentAnimation("default");
 		TileMapPositionComponent* tileMapPosition = playerObject->AddComponent<TileMapPositionComponent>();
-		tileMapPosition->SetTilePosition(13, 7);
+		tileMapPosition->SetTilePosition(14, 7);
 		TileMovementComponent* tileMovement = playerObject->AddComponent<TileMovementComponent>();
-		tileMovement->SetDestination(12, 7);
+		tileMovement->MoveLeft();
+		tileMovement->SetSpeed(4.f);
 		PlayerBehaviourComponent* playerBehaviourComponent = playerObject->AddComponent<PlayerBehaviourComponent>();
-		playerBehaviourComponent->SetSpeed(4.f);
 		CollisionComponent* collisionComponent = playerObject->AddComponent<CollisionComponent>();
 		collisionComponent->Subscribe((CollisionEventListener*)playerBehaviourComponent);		
 		//Init collision system
-		for (unsigned int i = 0; i < collisionTargets.size(); ++i)
+		for (GameObject* collisionTarget : collisionTargets)
 		{
-			collisionComponent->AddTarget(collisionTargets[i]);
+			collisionComponent->AddTarget(collisionTarget);
 		}
 		//events
 		playerBehaviourComponent->Subscribe((PointsValueUpdatedEventListener*)pointsLabelUIComponent);
