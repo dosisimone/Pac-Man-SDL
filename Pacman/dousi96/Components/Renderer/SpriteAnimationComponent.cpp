@@ -17,17 +17,6 @@ void SpriteAnimationComponent::Start()
 	this->spriteRenderer = Owner->GetComponent<SpriteRendererComponent>();
 }
 
-void SpriteAnimationComponent::Update(const float deltaTime)
-{
-	animationTimer.Increment(deltaTime);
-	if (animationTimer.Check())
-	{
-		actualFrameIndex = (actualFrameIndex + 1) % animations[actualAnimationIndex].sprites.size();
-		this->spriteRenderer->SetSprite(animations[actualAnimationIndex].sprites[actualFrameIndex]);
-		animationTimer.Reset();
-	}
-}
-
 void SpriteAnimationComponent::AddAnimation(const Animation& animation)
 {
 	if (animation.sprites.size() < 1) 
@@ -61,4 +50,15 @@ void SpriteAnimationComponent::SetFlip(const bool x, const bool y)
 void SpriteAnimationComponent::SetRotation(const float angle)
 {
 	this->spriteRenderer->SetRotation(angle);
+}
+
+void SpriteAnimationComponent::_Update(const float& deltaTime)
+{
+	animationTimer.Increment(deltaTime);
+	if (animationTimer.Check())
+	{
+		actualFrameIndex = (actualFrameIndex + 1) % animations[actualAnimationIndex].sprites.size();
+		this->spriteRenderer->SetSprite(animations[actualAnimationIndex].sprites[actualFrameIndex]);
+		animationTimer.Reset();
+	}
 }

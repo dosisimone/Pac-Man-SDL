@@ -14,8 +14,6 @@ enum class TileType : short
 
 struct Tile
 {
-	//unsigned int x = 0;
-	//unsigned int y = 0;
 	TileType type = TileType::None;
 	bool isWalkable = false;
 };

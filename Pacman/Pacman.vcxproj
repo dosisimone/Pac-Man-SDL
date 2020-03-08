@@ -124,6 +124,7 @@
     <ClCompile Include="Dot.cpp" />
     <ClCompile Include="dousi96\Components\Collider\CollisionComponent.cpp" />
     <ClCompile Include="dousi96\Components\Component.cpp" />
+    <ClCompile Include="dousi96\Components\GameControllerComponent.cpp" />
     <ClCompile Include="dousi96\Components\GhostBehaviourComponent.cpp" />
     <ClCompile Include="dousi96\Components\PlayerBehaviourComponent.cpp" />
     <ClCompile Include="dousi96\Components\Renderer\SpriteAnimationComponent.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Dot.h" />
     <ClInclude Include="dousi96\Components\Collider\CollisionComponent.h" />
     <ClInclude Include="dousi96\Components\Component.h" />
+    <ClInclude Include="dousi96\Components\GameControllerComponent.h" />
     <ClInclude Include="dousi96\Components\GhostBehaviourComponent.h" />
     <ClInclude Include="dousi96\Components\PlayerBehaviourComponent.h" />
     <ClInclude Include="dousi96\Components\Renderer\SpriteAnimationComponent.h" />

@@ -16,13 +16,14 @@ private:
 
 public:
 	UITextComponent();
-	~UITextComponent() override;
-	void Draw() const override;
-	void Update(const float deltaTime) override {}
+	~UITextComponent() override;	
 	void SetFont(const char* fontPath);
 	unsigned int GetScreenPositionX() const;
 	unsigned int GetScreenPositionY() const;
 	void SetScreenPosition(const unsigned int x, const unsigned int y);
 	void SetText(const std::string& text);
+
+protected:
+	void _Draw() const override;
 };
 #endif // UITEXTCOMPONENT_H

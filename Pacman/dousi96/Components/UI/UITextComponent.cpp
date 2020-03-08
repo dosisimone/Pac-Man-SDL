@@ -12,7 +12,7 @@ UITextComponent::~UITextComponent()
 {
 }
 
-void UITextComponent::Draw() const
+void UITextComponent::_Draw() const
 {
 	GameController::Instance->GetDrawer()->DrawText(text.c_str(), fontPath, screenPositionX, screenPositionY);
 }

@@ -1,4 +1,5 @@
 #include "SDL.h"
+#include <vector>
 #include "GameController.h"
 #include "GameObject.h"
 #include "Components/Renderer/SpriteRendererComponent.h"
@@ -16,6 +17,7 @@
 #include "EventSystem/EventSystem.h"
 #include "Components/UI/UILivesLabelComponent.h"
 #include "Components/GhostBehaviourComponent.h"
+#include "Components/GameControllerComponent.h"
 
 GameController* GameController::Instance = nullptr;
 
@@ -219,7 +221,13 @@ void GameController::Start()
 		playerBehaviourComponent->Subscribe((LivesValueUpdatedEventListener*)livesLabelUIComponent);
 	}
 
-	
+	//init game controller component
+	{
+		GameObject* gameController = CreateGameObject();
+		gameController->Tag = GameObjectTag::Logic;
+		GameControllerComponent* gameControllerComponent = gameController->AddComponent<GameControllerComponent>();
+		gameControllerComponent->SetDurationChangeState(3.f);
+	}
 }
 
 bool GameController::Update(const float deltaTime)
@@ -279,22 +287,22 @@ void GameController::Destroy(GameObject* gameObject)
 	gameObjectsToDestroy.push_back(gameObject);
 }
 
-//std::vector<GameObject*> GameController::GetGameObjectsByTag(const GameObjectTag& tag) const
-//{
-//	std::vector<GameObject*> result;
-//	for (GameObject* obj : gameObjects)
-//	{
-//		if (obj == nullptr)
-//		{
-//			continue;
-//		}
-//		if (obj->Tag == tag)
-//		{
-//			result.push_back(obj);
-//		}
-//	}
-//	return result;
-//}
+std::vector<GameObject*> GameController::GetGameObjectsByTag(const GameObjectTag& tag)
+{
+	std::vector<GameObject*> result;
+	for (GameObject* obj : gameObjects)
+	{
+		if (obj == nullptr)
+		{
+			continue;
+		}
+		if (obj->Tag == tag)
+		{
+			result.push_back(obj);
+		}
+	}
+	return result;
+}
 
 bool GameController::_UpdateInput()
 {

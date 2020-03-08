@@ -27,8 +27,7 @@ private:
 public:
 	PlayerBehaviourComponent();
 	~PlayerBehaviourComponent() override;
-	void Start() override;
-	void Update(const float deltaTime) override;
+	void Start() override;	
 	void SetSpeed(const float speed);
 	unsigned int GetLives() const;
 	unsigned int GetPoints() const;
@@ -40,6 +39,9 @@ public:
 	void Unsubscribe(LivesValueUpdatedEventListener* listener) { LivesValueUpdatedEventDispatcher::Unsubscribe(listener); }
 	void Subscribe(BigDotCollectedEventListener* listener) { BigDotCollectedEventDispatcher::Subscribe(listener); }
 	void Unsubscribe(BigDotCollectedEventListener* listener) { BigDotCollectedEventDispatcher::Unsubscribe(listener); }
+
+protected:
+	void _Update(const float& deltaTime) override;
 
 private:
 	void _AddPoints(const unsigned int pointsToAdd);

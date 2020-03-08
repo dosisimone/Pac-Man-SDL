@@ -30,13 +30,13 @@ TileMap* TileMapTxtReader::Read(const char* path)
 
 	TileMap* tileMap = new TileMap(cols, rows);
 
-	for (unsigned int y = 0; y < lines.size(); ++y) 
+	for (unsigned int col = 0; col < lines.size(); ++col) 
 	{
-		unsigned int myY = lines.size() - 1 - y;
-		for (unsigned int x = 0; x < lines[y].length(); x++)
+		unsigned int y = lines.size() - 1 - col;
+		for (unsigned int x = 0; x < lines[col].length(); x++)
 		{
 			Tile tile;
-			switch (lines[y][x])
+			switch (lines[col][x])
 			{
 			case 'x':
 				tile.type = TileType::Wall;
@@ -54,12 +54,20 @@ TileMap* TileMapTxtReader::Read(const char* path)
 				tile.type = TileType::Teleport;
 				tile.isWalkable = true;
 				break;
+			case 'G':
+				tile.type = TileType::GhostPen;
+				tile.isWalkable = false;
+				break;
+			case 'P':
+				tile.type = TileType::GhostPenPortal;
+				tile.isWalkable = true;
+				break;
 			default:
 				tile.type = TileType::None;
 				tile.isWalkable = true;
 				break;
 			}
-			tileMap->SetTile(x, myY, tile);
+			tileMap->SetTile(x, y, tile);
 		}
 	}	
 

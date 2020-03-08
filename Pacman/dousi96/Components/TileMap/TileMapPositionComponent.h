@@ -14,7 +14,6 @@ public:
 	TileMapPositionComponent();
 	~TileMapPositionComponent() override;
 	void Start() override;
-	void Update(const float deltaTime) override {};
 
 	Vector2f GetTileWorldPosition(const unsigned int x, const unsigned int y) const;
 	void SetTilePosition(const unsigned int x, const unsigned int y);

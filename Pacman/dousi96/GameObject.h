@@ -16,7 +16,8 @@ enum class GameObjectTag : short
 	Dot, 
 	Background,
 	Teleport,
-	UI
+	UI,
+	Logic
 };
 
 class GameObject
@@ -47,14 +48,14 @@ public:
 	template<class T = Component>
 	T* GetComponent() 
 	{
-		for (unsigned int i = 0; i < components.size(); ++i)
+		for (Component* component : components)
 		{
-			T* comp = dynamic_cast<T*>(components[i]);
-			if (comp == nullptr) 
+			T* castedComponent = dynamic_cast<T*>(component);
+			if (castedComponent == nullptr) 
 			{
 				continue;
 			}
-			return comp;
+			return castedComponent;
 		}
 		return nullptr;
 	}

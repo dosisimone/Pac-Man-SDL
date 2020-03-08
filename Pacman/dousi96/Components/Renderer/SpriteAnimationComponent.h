@@ -28,11 +28,13 @@ private:
 public:
 	SpriteAnimationComponent();
 	~SpriteAnimationComponent() override;
-	void Start() override;
-	void Update(const float deltaTime) override;
+	void Start() override;	
 	void AddAnimation(const Animation& animation);
 	void SetCurrentAnimation(const std::string& name);
 	void SetFlip(const bool x, const bool y);
 	void SetRotation(const float angle);
+
+protected:
+	void _Update(const float& deltaTime) override;
 };
 #endif // SPRITEANIMATIONRENDERERCOMPONENT_H

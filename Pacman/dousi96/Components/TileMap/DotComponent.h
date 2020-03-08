@@ -12,7 +12,6 @@ public:
 	DotComponent();
 	~DotComponent() override;
 	void Start() override {}
-	void Update(const float deltaTime) override {}
 	unsigned int GetPointsToAdd() const;
 	void SetPointsToAdd(const unsigned int pointsToAdd);	
 };

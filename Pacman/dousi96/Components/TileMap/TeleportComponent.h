@@ -12,7 +12,6 @@ public:
 	TeleportComponent();
 	~TeleportComponent() override;
 	void Start() override {}
-	void Update(const float deltaTime) override {}
 	TeleportComponent* GetLinkedTeleport();
 	void SetLinkedTeleport(TeleportComponent* other);
 };

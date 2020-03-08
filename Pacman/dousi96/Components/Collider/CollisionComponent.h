@@ -15,10 +15,12 @@ private:
 public:
 	CollisionComponent();
 	~CollisionComponent() override;
-	void Start() override;
-	void Update(const float deltaTime) override;
+	void Start() override;	
 	void AddTarget(GameObject* newTarget);
 	void Subscribe(CollisionEventListener* listener) { CollisionEventDispatcher::Subscribe(listener); }
 	void Unsubscribe(CollisionEventListener* listener) { CollisionEventDispatcher::Unsubscribe(listener); }
+
+protected:
+	void _Update(const float& deltaTime) override;
 };
 #endif // COLLISIONCOMPONENT_H

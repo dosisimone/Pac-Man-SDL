@@ -13,7 +13,7 @@ SpriteRendererComponent::~SpriteRendererComponent()
 {
 }
 
-void SpriteRendererComponent::Draw() const
+void SpriteRendererComponent::_Draw() const
 {
 	GameController::Instance->GetDrawer()->Draw(spritePath, Owner->Position, flipX, flipY, rotation);
 }

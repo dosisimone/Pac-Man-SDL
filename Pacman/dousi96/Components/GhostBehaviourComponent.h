@@ -36,11 +36,10 @@ private:
 public:
 	GhostBehaviourComponent();
 	~GhostBehaviourComponent() override;
-	void Start() override;
-	void Update(const float deltaTime) override;
+	void Start() override;	
 	GhostStatus GetStatus() const;
 
-private:
-
+protected:
+	void _Update(const float& deltaTime) override;
 };
 #endif // GHOSTBEHAVIOURCOMPONENT_H

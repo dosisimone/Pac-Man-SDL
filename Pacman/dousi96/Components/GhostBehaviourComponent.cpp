@@ -12,11 +12,17 @@ void GhostBehaviourComponent::Start()
 {
 }
 
-void GhostBehaviourComponent::Update(const float deltaTime)
-{
-}
 
 GhostBehaviourComponent::GhostStatus GhostBehaviourComponent::GetStatus() const
 {
 	return this->status;
+}
+
+void GhostBehaviourComponent::_Update(const float& deltaTime)
+{
+	if (!IsActive())
+	{
+		return;
+	}
+
 }

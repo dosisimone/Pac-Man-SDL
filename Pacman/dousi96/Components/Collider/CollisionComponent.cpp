@@ -12,25 +12,34 @@ void CollisionComponent::Start()
 {
 }
 
-void CollisionComponent::Update(const float deltaTime)
+void CollisionComponent::AddTarget(GameObject* newTarget)
+{
+	if (newTarget == nullptr) 
+	{
+		return;
+	}
+	targets.push_back(newTarget);
+}
+
+void CollisionComponent::_Update(const float& deltaTime)
 {
 	Vector2f distanceVector;
-	for (unsigned int i = 0; i < targets.size(); ++i) 
+	for (unsigned int i = 0; i < targets.size(); ++i)
 	{
-		if (targets[i] == nullptr) 
+		if (targets[i] == nullptr)
 		{
 			continue;
 		}
 
 		distanceVector = this->Owner->Position - targets[i]->Position;
-		if (distanceVector.Length() < 0.5f) 
+		if (distanceVector.Length() < 0.5f)
 		{
 			CollisionStatus status = CollisionStatus::Enter;
-			if (collisionsStatus.count(targets[i]) == 0) 
+			if (collisionsStatus.count(targets[i]) == 0)
 			{
 				collisionsStatus.insert({ targets[i], status });
-			}	
-			else 
+			}
+			else
 			{
 				status = CollisionStatus::Stay;
 				collisionsStatus[targets[i]] = status;
@@ -42,7 +51,7 @@ void CollisionComponent::Update(const float deltaTime)
 			args.status = status;
 			Invoke(args);
 		}
-		else 
+		else
 		{
 			if (collisionsStatus.count(targets[i]) > 0)
 			{
@@ -55,13 +64,4 @@ void CollisionComponent::Update(const float deltaTime)
 			}
 		}
 	}
-}
-
-void CollisionComponent::AddTarget(GameObject* newTarget)
-{
-	if (newTarget == nullptr) 
-	{
-		return;
-	}
-	targets.push_back(newTarget);
 }

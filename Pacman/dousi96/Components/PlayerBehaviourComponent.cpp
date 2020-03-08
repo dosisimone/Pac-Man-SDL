@@ -37,8 +37,13 @@ void PlayerBehaviourComponent::Start()
 	PointsValueUpdatedEventDispatcher::Invoke(pointsUpdatedEventArgs);
 }
 
-void PlayerBehaviourComponent::Update(const float deltaTime)
+void PlayerBehaviourComponent::_Update(const float& deltaTime)
 {
+	if (!IsActive()) 
+	{
+		return;
+	}
+
 	if (tileMovement->IsAtDestination()) 
 	{
 		const Vector2f kInput = GameController::Instance->GetInput();
@@ -47,8 +52,7 @@ void PlayerBehaviourComponent::Update(const float deltaTime)
 		unsigned int nextDestinationX = (unsigned int)((int)kCurrX + (int)kInput.X);
 		unsigned int nextDestinationY = (unsigned int)((int)kCurrY + (int)kInput.Y);
 
-		if (!tileMovement->SetDestination(nextDestinationX, nextDestinationY) 
-			|| kInput.Length() == 0.f)
+		if (!tileMovement->SetDestination(nextDestinationX, nextDestinationY) || kInput.Length() == 0.f)
 		{
 			nextDestinationX = (unsigned int)((int)kCurrX + (int)oldValidInput.X);
 			nextDestinationY = (unsigned int)((int)kCurrY + (int)oldValidInput.Y);
