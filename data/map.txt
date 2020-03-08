@@ -9,11 +9,11 @@ x.xxxx.xx.xxxxxxxx.xx.xxxx.x
 x......xx....xx....xx......x
 xxxxxx.xxxxx xx xxxxx.xxxxxx
 xxxxxx.xxxxx xx xxxxx.xxxxxx
-xxxxxx.xx          xx.xxxxxx
-xxxxxx.xx xxx  xxx xx.xxxxxx
-xxxxxx.xx x      x xx.xxxxxx
-T     .   x      x   .     T
-xxxxxx.xx x      x xx.xxxxxx
+xxxxxx.xx    PP    xx.xxxxxx
+xxxxxx.xx xxxGGxxx xx.xxxxxx
+xxxxxx.xx xGGGGGGx xx.xxxxxx
+T     .   xGGGGGGx   .     T
+xxxxxx.xx xGGGGGGx xx.xxxxxx
 xxxxxx.xx xxxxxxxx xx.xxxxxx
 xxxxxx.xx          xx.xxxxxx
 xxxxxx.xx xxxxxxxx xx.xxxxxx
