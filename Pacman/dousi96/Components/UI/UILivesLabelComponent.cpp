@@ -1,9 +1,11 @@
 #include "UILivesLabelComponent.h"
+#include "../../GameController.h"
 #include "../../GameObject.h"
 #include "../../../Drawer.h"
 #include "UITextComponent.h"
 #include <string>
 #include <sstream>
+#include "../PlayerBehaviourComponent.h"
 
 UILivesLabelComponent::UILivesLabelComponent()
 {
@@ -17,6 +19,9 @@ UILivesLabelComponent::~UILivesLabelComponent()
 void UILivesLabelComponent::Start()
 {
 	this->textComponent = GetOwner()->GetComponent<UITextComponent>();
+	//subscribe to the player event
+	PlayerBehaviourComponent* playerBehaviour = GameController::Instance->GetComponent<PlayerBehaviourComponent>();
+	playerBehaviour->Subscribe((LivesValueUpdatedEventListener*)this);
 }
 
 void UILivesLabelComponent::OnEvent(const LivesValueUpdatedEventArgs& event, const LivesValueUpdatedEventDispatcher& sender)

@@ -13,20 +13,13 @@ private:
 	unsigned int currTilePositionY = 0;
 	unsigned int destTilePositionX = 0;
 	unsigned int destTilePositionY = 0;	
-	int inputX = 0;
-	int inputY = 0;
-	int directionX = 0;
-	int directionY = 0;
 	float speed = 1.0f;
 
 public:
 	TileMovementComponent();
 	~TileMovementComponent() override;
 	void Awake() override;
-	void MoveUp();
-	void MoveDown();
-	void MoveRight();
-	void MoveLeft();
+	void Start() override;
 	void SetSpeed(const float& speed);	
 	unsigned int GetCurrentTileX() const;
 	unsigned int GetCurrentTileY() const;
@@ -40,9 +33,5 @@ public:
 
 protected:
 	void _Update(const float& deltaTime) override;
-
-private:
-	void _SetMovementDirection(const int x, const int y);
-	bool _IsTileWalkable(const unsigned int x, const unsigned int y) const;
 };
 #endif // TILEMOVEMENTCOMPONENT_H

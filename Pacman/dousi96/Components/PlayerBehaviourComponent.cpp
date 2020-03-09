@@ -9,6 +9,7 @@
 #include "TileMap/TileMovementComponent.h"
 #include "TileMap/TeleportComponent.h"
 #include "TileMap/DotComponent.h"
+#include "../TileMap.h"
 
 PlayerBehaviourComponent::PlayerBehaviourComponent()
 {
@@ -28,14 +29,7 @@ void PlayerBehaviourComponent::Start()
 {
 	this->tilePosition = GetOwner()->GetComponent<TileMapPositionComponent>();
 	this->tileMovement = GetOwner()->GetComponent<TileMovementComponent>();
-	this->animationRenderer = GetOwner()->GetComponent<SpriteAnimationComponent>();
-	
-	SpriteAnimationComponent::Animation defaultPlayerAnimation;
-	defaultPlayerAnimation.name = "default";
-	defaultPlayerAnimation.sprites = { "open_32.png" , "closed_32.png" };
-	defaultPlayerAnimation.secondsBtwFrames = 0.25f;
-	this->animationRenderer->AddAnimation(defaultPlayerAnimation);
-	this->animationRenderer->SetCurrentAnimation("default");	
+	this->animationRenderer = GetOwner()->GetComponent<SpriteAnimationComponent>();	
 	// setup collisions
 	CollisionComponent* collisionComponent = GetOwner()->GetComponent<CollisionComponent>();
 	std::vector<GameObject*> ghostObjects = GameController::Instance->GetGameObjectsByTag(GameObjectTag::Ghost);
@@ -74,33 +68,32 @@ void PlayerBehaviourComponent::Start()
 
 void PlayerBehaviourComponent::_Update(const float& deltaTime)
 {
-	if (!IsActive()) 
+	if (this->tileMovement->IsAtDestination()) 
 	{
-		return;
-	}
+		const unsigned int kCurrX = this->tileMovement->GetCurrentTileX();
+		const unsigned int kCurrY = this->tileMovement->GetCurrentTileY();
 
-	const Vector2f kInput = GameController::Instance->GetInput();
-	if (kInput.X > 0) 
-	{
-		tileMovement->MoveRight();
-	}
-	else if (kInput.X < 0) 
-	{
-		tileMovement->MoveLeft();
-	}
-	else if (kInput.Y > 0) 
-	{
-		tileMovement->MoveUp();
-	}
-	else if (kInput.Y < 0) 
-	{
-		tileMovement->MoveDown();
+		const Vector2f kInput = GameController::Instance->GetInput();		
+		int inputX = (int)kInput.X;
+		int inputY = (int)kInput.Y;
+
+		if (_IsPlayerWalkable(kCurrX + inputX, kCurrY + inputY) && (inputX != 0 || inputY != 0)) 
+		{
+			if (this->tileMovement->SetDestination(kCurrX + inputX, kCurrY + inputY))
+			{
+				previousValidInputX = inputX;
+				previousValidInputY = inputY;
+			}
+		}
+		else if (_IsPlayerWalkable(kCurrX + previousValidInputX, kCurrY + previousValidInputY))
+		{
+			this->tileMovement->SetDestination(kCurrX + previousValidInputX, kCurrY + previousValidInputY);
+		}
 	}
 
 	//update renderer	
-	float rotation = 90.f * (float)tileMovement->GetMovementDirectionY();
-	const int kMovementDirX = tileMovement->GetMovementDirectionX();
-	const bool kFlipX = (kMovementDirX < 0);
+	float rotation = 90.f * (float)previousValidInputY;
+	const bool kFlipX = (previousValidInputX < 0);
 	if (!kFlipX)
 	{
 		rotation *= -1;
@@ -162,7 +155,8 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 			{
 				if (ghost->GetStatus() == GhostBehaviourComponent::GhostStatus::Frightened)
 				{
-
+					ghost->Kill();
+					_AddPoints(200);
 				}
 				else 
 				{
@@ -195,4 +189,14 @@ void PlayerBehaviourComponent::_Death()
 	LivesValueUpdatedEventArgs livesValueUpdatedEventArgs;
 	livesValueUpdatedEventArgs.lives = this->lives;
 	LivesValueUpdatedEventDispatcher::Invoke(livesValueUpdatedEventArgs);
+}
+
+bool PlayerBehaviourComponent::_IsPlayerWalkable(const unsigned int x, const unsigned int y) const
+{
+	if (!this->tilePosition->GetTileMap()->AreCoordsValid(x, y)) 
+	{
+		return false;
+	}
+	Tile* tile = this->tilePosition->GetTileMap()->GetTile(x, y);
+	return tile->isPlayerWalkable;
 }

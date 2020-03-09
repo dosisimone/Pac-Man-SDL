@@ -11,7 +11,6 @@ private:
 public:
 	DotComponent();
 	~DotComponent() override;
-	void Start() override {}
 	unsigned int GetPointsToAdd() const;
 	void SetPointsToAdd(const unsigned int pointsToAdd);	
 };

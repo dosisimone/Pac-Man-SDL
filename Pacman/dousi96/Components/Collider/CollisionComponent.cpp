@@ -33,7 +33,7 @@ void CollisionComponent::_Update(const float& deltaTime)
 		}
 
 		distanceVector = GetOwner()->Position - targets[i]->Position;
-		if (distanceVector.Length() < 0.5f)
+		if (distanceVector.Length() < 0.1f)
 		{
 			CollisionStatus status = CollisionStatus::Enter;
 			if (collisionsStatus.count(targets[i]) == 0)

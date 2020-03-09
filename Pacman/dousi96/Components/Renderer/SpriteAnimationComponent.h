@@ -28,7 +28,7 @@ private:
 public:
 	SpriteAnimationComponent();
 	~SpriteAnimationComponent() override;
-	void Start() override;	
+	void Awake() override;	
 	void AddAnimation(const Animation& animation);
 	void SetCurrentAnimation(const std::string& name);
 	void SetFlip(const bool x, const bool y);

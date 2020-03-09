@@ -34,16 +34,10 @@ void TileMapPositionComponent::SetTilePosition(const unsigned int x, const unsig
 
 unsigned int TileMapPositionComponent::GetTilePositionX() const
 {
-	float distanceBtwTiles = tileMap->GetDistanceBtwTiles();
-	float tileMapSizeX = (float)tileMap->GetSizeX() - 1;
-	unsigned int x = (unsigned int)(GetOwner()->Position.X / distanceBtwTiles + tileMapSizeX / 2.f);
-	return x;
+	return tileMap->WorldPositionToTilePositionX(GetOwner()->Position.X);
 }
 
 unsigned int TileMapPositionComponent::GetTilePositionY() const
 {
-	float distanceBtwTiles = tileMap->GetDistanceBtwTiles();
-	float tileMapSizeY = (float)tileMap->GetSizeY() - 1;
-	unsigned int y = (unsigned int)(GetOwner()->Position.Y / distanceBtwTiles + tileMapSizeY / 2.f);
-	return y;
+	return tileMap->WorldPositionToTilePositionY(GetOwner()->Position.Y);
 }

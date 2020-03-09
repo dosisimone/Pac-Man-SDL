@@ -1,9 +1,6 @@
 #include "SDL.h"
 #include "GameController.h"
 #include "GameObject.h"
-#include "Components/UI/UITextComponent.h"
-#include "Components/UI/UIPointsLabelComponent.h"
-#include "Components/UI/UILivesLabelComponent.h"
 #include "Components/GameControllerComponent.h"
 
 GameController* GameController::Instance = nullptr;
@@ -26,58 +23,10 @@ GameController::~GameController()
 
 void GameController::Start()
 {
-	//load the map
-	{
-		
-	}
-
-	//background object
-	{
-		
-	}
-
-	//UI
-	UIPointsLabelComponent* pointsLabelUIComponent;
-	UILivesLabelComponent* livesLabelUIComponent;
-	{
-		GameObject* scoreLabelTextUIObject = CreateGameObject();
-		scoreLabelTextUIObject->Tag = GameObjectTag::UI;
-		UITextComponent* scoreLabelTextUIComponent = scoreLabelTextUIObject->AddComponent<UITextComponent>();
-		scoreLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
-		scoreLabelTextUIComponent->SetScreenPosition(20, 50);
-		scoreLabelTextUIComponent->SetText("Score: ");
-
-		GameObject* scoreLabelValueUIObject = CreateGameObject();
-		scoreLabelValueUIObject->Tag = GameObjectTag::UI;
-		UITextComponent* scoreLabelValueUIComponent = scoreLabelValueUIObject->AddComponent<UITextComponent>();
-		scoreLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
-		scoreLabelValueUIComponent->SetScreenPosition(110, 50);
-		scoreLabelValueUIComponent->SetText("0");
-		pointsLabelUIComponent = scoreLabelValueUIObject->AddComponent<UIPointsLabelComponent>();
-
-		GameObject* livesLabelTextUIObject = CreateGameObject();
-		livesLabelTextUIObject->Tag = GameObjectTag::UI;
-		UITextComponent* livesLabelTextUIComponent = livesLabelTextUIObject->AddComponent<UITextComponent>();
-		livesLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
-		livesLabelTextUIComponent->SetScreenPosition(20, 90);
-		livesLabelTextUIComponent->SetText("Lives: ");
-
-		GameObject* livesLabelValueUIObject = CreateGameObject();
-		livesLabelValueUIObject->Tag = GameObjectTag::UI;
-		UITextComponent* livesLabelValueUIComponent = livesLabelValueUIObject->AddComponent<UITextComponent>();
-		livesLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
-		livesLabelValueUIComponent->SetScreenPosition(110, 90);
-		livesLabelValueUIComponent->SetText("2");
-		livesLabelUIComponent = livesLabelValueUIObject->AddComponent<UILivesLabelComponent>();
-	}
-
 	//init game controller component
-	{
-		GameObject* gameController = CreateGameObject();
-		gameController->Tag = GameObjectTag::Logic;
-		GameControllerComponent* gameControllerComponent = gameController->AddComponent<GameControllerComponent>();
-		gameControllerComponent->SetDurationChangeState(3.f);
-	}
+	GameObject* gameController = CreateGameObject();
+	gameController->Tag = GameObjectTag::Logic;
+	GameControllerComponent* gameControllerComponent = gameController->AddComponent<GameControllerComponent>();
 }
 
 bool GameController::Update(const float deltaTime)

@@ -20,6 +20,8 @@ private:
 	TileMapPositionComponent* tilePosition = nullptr;
 	TileMovementComponent* tileMovement = nullptr;
 	TeleportComponent* teleportedTo = nullptr;
+	int previousValidInputX = 0;
+	int previousValidInputY = 0;
 
 public:
 	PlayerBehaviourComponent();
@@ -43,5 +45,6 @@ private:
 	void _AddPoints(const unsigned int pointsToAdd);
 	void _BigDotCollected();
 	void _Death();
+	bool _IsPlayerWalkable(const unsigned int x, const unsigned int y) const;
 };
 #endif // PLAYERBEHAVIOURCOMPONENT_H

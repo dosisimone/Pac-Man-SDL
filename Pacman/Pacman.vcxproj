@@ -131,6 +131,7 @@
     <ClCompile Include="dousi96\Components\Renderer\SpriteRendererComponent.cpp" />
     <ClCompile Include="dousi96\Components\TileMap\DotComponent.cpp" />
     <ClCompile Include="dousi96\Components\TileMap\TeleportComponent.cpp" />
+    <ClCompile Include="dousi96\Components\TileMap\GhostPathfinderComponent.cpp" />
     <ClCompile Include="dousi96\Components\TileMap\TileMapPositionComponent.cpp" />
     <ClCompile Include="dousi96\Components\TileMap\TileMovementComponent.cpp" />
     <ClCompile Include="dousi96\Components\UI\UILivesLabelComponent.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="dousi96\Components\Renderer\SpriteRendererComponent.h" />
     <ClInclude Include="dousi96\Components\TileMap\DotComponent.h" />
     <ClInclude Include="dousi96\Components\TileMap\TeleportComponent.h" />
+    <ClInclude Include="dousi96\Components\TileMap\GhostPathfinderComponent.h" />
     <ClInclude Include="dousi96\Components\TileMap\TileMapPositionComponent.h" />
     <ClInclude Include="dousi96\Components\TileMap\TileMovementComponent.h" />
     <ClInclude Include="dousi96\Components\UI\UILivesLabelComponent.h" />

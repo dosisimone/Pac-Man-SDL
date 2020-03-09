@@ -12,7 +12,7 @@ SpriteAnimationComponent::~SpriteAnimationComponent()
 {
 }
 
-void SpriteAnimationComponent::Start()
+void SpriteAnimationComponent::Awake()
 {
 	this->spriteRenderer = GetOwner()->GetComponent<SpriteRendererComponent>();
 }
@@ -24,6 +24,10 @@ void SpriteAnimationComponent::AddAnimation(const Animation& animation)
 		return;
 	}
 	animations.push_back(animation);
+	if (animations.size() < 2) 
+	{
+		SetCurrentAnimation(animation.name);
+	}
 }
 
 void SpriteAnimationComponent::SetCurrentAnimation(const std::string& name)

@@ -32,29 +32,23 @@ void TileMap::SetDistanceBtwTiles(const float distanceBtwTiles)
 	this->distanceBtwTiles = distanceBtwTiles;
 }
 
-Tile TileMap::GetTile(unsigned int x, unsigned int y) const
+Tile* TileMap::GetTile(unsigned int x, unsigned int y) const
 {
-	if (x < 0 || x >= cols)
+	if (!AreCoordsValid(x, y))
 	{
-		return Tile();
+		return nullptr;
 	}
-	if (y < 0 || y >= rows)
-	{
-		return Tile();
-	}
-	return map[x + cols * y];
+	return &map[x + cols * y];
 }
 
-void TileMap::SetTile(unsigned int x, unsigned int y, const Tile& tile)
+void TileMap::SetTile(unsigned int x, unsigned int y, Tile& tile)
 {
-	if (x < 0 || x >= cols)
+	if (!AreCoordsValid(x,y))
 	{
 		return;
 	}
-	if (y < 0 || y >= rows)
-	{
-		return;
-	}
+	tile.x = x;
+	tile.y = y;
 	map[x + cols * y] = tile;
 }
 
@@ -78,4 +72,21 @@ Vector2f TileMap::GetTileWorldPosition(const unsigned int x, const unsigned int 
 	position.X = (Xf - tileMapSizeX / 2.f) * distanceBtwTiles;
 	position.Y = (Yf - tileMapSizeY / 2.f) * distanceBtwTiles;
 	return position;
+}
+
+unsigned int TileMap::WorldPositionToTilePositionX(const float x)
+{
+	float tileMapSizeX = (float)GetSizeX() - 1;
+	return (unsigned int)((x / distanceBtwTiles) + tileMapSizeX / 2.f);
+}
+
+unsigned int TileMap::WorldPositionToTilePositionY(const float y)
+{
+	float tileMapSizeY = (float)GetSizeY() - 1;
+	return (unsigned int)((y / distanceBtwTiles) + tileMapSizeY / 2.f);
+}
+
+bool TileMap::AreCoordsValid(const unsigned int x, const unsigned int y) const
+{
+	return (x < cols && y < rows);
 }

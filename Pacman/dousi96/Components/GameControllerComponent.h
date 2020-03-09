@@ -32,6 +32,7 @@ private:
 public:
 	GameControllerComponent();
 	~GameControllerComponent() override;
+	void Awake() override;
 	void Start() override;	
 	void SetDurationChangeState(const float duration);
 	TileMap* GetTileMap() const;

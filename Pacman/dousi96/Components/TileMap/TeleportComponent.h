@@ -11,7 +11,6 @@ private:
 public:
 	TeleportComponent();
 	~TeleportComponent() override;
-	void Start() override {}
 	TeleportComponent* GetLinkedTeleport();
 	void SetLinkedTeleport(TeleportComponent* other);
 };

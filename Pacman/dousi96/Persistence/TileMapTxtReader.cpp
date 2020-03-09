@@ -40,31 +40,33 @@ TileMap* TileMapTxtReader::Read(const char* path)
 			{
 			case 'x':
 				tile.type = TileType::Wall;
-				tile.isWalkable = false;
+				tile.isPlayerWalkable = false;
+				tile.isEnemyWalkabe = false;
 				break;
 			case '.':
 				tile.type = TileType::Dot;
-				tile.isWalkable = true;
+				tile.isPlayerWalkable = true;
+				tile.isEnemyWalkabe = true;
 				break;
 			case 'o':
 				tile.type = TileType::BigDot;
-				tile.isWalkable = true;
+				tile.isPlayerWalkable = true;
+				tile.isEnemyWalkabe = true;
 				break;
 			case 'T':
 				tile.type = TileType::Teleport;
-				tile.isWalkable = true;
+				tile.isPlayerWalkable = true;
+				tile.isEnemyWalkabe = true;
 				break;
 			case 'G':
-				tile.type = TileType::GhostPen;
-				tile.isWalkable = false;
-				break;
-			case 'P':
-				tile.type = TileType::GhostPenPortal;
-				tile.isWalkable = true;
+				tile.type = TileType::GhostHouse;
+				tile.isPlayerWalkable = false;
+				tile.isEnemyWalkabe = true;
 				break;
 			default:
 				tile.type = TileType::None;
-				tile.isWalkable = true;
+				tile.isPlayerWalkable = true;
+				tile.isEnemyWalkabe = true;
 				break;
 			}
 			tileMap->SetTile(x, y, tile);

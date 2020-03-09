@@ -7,11 +7,15 @@
 #include "Renderer/SpriteAnimationComponent.h"
 #include "TileMap/TileMapPositionComponent.h"
 #include "TileMap/TileMovementComponent.h"
+#include "TileMap/GhostPathfinderComponent.h"
 #include "TileMap/TeleportComponent.h"
 #include "TileMap/DotComponent.h"
 #include "PlayerBehaviourComponent.h"
 #include "GhostBehaviourComponent.h"
 #include "Collider/CollisionComponent.h"
+#include "UI/UITextComponent.h"
+#include "UI/UILivesLabelComponent.h"
+#include "UI/UIPointsLabelComponent.h"
 
 GameControllerComponent::GameControllerComponent()
 {
@@ -25,13 +29,18 @@ GameControllerComponent::~GameControllerComponent()
 	tileMap = nullptr;
 }
 
+void GameControllerComponent::Awake()
+{
+	this->SetDurationChangeState(0.0f);
+}
+
 void GameControllerComponent::Start()
 {
 	_LoadMap();
 	_InstanceMapObjects();
 	_InstanceUIObjects();
 	_InstancePlayer();
-
+	_InstanceGhosts();
 
 	playerBehaviour = GameController::Instance->GetComponent<PlayerBehaviourComponent>();
 	playerBehaviour->GetOwner()->SetActive(false);
@@ -57,28 +66,33 @@ void GameControllerComponent::_Update(const float& deltaTime)
 {
 	changeStateTimer.Increment(deltaTime);
 
-	switch (this->state)
+	if (changeStateTimer.Check())
 	{
-	case GameState::Paused:
-	{
-		if (changeStateTimer.Check())
+		changeStateTimer.Reset();
+
+		switch (this->state)
 		{
-			changeStateTimer.Reset();
+		case GameState::Paused:
+		{
+			this->state = GameState::Playing;
 
 			playerBehaviour->GetOwner()->SetActive(true);
 
+			int timerIndex = 0;
 			for (GhostBehaviourComponent* ghostBehaviour : ghostBehaviours)
-			{
+			{				
+				ghostBehaviour->ForceTimer(3.f * timerIndex + 1.f);
 				ghostBehaviour->GetOwner()->SetActive(true);
+				timerIndex++;
 			}
 
 
 
 
 		}
+		break;
 	}
-	break;
-	}
+	}	
 }
 
 void GameControllerComponent::_LoadMap()
@@ -102,8 +116,8 @@ void GameControllerComponent::_InstanceMapObjects()
 	{
 		for (unsigned int y = 0; y < tileMap->GetSizeY(); ++y)
 		{
-			const Tile& tile = tileMap->GetTile(x, y);
-			if (!tile.isWalkable)
+			Tile* tile = tileMap->GetTile(x, y);
+			if (!tile->isPlayerWalkable)
 			{
 				continue;
 			}
@@ -112,7 +126,7 @@ void GameControllerComponent::_InstanceMapObjects()
 			TileMapPositionComponent* tileMapPosition = tileObject->AddComponent<TileMapPositionComponent>();
 			tileMapPosition->SetTileMap(this->GetTileMap());
 			tileMapPosition->SetTilePosition(x, y);
-			switch (tile.type)
+			switch (tile->type)
 			{
 			case TileType::Dot:
 			{
@@ -159,7 +173,35 @@ void GameControllerComponent::_InstanceMapObjects()
 
 void GameControllerComponent::_InstanceUIObjects()
 {
+	GameObject* scoreLabelTextUIObject = GameController::Instance->CreateGameObject();
+	scoreLabelTextUIObject->Tag = GameObjectTag::UI;
+	UITextComponent* scoreLabelTextUIComponent = scoreLabelTextUIObject->AddComponent<UITextComponent>();
+	scoreLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+	scoreLabelTextUIComponent->SetScreenPosition(20, 50);
+	scoreLabelTextUIComponent->SetText("Score: ");
 
+	GameObject* scoreLabelValueUIObject = GameController::Instance->CreateGameObject();
+	scoreLabelValueUIObject->Tag = GameObjectTag::UI;
+	UITextComponent* scoreLabelValueUIComponent = scoreLabelValueUIObject->AddComponent<UITextComponent>();
+	scoreLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+	scoreLabelValueUIComponent->SetScreenPosition(110, 50);
+	scoreLabelValueUIComponent->SetText("0");
+	UIPointsLabelComponent* pointsLabelUIComponent = scoreLabelValueUIObject->AddComponent<UIPointsLabelComponent>();
+
+	GameObject* livesLabelTextUIObject = GameController::Instance->CreateGameObject();
+	livesLabelTextUIObject->Tag = GameObjectTag::UI;
+	UITextComponent* livesLabelTextUIComponent = livesLabelTextUIObject->AddComponent<UITextComponent>();
+	livesLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+	livesLabelTextUIComponent->SetScreenPosition(20, 90);
+	livesLabelTextUIComponent->SetText("Lives: ");
+
+	GameObject* livesLabelValueUIObject = GameController::Instance->CreateGameObject();
+	livesLabelValueUIObject->Tag = GameObjectTag::UI;
+	UITextComponent* livesLabelValueUIComponent = livesLabelValueUIObject->AddComponent<UITextComponent>();
+	livesLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+	livesLabelValueUIComponent->SetScreenPosition(110, 90);
+	livesLabelValueUIComponent->SetText("2");
+	UILivesLabelComponent* livesLabelUIComponent = livesLabelValueUIObject->AddComponent<UILivesLabelComponent>();
 }
 
 void GameControllerComponent::_InstancePlayer()
@@ -168,11 +210,16 @@ void GameControllerComponent::_InstancePlayer()
 	playerObject->Tag = GameObjectTag::Player;
 	SpriteRendererComponent* spriteRenderer = playerObject->AddComponent<SpriteRendererComponent>();
 	SpriteAnimationComponent* spriteAnimationRenderer = playerObject->AddComponent<SpriteAnimationComponent>();
+	SpriteAnimationComponent::Animation defaultPlayerAnimation;
+	defaultPlayerAnimation.name = "default";
+	defaultPlayerAnimation.sprites = { "open_32.png" , "closed_32.png" };
+	defaultPlayerAnimation.secondsBtwFrames = 0.25f;
+	spriteAnimationRenderer->AddAnimation(defaultPlayerAnimation);
+
 	TileMapPositionComponent* tileMapPosition = playerObject->AddComponent<TileMapPositionComponent>();
 	tileMapPosition->SetTileMap(this->GetTileMap());
 	tileMapPosition->SetTilePosition(14, 7);
 	TileMovementComponent* tileMovement = playerObject->AddComponent<TileMovementComponent>();
-	tileMovement->MoveLeft();
 	tileMovement->SetSpeed(4.f);
 	CollisionComponent* collisionComponent = playerObject->AddComponent<CollisionComponent>();
 	PlayerBehaviourComponent* playerBehaviourComponent = playerObject->AddComponent<PlayerBehaviourComponent>();
@@ -180,15 +227,136 @@ void GameControllerComponent::_InstancePlayer()
 
 void GameControllerComponent::_InstanceGhosts()
 {
-	GameObject* ghost1Object = GameController::Instance->CreateGameObject();
-	ghost1Object->Tag = GameObjectTag::Ghost;
-	SpriteRendererComponent* spriteRenderer = ghost1Object->AddComponent<SpriteRendererComponent>();
-	SpriteAnimationComponent* spriteAnimationRenderer = ghost1Object->AddComponent<SpriteAnimationComponent>();
-	TileMapPositionComponent* tileMapPosition = ghost1Object->AddComponent<TileMapPositionComponent>();
-	tileMapPosition->SetTileMap(this->GetTileMap());
-	tileMapPosition->SetTilePosition(21, 20);
-	TileMovementComponent* tileMovement = ghost1Object->AddComponent<TileMovementComponent>();
-	tileMovement->MoveDown();
-	tileMovement->SetSpeed(3.f);
-	GhostBehaviourComponent* ghost1BehaviourComponent = ghost1Object->AddComponent<GhostBehaviourComponent>();
+	//ghost 1
+	{
+		GameObject* ghostObject = GameController::Instance->CreateGameObject();
+		ghostObject->Tag = GameObjectTag::Ghost;
+		// rendering
+		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
+		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
+		SpriteAnimationComponent::Animation defaultGhostAnimation;
+		defaultGhostAnimation.name = "default";
+		defaultGhostAnimation.sprites = { "ghost_32_red.png" };
+		defaultGhostAnimation.secondsBtwFrames = 60.f;
+		SpriteAnimationComponent::Animation deadGhostAnimation;
+		deadGhostAnimation.name = "dead";
+		deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
+		deadGhostAnimation.secondsBtwFrames = 60.f;
+		SpriteAnimationComponent::Animation frightenedGhostAnimation;
+		frightenedGhostAnimation.name = "frightened";
+		frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
+		frightenedGhostAnimation.secondsBtwFrames = 60.f;
+		spriteAnimationRenderer->AddAnimation(defaultGhostAnimation);
+		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
+		spriteAnimationRenderer->AddAnimation(frightenedGhostAnimation);
+		// tilemap position & movement
+		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
+		tileMapPosition->SetTileMap(this->GetTileMap());
+		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
+		tileMovement->SetSpeed(3.f);
+		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
+		GhostBehaviourComponent* ghostBehaviourComponent = ghostObject->AddComponent<GhostBehaviourComponent>();
+		ghostBehaviourComponent->SetGhostHouseTile(12, 16);
+		ghostBehaviourComponent->SetScatterStatusTarget(27, 30);
+		ghostBehaviours.push_back(ghostBehaviourComponent);
+	}
+	//ghost 2
+	{
+		GameObject* ghostObject = GameController::Instance->CreateGameObject();
+		ghostObject->Tag = GameObjectTag::Ghost;
+		// rendering
+		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
+		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
+		SpriteAnimationComponent::Animation defaultGhostAnimation;
+		defaultGhostAnimation.name = "default";
+		defaultGhostAnimation.sprites = { "ghost_32_cyan.png" };
+		defaultGhostAnimation.secondsBtwFrames = 60.f;
+		SpriteAnimationComponent::Animation deadGhostAnimation;
+		deadGhostAnimation.name = "dead";
+		deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
+		deadGhostAnimation.secondsBtwFrames = 60.f;
+		SpriteAnimationComponent::Animation frightenedGhostAnimation;
+		frightenedGhostAnimation.name = "frightened";
+		frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
+		frightenedGhostAnimation.secondsBtwFrames = 60.f;
+		spriteAnimationRenderer->AddAnimation(defaultGhostAnimation);
+		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
+		spriteAnimationRenderer->AddAnimation(frightenedGhostAnimation);
+		// tilemap position & movement
+		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
+		tileMapPosition->SetTileMap(this->GetTileMap());
+		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
+		tileMovement->SetSpeed(3.f);
+		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
+		GhostBehaviourComponent* ghostBehaviourComponent = ghostObject->AddComponent<GhostBehaviourComponent>();
+		ghostBehaviourComponent->SetGhostHouseTile(13, 16);
+		ghostBehaviourComponent->SetScatterStatusTarget(0, 30);
+		ghostBehaviours.push_back(ghostBehaviourComponent);
+	}
+	//ghost 3
+	{
+		GameObject* ghostObject = GameController::Instance->CreateGameObject();
+		ghostObject->Tag = GameObjectTag::Ghost;
+		// rendering
+		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
+		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
+		SpriteAnimationComponent::Animation defaultGhostAnimation;
+		defaultGhostAnimation.name = "default";
+		defaultGhostAnimation.sprites = { "ghost_32_pink.png" };
+		defaultGhostAnimation.secondsBtwFrames = 60.f;
+		SpriteAnimationComponent::Animation deadGhostAnimation;
+		deadGhostAnimation.name = "dead";
+		deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
+		deadGhostAnimation.secondsBtwFrames = 60.f;
+		SpriteAnimationComponent::Animation frightenedGhostAnimation;
+		frightenedGhostAnimation.name = "frightened";
+		frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
+		frightenedGhostAnimation.secondsBtwFrames = 60.f;
+		spriteAnimationRenderer->AddAnimation(defaultGhostAnimation);
+		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
+		spriteAnimationRenderer->AddAnimation(frightenedGhostAnimation);
+		// tilemap position & movement
+		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
+		tileMapPosition->SetTileMap(this->GetTileMap());
+		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
+		tileMovement->SetSpeed(3.f);
+		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
+		GhostBehaviourComponent* ghostBehaviourComponent = ghostObject->AddComponent<GhostBehaviourComponent>();
+		ghostBehaviourComponent->SetGhostHouseTile(14, 16);
+		ghostBehaviourComponent->SetScatterStatusTarget(0, 0);
+		ghostBehaviours.push_back(ghostBehaviourComponent);
+	}
+	//ghost 4
+	{
+		GameObject* ghostObject = GameController::Instance->CreateGameObject();
+		ghostObject->Tag = GameObjectTag::Ghost;
+		// rendering
+		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
+		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
+		SpriteAnimationComponent::Animation defaultGhostAnimation;
+		defaultGhostAnimation.name = "default";
+		defaultGhostAnimation.sprites = { "ghost_32_orange.png" };
+		defaultGhostAnimation.secondsBtwFrames = 60.f;
+		SpriteAnimationComponent::Animation deadGhostAnimation;
+		deadGhostAnimation.name = "dead";
+		deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
+		deadGhostAnimation.secondsBtwFrames = 60.f;
+		SpriteAnimationComponent::Animation frightenedGhostAnimation;
+		frightenedGhostAnimation.name = "frightened";
+		frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
+		frightenedGhostAnimation.secondsBtwFrames = 60.f;
+		spriteAnimationRenderer->AddAnimation(defaultGhostAnimation);
+		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
+		spriteAnimationRenderer->AddAnimation(frightenedGhostAnimation);
+		// tilemap position & movement
+		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
+		tileMapPosition->SetTileMap(this->GetTileMap());
+		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
+		tileMovement->SetSpeed(3.f);
+		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
+		GhostBehaviourComponent* ghostBehaviourComponent = ghostObject->AddComponent<GhostBehaviourComponent>();
+		ghostBehaviourComponent->SetGhostHouseTile(15, 16);
+		ghostBehaviourComponent->SetScatterStatusTarget(27, 0);
+		ghostBehaviours.push_back(ghostBehaviourComponent);
+	}
 }
