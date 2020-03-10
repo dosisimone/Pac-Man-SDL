@@ -13,7 +13,7 @@ class PlayerBehaviourComponent : public Component,
 	// listeners
 	CollisionEventListener, 
 	// dispatchers
-	PointsValueUpdatedEventDispatcher, SimpleDotCollectedEventDispatcher, BigDotCollectedEventDispatcher, PlayerDeathEventDispatcher, GhostKilledEventDispatcher
+	SimpleDotCollectedEventDispatcher, BigDotCollectedEventDispatcher, PlayerDeathEventDispatcher, GhostKilledEventDispatcher
 {
 private:		
 	SpriteAnimationComponent* animationRenderer = nullptr;
