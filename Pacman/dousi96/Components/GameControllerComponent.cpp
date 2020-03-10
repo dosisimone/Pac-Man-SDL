@@ -9,7 +9,6 @@
 #include "TileMap/TileMovementComponent.h"
 #include "TileMap/GhostPathfinderComponent.h"
 #include "TileMap/TeleportComponent.h"
-#include "TileMap/DotComponent.h"
 #include "PlayerBehaviourComponent.h"
 #include "GhostBehaviourComponent.h"
 #include "Collider/CollisionComponent.h"

@@ -8,7 +8,6 @@
 #include "TileMap/TileMapPositionComponent.h"
 #include "TileMap/TileMovementComponent.h"
 #include "TileMap/TeleportComponent.h"
-#include "TileMap/DotComponent.h"
 #include "../TileMap.h"
 
 PlayerBehaviourComponent::PlayerBehaviourComponent()

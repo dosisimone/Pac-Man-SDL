@@ -2,7 +2,6 @@
 #include "SDL_image.h"
 #include "SDL_ttf.h"
 #include "assert.h"
-#include "pacman.h"
 #include "drawer.h"
 #include <iostream>
 #include "dousi96/GameController.h"
