@@ -44,8 +44,6 @@ int main(int argc, char **argv)
 	drawer->SetPixelPerUnit(44, 44);
 	//create game controller
 	GameController* controller = new GameController(drawer);
-	//create pacman
-	//Pacman* pacman = Pacman::Create(drawer);
 	controller->Start();
 	// events polling
 	SDL_Event event;
