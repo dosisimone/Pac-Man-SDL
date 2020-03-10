@@ -25,7 +25,7 @@ public:
 	};
 
 private:
-	unsigned short lives = 3;
+	unsigned short lives = 0;
 	unsigned int points = 0;
 	unsigned int totDotsOnMap = 0;
 	GameState state = GameState::Paused;

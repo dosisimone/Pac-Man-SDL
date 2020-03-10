@@ -14,7 +14,9 @@ private:
 public:
 	UILivesLabelComponent();
 	~UILivesLabelComponent() override;
+	void Awake() override;
 	void Start() override;
 	void OnEvent(const LivesValueUpdatedEventArgs& event, const LivesValueUpdatedEventDispatcher& sender) override;
+	void ForceLivesToShow(const unsigned short lives);
 };
 #endif // UILIVESLABELCOMPONENT_H

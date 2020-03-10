@@ -39,8 +39,7 @@ void GameControllerComponent::Start()
 	_LoadMap();
 	_InstanceMapObjects();
 	_InstanceUIObjects();
-	_InstancePlayer();
-	_InstanceGhosts();
+	_ResetGame();
 }
 
 void GameControllerComponent::SetDurationChangeState(const float duration)
@@ -67,6 +66,10 @@ void GameControllerComponent::OnEvent(const PlayerDeathEventArgs& event, const P
 	}
 
 	lives--;
+
+	LivesValueUpdatedEventArgs livesValueUpdatedEventArgs;
+	livesValueUpdatedEventArgs.lives = lives;
+	LivesValueUpdatedEventDispatcher::Invoke(livesValueUpdatedEventArgs);
 
 	_ResetGame();	
 }
@@ -213,8 +216,8 @@ void GameControllerComponent::_InstanceUIObjects()
 	UITextComponent* scoreLabelValueUIComponent = scoreLabelValueUIObject->AddComponent<UITextComponent>();
 	scoreLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
 	scoreLabelValueUIComponent->SetScreenPosition(110, 50);
-	scoreLabelValueUIComponent->SetText("0");
 	UIPointsLabelComponent* pointsLabelUIComponent = scoreLabelValueUIObject->AddComponent<UIPointsLabelComponent>();
+	pointsLabelUIComponent->ForcePointsToShow(this->points);
 
 	GameObject* livesLabelTextUIObject = GameController::Instance->CreateGameObject();
 	livesLabelTextUIObject->Tag = GameObjectTag::UI;
@@ -228,8 +231,8 @@ void GameControllerComponent::_InstanceUIObjects()
 	UITextComponent* livesLabelValueUIComponent = livesLabelValueUIObject->AddComponent<UITextComponent>();
 	livesLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
 	livesLabelValueUIComponent->SetScreenPosition(110, 90);
-	livesLabelValueUIComponent->SetText("2");
 	UILivesLabelComponent* livesLabelUIComponent = livesLabelValueUIObject->AddComponent<UILivesLabelComponent>();
+	livesLabelUIComponent->ForceLivesToShow(this->lives);
 }
 
 void GameControllerComponent::_InstancePlayer()
@@ -298,11 +301,28 @@ void GameControllerComponent::_GameOver()
 	scoreLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
 	scoreLabelTextUIComponent->SetScreenPosition(20, 50);
 	scoreLabelTextUIComponent->SetText("GAME OVER");
+	//show score
+	GameObject* pointsLabelTextUIObject = GameController::Instance->CreateGameObject();
+	pointsLabelTextUIObject->Tag = GameObjectTag::UI;
+	UITextComponent* pointsLabelTextUIComponent = pointsLabelTextUIObject->AddComponent<UITextComponent>();
+	pointsLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+	pointsLabelTextUIComponent->SetScreenPosition(20, 90);
+	pointsLabelTextUIComponent->SetText("Points: ");
+	GameObject* livesLabelValueUIObject = GameController::Instance->CreateGameObject();
+	livesLabelValueUIObject->Tag = GameObjectTag::UI;
+	UITextComponent* pointsLabelValueUIComponent = livesLabelValueUIObject->AddComponent<UITextComponent>();
+	pointsLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+	pointsLabelValueUIComponent->SetScreenPosition(110, 90);
+	UIPointsLabelComponent* pointsLabelUIComponent = livesLabelValueUIObject->AddComponent<UIPointsLabelComponent>();
+	pointsLabelUIComponent->ForcePointsToShow(this->points);
 }
 
 void GameControllerComponent::_PlayerWin()
 {
 	this->state = GameState::GameOver;
+
+	// add extra points foreach extra life remaining
+	_AddPoints(100 * lives);
 
 	std::vector<GameObject*> allGameObjects = GameController::Instance->GetAllGameObjects();
 	for (GameObject* obj : allGameObjects)
@@ -316,6 +336,20 @@ void GameControllerComponent::_PlayerWin()
 	scoreLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
 	scoreLabelTextUIComponent->SetScreenPosition(20, 50);
 	scoreLabelTextUIComponent->SetText("PLAYER WIN!");
+	//show score
+	GameObject* pointsLabelTextUIObject = GameController::Instance->CreateGameObject();
+	pointsLabelTextUIObject->Tag = GameObjectTag::UI;
+	UITextComponent* pointsLabelTextUIComponent = pointsLabelTextUIObject->AddComponent<UITextComponent>();
+	pointsLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+	pointsLabelTextUIComponent->SetScreenPosition(20, 90);
+	pointsLabelTextUIComponent->SetText("Points: ");
+	GameObject* livesLabelValueUIObject = GameController::Instance->CreateGameObject();
+	livesLabelValueUIObject->Tag = GameObjectTag::UI;
+	UITextComponent* pointsLabelValueUIComponent = livesLabelValueUIObject->AddComponent<UITextComponent>();
+	pointsLabelValueUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+	pointsLabelValueUIComponent->SetScreenPosition(110, 90);
+	UIPointsLabelComponent* pointsLabelUIComponent = livesLabelValueUIObject->AddComponent<UIPointsLabelComponent>();
+	pointsLabelUIComponent->ForcePointsToShow(this->points);
 }
 
 void GameControllerComponent::_ResetGame()
@@ -323,21 +357,22 @@ void GameControllerComponent::_ResetGame()
 	this->state = GameState::Paused;
 	changeStateTimer.Reset();	
 
-	for (GhostBehaviourComponent* ghost : ghostBehaviours)
+	if (ghostBehaviours.size() > 0) 
 	{
-		GameController::Instance->Destroy(ghost->GetOwner());
+		for (GhostBehaviourComponent* ghost : ghostBehaviours)
+		{
+			GameController::Instance->Destroy(ghost->GetOwner());
+		}
+		ghostBehaviours.clear();
 	}
-	ghostBehaviours.clear();
 
-	GameController::Instance->Destroy(playerBehaviour->GetOwner());	
+	if (playerBehaviour != nullptr) 
+	{
+		GameController::Instance->Destroy(playerBehaviour->GetOwner());
+	}
 
 	_InstancePlayer();
 	_InstanceGhosts();
-
-	//setup UI
-	LivesValueUpdatedEventArgs livesValueUpdatedEventArgs;
-	livesValueUpdatedEventArgs.lives = lives;
-	LivesValueUpdatedEventDispatcher::Invoke(livesValueUpdatedEventArgs);
 }
 
 void GameControllerComponent::_AddPoints(const unsigned int pointsToAdd)

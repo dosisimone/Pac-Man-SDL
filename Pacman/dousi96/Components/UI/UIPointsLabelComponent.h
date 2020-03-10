@@ -14,7 +14,9 @@ private:
 public:
 	UIPointsLabelComponent();
 	~UIPointsLabelComponent() override;
+	void Awake() override;
 	void Start() override;
 	void OnEvent(const PointsValueUpdatedEventArgs& event, const PointsValueUpdatedEventDispatcher& sender) override;
+	void ForcePointsToShow(const unsigned int points);
 };
 #endif // UIPOINTSLABELCOMPONENT_H

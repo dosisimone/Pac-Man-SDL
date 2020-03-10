@@ -30,7 +30,7 @@ typedef EventDispatcher<PointsValueUpdatedEventArgs>::Listener PointsValueUpdate
 
 struct LivesValueUpdatedEventArgs
 {
-	unsigned int lives;
+	unsigned short lives;
 };
 typedef EventDispatcher<LivesValueUpdatedEventArgs> LivesValueUpdatedEventDispatcher;
 typedef EventDispatcher<LivesValueUpdatedEventArgs>::Listener LivesValueUpdatedEventListener;

@@ -16,19 +16,31 @@ UIPointsLabelComponent::~UIPointsLabelComponent()
 {
 }
 
-void UIPointsLabelComponent::Start()
+void UIPointsLabelComponent::Awake()
 {
-	this->textComponent = GetOwner()->GetComponent<UITextComponent>();
+	this->textComponent = GetOwner()->GetOrAddComponent<UITextComponent>();
+}
+
+void UIPointsLabelComponent::Start()
+{	
 	//subscribe to the player event
 	GameControllerComponent* gameControllerComponent = GameController::Instance->GetComponent<GameControllerComponent>();
-	gameControllerComponent->Subscribe((PointsValueUpdatedEventListener*)this);
+	if (gameControllerComponent != nullptr) 
+	{
+		gameControllerComponent->Subscribe((PointsValueUpdatedEventListener*)this);
+	}
 }
 
 void UIPointsLabelComponent::OnEvent(const PointsValueUpdatedEventArgs& event, const PointsValueUpdatedEventDispatcher& sender)
 {
+	ForcePointsToShow(event.points);
+}
+
+void UIPointsLabelComponent::ForcePointsToShow(const unsigned int points)
+{
 	std::string text;
 	std::stringstream textStream;
-	textStream << event.points;
+	textStream << points;
 	text = textStream.str();
 	this->textComponent->SetText(text);
 }

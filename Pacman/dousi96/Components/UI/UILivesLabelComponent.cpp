@@ -16,19 +16,31 @@ UILivesLabelComponent::~UILivesLabelComponent()
 {
 }
 
+void UILivesLabelComponent::Awake()
+{
+	this->textComponent = GetOwner()->GetOrAddComponent<UITextComponent>();
+}
+
 void UILivesLabelComponent::Start()
 {
-	this->textComponent = GetOwner()->GetComponent<UITextComponent>();
 	//subscribe to the event
 	GameControllerComponent* gameControllerComponent = GameController::Instance->GetComponent<GameControllerComponent>();
-	gameControllerComponent->Subscribe((LivesValueUpdatedEventListener*)this);
+	if (gameControllerComponent != nullptr) 
+	{
+		gameControllerComponent->Subscribe((LivesValueUpdatedEventListener*)this);
+	}
 }
 
 void UILivesLabelComponent::OnEvent(const LivesValueUpdatedEventArgs& event, const LivesValueUpdatedEventDispatcher& sender)
 {
+	ForceLivesToShow(event.lives);
+}
+
+void UILivesLabelComponent::ForceLivesToShow(const unsigned short lives)
+{
 	std::string text;
 	std::stringstream textStream;
-	textStream << event.lives;
+	textStream << lives;
 	text = textStream.str();
 	this->textComponent->SetText(text);
 }
