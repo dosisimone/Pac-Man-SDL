@@ -26,6 +26,7 @@ private:
 public:
 	PlayerBehaviourComponent();
 	~PlayerBehaviourComponent() override;
+	void Awake() override;
 	void Start() override;	
 	unsigned int GetLives() const;
 	unsigned int GetPoints() const;

@@ -25,12 +25,16 @@ PlayerBehaviourComponent::~PlayerBehaviourComponent()
 {
 }
 
-void PlayerBehaviourComponent::Start()
+void PlayerBehaviourComponent::Awake()
 {
 	this->tilePosition = GetOwner()->GetComponent<TileMapPositionComponent>();
 	this->tileMovement = GetOwner()->GetComponent<TileMovementComponent>();
-	this->animationRenderer = GetOwner()->GetComponent<SpriteAnimationComponent>();	
-	// setup collisions
+	this->animationRenderer = GetOwner()->GetComponent<SpriteAnimationComponent>();
+}
+
+void PlayerBehaviourComponent::Start()
+{
+	// setup collisions	
 	CollisionComponent* collisionComponent = GetOwner()->GetComponent<CollisionComponent>();
 	std::vector<GameObject*> ghostObjects = GameController::Instance->GetGameObjectsByTag(GameObjectTag::Ghost);
 	for (GameObject* ghostObject : ghostObjects) 

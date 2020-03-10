@@ -29,9 +29,8 @@ private:
 	GhostStatus status = GhostStatus::Paused;
 	Timer statusTimer;
 	int statusPhaseIndex = 0;
-	Tile* ghostHouseTile = nullptr;
-	Tile* scatterStatusTarget = nullptr;
 
+protected:
 	SpriteAnimationComponent* animationRenderer = nullptr;
 	TileMapPositionComponent* tilePosition = nullptr;
 	TileMovementComponent* tileMovement = nullptr;
@@ -44,13 +43,15 @@ public:
 	void Start() override;	
 	GhostStatus GetStatus() const;
 	void ForceTimer(const float seconds);
-	void SetGhostHouseTile(const unsigned int x, const unsigned int y);
-	void SetScatterStatusTarget(const unsigned int x, const unsigned int y);
 	void Kill();
 	void OnEvent(const BigDotCollectedEventArgs& event, const BigDotCollectedEventDispatcher& sender) override;
 
 protected:
 	void _Update(const float& deltaTime) override;
+	virtual void _InitAnimations() = 0;
+	virtual Tile* _GetGhostHouseTargetTile() const = 0;
+	virtual Tile* _GetScatterTargetTile() const = 0;
+	virtual Tile* _GetChaseTargetTile() const = 0;
 
 private:
 	void _NextStatus();
@@ -60,5 +61,41 @@ private:
 	void _SetFrightenedStatus();
 	void _SetLeavingGhostHouseStatus();
 	Tile* _GetRandomPlayerWalkableTile() const;
+};
+
+class RedGhostBehaviourComponent : public GhostBehaviourComponent 
+{
+protected:
+	void _InitAnimations() override;
+	Tile* _GetGhostHouseTargetTile() const override;
+	Tile* _GetScatterTargetTile() const override;
+	Tile* _GetChaseTargetTile() const override;
+};
+
+class BlueGhostBehaviourComponent : public GhostBehaviourComponent
+{
+protected:
+	void _InitAnimations() override;
+	Tile* _GetGhostHouseTargetTile() const override;
+	Tile* _GetScatterTargetTile() const override;
+	Tile* _GetChaseTargetTile() const override;
+};
+
+class PinkGhostBehaviourComponent : public GhostBehaviourComponent
+{
+protected:
+	void _InitAnimations() override;
+	Tile* _GetGhostHouseTargetTile() const override;
+	Tile* _GetScatterTargetTile() const override;
+	Tile* _GetChaseTargetTile() const override;
+};
+
+class OrangeGhostBehaviourComponent : public GhostBehaviourComponent
+{
+protected:
+	void _InitAnimations() override;
+	Tile* _GetGhostHouseTargetTile() const override;
+	Tile* _GetScatterTargetTile() const override;
+	Tile* _GetChaseTargetTile() const override;
 };
 #endif // GHOSTBEHAVIOURCOMPONENT_H

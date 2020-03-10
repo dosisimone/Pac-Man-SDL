@@ -28,13 +28,16 @@ void GhostBehaviourComponent::Awake()
 	this->tileMovement = GetOwner()->GetComponent<TileMovementComponent>();
 	this->pathfinder = GetOwner()->GetComponent<GhostPathfinderComponent>();
 	this->animationRenderer = GetOwner()->GetComponent<SpriteAnimationComponent>();	
+	_InitAnimations();
 }
 
 void GhostBehaviourComponent::Start()
 {
-	this->tileMovement->SetCurrentTile(this->ghostHouseTile->x, this->ghostHouseTile->y);
+	Tile* ghostHouseTile = _GetGhostHouseTargetTile();
+	this->tileMovement->SetCurrentTile(ghostHouseTile->x, ghostHouseTile->y);
 	this->tileMovement->SetActive(false);
 	this->pathfinder->SetActive(false);
+	//setup animations
 	this->animationRenderer->SetCurrentAnimation("default");
 	// subscribe to events
 	PlayerBehaviourComponent* playerBehaviour = GameController::Instance->GetComponent<PlayerBehaviourComponent>();
@@ -57,24 +60,6 @@ void GhostBehaviourComponent::ForceTimer(const float seconds)
 	statusTimer.Reset();
 }
 
-void GhostBehaviourComponent::SetGhostHouseTile(const unsigned int x, const unsigned int y)
-{
-	if (!this->tilePosition->GetTileMap()->AreCoordsValid(x, y))
-	{
-		return;
-	}
-	this->ghostHouseTile = this->tilePosition->GetTileMap()->GetTile(x, y);
-}
-
-void GhostBehaviourComponent::SetScatterStatusTarget(const unsigned int x, const unsigned int y)
-{
-	if (!this->tilePosition->GetTileMap()->AreCoordsValid(x, y)) 
-	{
-		return;
-	}
-	this->scatterStatusTarget = this->tilePosition->GetTileMap()->GetTile(x, y);
-}
-
 void GhostBehaviourComponent::Kill()
 {
 	if (this->status != GhostStatus::Frightened)
@@ -84,7 +69,8 @@ void GhostBehaviourComponent::Kill()
 	this->status = GhostStatus::Dead;
 	this->animationRenderer->SetCurrentAnimation("dead");
 	this->pathfinder->SetStrictObstacleAvoidance(false);
-	this->pathfinder->SetTarget(this->ghostHouseTile->x, this->ghostHouseTile->y);
+	Tile* ghostHouseTile = _GetGhostHouseTargetTile();
+	this->pathfinder->SetTarget(ghostHouseTile->x, ghostHouseTile->y);
 }
 
 void GhostBehaviourComponent::OnEvent(const BigDotCollectedEventArgs& event, const BigDotCollectedEventDispatcher& sender)
@@ -216,7 +202,8 @@ void GhostBehaviourComponent::_SetScatterStatus()
 	statusTimer.Reset();
 	this->animationRenderer->SetCurrentAnimation("default");
 	this->pathfinder->SetStrictObstacleAvoidance(true);
-	this->pathfinder->SetTarget(this->scatterStatusTarget->x, this->scatterStatusTarget->y);	
+	Tile* scatterStatusTarget = _GetScatterTargetTile();
+	this->pathfinder->SetTarget(scatterStatusTarget->x, scatterStatusTarget->y);	
 }
 
 void GhostBehaviourComponent::_SetFrightenedStatus()
@@ -272,3 +259,148 @@ Tile* GhostBehaviourComponent::_GetRandomPlayerWalkableTile() const
 	while (!tile->isPlayerWalkable);
 	return tile;
 }
+
+
+//RED GHOST
+void RedGhostBehaviourComponent::_InitAnimations()
+{
+	SpriteAnimationComponent::Animation defaultGhostAnimation;
+	defaultGhostAnimation.name = "default";
+	defaultGhostAnimation.sprites = { "ghost_32_red.png" };
+	defaultGhostAnimation.secondsBtwFrames = 60.f;
+	SpriteAnimationComponent::Animation deadGhostAnimation;
+	deadGhostAnimation.name = "dead";
+	deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
+	deadGhostAnimation.secondsBtwFrames = 60.f;
+	SpriteAnimationComponent::Animation frightenedGhostAnimation;
+	frightenedGhostAnimation.name = "frightened";
+	frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
+	frightenedGhostAnimation.secondsBtwFrames = 60.f;
+	this->animationRenderer->AddAnimation(defaultGhostAnimation);
+	this->animationRenderer->AddAnimation(deadGhostAnimation);
+	this->animationRenderer->AddAnimation(frightenedGhostAnimation);
+}
+
+Tile* RedGhostBehaviourComponent::_GetGhostHouseTargetTile() const
+{
+	return this->tilePosition->GetTileMap()->GetTile(12, 16);
+}
+
+Tile* RedGhostBehaviourComponent::_GetScatterTargetTile() const
+{
+	return this->tilePosition->GetTileMap()->GetTile(27, 30);
+}
+
+Tile* RedGhostBehaviourComponent::_GetChaseTargetTile() const
+{
+	return nullptr;
+}
+//END RED GHOST
+
+//ORANGE GHOST
+void OrangeGhostBehaviourComponent::_InitAnimations()
+{
+	SpriteAnimationComponent::Animation defaultGhostAnimation;
+	defaultGhostAnimation.name = "default";
+	defaultGhostAnimation.sprites = { "ghost_32_orange.png" };
+	defaultGhostAnimation.secondsBtwFrames = 60.f;
+	SpriteAnimationComponent::Animation deadGhostAnimation;
+	deadGhostAnimation.name = "dead";
+	deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
+	deadGhostAnimation.secondsBtwFrames = 60.f;
+	SpriteAnimationComponent::Animation frightenedGhostAnimation;
+	frightenedGhostAnimation.name = "frightened";
+	frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
+	frightenedGhostAnimation.secondsBtwFrames = 60.f;
+	this->animationRenderer->AddAnimation(defaultGhostAnimation);
+	this->animationRenderer->AddAnimation(deadGhostAnimation);
+	this->animationRenderer->AddAnimation(frightenedGhostAnimation);
+}
+
+Tile* OrangeGhostBehaviourComponent::_GetGhostHouseTargetTile() const
+{
+	return this->tilePosition->GetTileMap()->GetTile(15, 16);
+}
+
+Tile* OrangeGhostBehaviourComponent::_GetScatterTargetTile() const
+{
+	return this->tilePosition->GetTileMap()->GetTile(27, 0);
+}
+
+Tile* OrangeGhostBehaviourComponent::_GetChaseTargetTile() const
+{
+	return nullptr;
+}
+//END ORANGE GHOST
+
+//PINK GHOST
+void PinkGhostBehaviourComponent::_InitAnimations()
+{
+	SpriteAnimationComponent::Animation defaultGhostAnimation;
+	defaultGhostAnimation.name = "default";
+	defaultGhostAnimation.sprites = { "ghost_32_pink.png" };
+	defaultGhostAnimation.secondsBtwFrames = 60.f;
+	SpriteAnimationComponent::Animation deadGhostAnimation;
+	deadGhostAnimation.name = "dead";
+	deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
+	deadGhostAnimation.secondsBtwFrames = 60.f;
+	SpriteAnimationComponent::Animation frightenedGhostAnimation;
+	frightenedGhostAnimation.name = "frightened";
+	frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
+	frightenedGhostAnimation.secondsBtwFrames = 60.f;
+	this->animationRenderer->AddAnimation(defaultGhostAnimation);
+	this->animationRenderer->AddAnimation(deadGhostAnimation);
+	this->animationRenderer->AddAnimation(frightenedGhostAnimation);
+}
+
+Tile* PinkGhostBehaviourComponent::_GetGhostHouseTargetTile() const
+{
+	return this->tilePosition->GetTileMap()->GetTile(14, 16);
+}
+
+Tile* PinkGhostBehaviourComponent::_GetScatterTargetTile() const
+{
+	return this->tilePosition->GetTileMap()->GetTile(0, 0);
+}
+
+Tile* PinkGhostBehaviourComponent::_GetChaseTargetTile() const
+{
+	return nullptr;
+}
+//END PINK GHOST
+
+//BLUE GHOST
+void BlueGhostBehaviourComponent::_InitAnimations()
+{
+	SpriteAnimationComponent::Animation defaultGhostAnimation;
+	defaultGhostAnimation.name = "default";
+	defaultGhostAnimation.sprites = { "ghost_32_cyan.png" };
+	defaultGhostAnimation.secondsBtwFrames = 60.f;
+	SpriteAnimationComponent::Animation deadGhostAnimation;
+	deadGhostAnimation.name = "dead";
+	deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
+	deadGhostAnimation.secondsBtwFrames = 60.f;
+	SpriteAnimationComponent::Animation frightenedGhostAnimation;
+	frightenedGhostAnimation.name = "frightened";
+	frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
+	frightenedGhostAnimation.secondsBtwFrames = 60.f;
+	this->animationRenderer->AddAnimation(defaultGhostAnimation);
+	this->animationRenderer->AddAnimation(deadGhostAnimation);
+	this->animationRenderer->AddAnimation(frightenedGhostAnimation);
+}
+
+Tile* BlueGhostBehaviourComponent::_GetGhostHouseTargetTile() const
+{
+	return this->tilePosition->GetTileMap()->GetTile(13, 16);
+}
+
+Tile* BlueGhostBehaviourComponent::_GetScatterTargetTile() const
+{
+	return this->tilePosition->GetTileMap()->GetTile(0, 30);
+}
+
+Tile* BlueGhostBehaviourComponent::_GetChaseTargetTile() const
+{
+	return nullptr;
+}
+//END BLUE GHOST

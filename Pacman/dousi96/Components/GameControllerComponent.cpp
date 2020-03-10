@@ -234,129 +234,61 @@ void GameControllerComponent::_InstanceGhosts()
 		// rendering
 		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
 		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
-		SpriteAnimationComponent::Animation defaultGhostAnimation;
-		defaultGhostAnimation.name = "default";
-		defaultGhostAnimation.sprites = { "ghost_32_red.png" };
-		defaultGhostAnimation.secondsBtwFrames = 60.f;
-		SpriteAnimationComponent::Animation deadGhostAnimation;
-		deadGhostAnimation.name = "dead";
-		deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
-		deadGhostAnimation.secondsBtwFrames = 60.f;
-		SpriteAnimationComponent::Animation frightenedGhostAnimation;
-		frightenedGhostAnimation.name = "frightened";
-		frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
-		frightenedGhostAnimation.secondsBtwFrames = 60.f;
-		spriteAnimationRenderer->AddAnimation(defaultGhostAnimation);
-		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
-		spriteAnimationRenderer->AddAnimation(frightenedGhostAnimation);
 		// tilemap position & movement
 		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
 		tileMapPosition->SetTileMap(this->GetTileMap());
 		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
 		tileMovement->SetSpeed(3.f);
 		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
-		GhostBehaviourComponent* ghostBehaviourComponent = ghostObject->AddComponent<GhostBehaviourComponent>();
-		ghostBehaviourComponent->SetGhostHouseTile(12, 16);
-		ghostBehaviourComponent->SetScatterStatusTarget(27, 30);
-		ghostBehaviours.push_back(ghostBehaviourComponent);
+		RedGhostBehaviourComponent* redGhostBehaviourComponent = ghostObject->AddComponent<RedGhostBehaviourComponent>();
+		ghostBehaviours.push_back(redGhostBehaviourComponent);
 	}
-	//ghost 2
+	//blue ghost
 	{
 		GameObject* ghostObject = GameController::Instance->CreateGameObject();
 		ghostObject->Tag = GameObjectTag::Ghost;
 		// rendering
 		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
 		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
-		SpriteAnimationComponent::Animation defaultGhostAnimation;
-		defaultGhostAnimation.name = "default";
-		defaultGhostAnimation.sprites = { "ghost_32_cyan.png" };
-		defaultGhostAnimation.secondsBtwFrames = 60.f;
-		SpriteAnimationComponent::Animation deadGhostAnimation;
-		deadGhostAnimation.name = "dead";
-		deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
-		deadGhostAnimation.secondsBtwFrames = 60.f;
-		SpriteAnimationComponent::Animation frightenedGhostAnimation;
-		frightenedGhostAnimation.name = "frightened";
-		frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
-		frightenedGhostAnimation.secondsBtwFrames = 60.f;
-		spriteAnimationRenderer->AddAnimation(defaultGhostAnimation);
-		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
-		spriteAnimationRenderer->AddAnimation(frightenedGhostAnimation);
 		// tilemap position & movement
 		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
 		tileMapPosition->SetTileMap(this->GetTileMap());
 		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
 		tileMovement->SetSpeed(3.f);
 		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
-		GhostBehaviourComponent* ghostBehaviourComponent = ghostObject->AddComponent<GhostBehaviourComponent>();
-		ghostBehaviourComponent->SetGhostHouseTile(13, 16);
-		ghostBehaviourComponent->SetScatterStatusTarget(0, 30);
-		ghostBehaviours.push_back(ghostBehaviourComponent);
+		BlueGhostBehaviourComponent* blueGhostBehaviourComponent = ghostObject->AddComponent<BlueGhostBehaviourComponent>();
+		ghostBehaviours.push_back(blueGhostBehaviourComponent);
 	}
-	//ghost 3
+	//pink ghost
 	{
 		GameObject* ghostObject = GameController::Instance->CreateGameObject();
 		ghostObject->Tag = GameObjectTag::Ghost;
 		// rendering
 		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
 		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
-		SpriteAnimationComponent::Animation defaultGhostAnimation;
-		defaultGhostAnimation.name = "default";
-		defaultGhostAnimation.sprites = { "ghost_32_pink.png" };
-		defaultGhostAnimation.secondsBtwFrames = 60.f;
-		SpriteAnimationComponent::Animation deadGhostAnimation;
-		deadGhostAnimation.name = "dead";
-		deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
-		deadGhostAnimation.secondsBtwFrames = 60.f;
-		SpriteAnimationComponent::Animation frightenedGhostAnimation;
-		frightenedGhostAnimation.name = "frightened";
-		frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
-		frightenedGhostAnimation.secondsBtwFrames = 60.f;
-		spriteAnimationRenderer->AddAnimation(defaultGhostAnimation);
-		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
-		spriteAnimationRenderer->AddAnimation(frightenedGhostAnimation);
 		// tilemap position & movement
 		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
 		tileMapPosition->SetTileMap(this->GetTileMap());
 		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
 		tileMovement->SetSpeed(3.f);
 		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
-		GhostBehaviourComponent* ghostBehaviourComponent = ghostObject->AddComponent<GhostBehaviourComponent>();
-		ghostBehaviourComponent->SetGhostHouseTile(14, 16);
-		ghostBehaviourComponent->SetScatterStatusTarget(0, 0);
-		ghostBehaviours.push_back(ghostBehaviourComponent);
+		PinkGhostBehaviourComponent* pinkGhostBehaviourComponent = ghostObject->AddComponent<PinkGhostBehaviourComponent>();
+		ghostBehaviours.push_back(pinkGhostBehaviourComponent);
 	}
-	//ghost 4
+	//orange ghost
 	{
 		GameObject* ghostObject = GameController::Instance->CreateGameObject();
 		ghostObject->Tag = GameObjectTag::Ghost;
 		// rendering
 		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
 		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
-		SpriteAnimationComponent::Animation defaultGhostAnimation;
-		defaultGhostAnimation.name = "default";
-		defaultGhostAnimation.sprites = { "ghost_32_orange.png" };
-		defaultGhostAnimation.secondsBtwFrames = 60.f;
-		SpriteAnimationComponent::Animation deadGhostAnimation;
-		deadGhostAnimation.name = "dead";
-		deadGhostAnimation.sprites = { "Ghost_Dead_32.png" };
-		deadGhostAnimation.secondsBtwFrames = 60.f;
-		SpriteAnimationComponent::Animation frightenedGhostAnimation;
-		frightenedGhostAnimation.name = "frightened";
-		frightenedGhostAnimation.sprites = { "Ghost_Vulnerable_32.png" };
-		frightenedGhostAnimation.secondsBtwFrames = 60.f;
-		spriteAnimationRenderer->AddAnimation(defaultGhostAnimation);
-		spriteAnimationRenderer->AddAnimation(deadGhostAnimation);
-		spriteAnimationRenderer->AddAnimation(frightenedGhostAnimation);
 		// tilemap position & movement
 		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
 		tileMapPosition->SetTileMap(this->GetTileMap());
 		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
 		tileMovement->SetSpeed(3.f);
 		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
-		GhostBehaviourComponent* ghostBehaviourComponent = ghostObject->AddComponent<GhostBehaviourComponent>();
-		ghostBehaviourComponent->SetGhostHouseTile(15, 16);
-		ghostBehaviourComponent->SetScatterStatusTarget(27, 0);
-		ghostBehaviours.push_back(ghostBehaviourComponent);
+		OrangeGhostBehaviourComponent* orangeGhostBehaviourComponent = ghostObject->AddComponent<OrangeGhostBehaviourComponent>();
+		ghostBehaviours.push_back(orangeGhostBehaviourComponent);
 	}
 }
