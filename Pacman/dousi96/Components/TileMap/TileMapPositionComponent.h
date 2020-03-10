@@ -13,8 +13,8 @@ private:
 public:
 	TileMapPositionComponent();
 	~TileMapPositionComponent() override;
+	void Awake() override;
 	TileMap* GetTileMap() const;
-	void SetTileMap(TileMap* tileMap);
 	void SetTilePosition(const unsigned int x, const unsigned int y);
 	unsigned int GetTilePositionX() const;
 	unsigned int GetTilePositionY() const;	

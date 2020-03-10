@@ -14,7 +14,7 @@ SpriteAnimationComponent::~SpriteAnimationComponent()
 
 void SpriteAnimationComponent::Awake()
 {
-	this->spriteRenderer = GetOwner()->GetComponent<SpriteRendererComponent>();
+	this->spriteRenderer = GetOwner()->GetOrAddComponent<SpriteRendererComponent>();
 }
 
 void SpriteAnimationComponent::AddAnimation(const Animation& animation)

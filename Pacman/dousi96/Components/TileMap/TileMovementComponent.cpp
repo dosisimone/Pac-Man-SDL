@@ -21,7 +21,7 @@ TileMovementComponent::~TileMovementComponent()
 
 void TileMovementComponent::Awake()
 {
-	this->tileMapPositionComponent = GetOwner()->GetComponent<TileMapPositionComponent>();
+	this->tileMapPositionComponent = GetOwner()->GetOrAddComponent<TileMapPositionComponent>();
 }
 
 void TileMovementComponent::Start()

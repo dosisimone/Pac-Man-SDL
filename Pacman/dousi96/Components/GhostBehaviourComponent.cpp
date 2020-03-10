@@ -24,10 +24,10 @@ GhostBehaviourComponent::~GhostBehaviourComponent()
 
 void GhostBehaviourComponent::Awake()
 {
-	this->tilePosition = GetOwner()->GetComponent<TileMapPositionComponent>();
-	this->tileMovement = GetOwner()->GetComponent<TileMovementComponent>();
-	this->pathfinder = GetOwner()->GetComponent<GhostPathfinderComponent>();
-	this->animationRenderer = GetOwner()->GetComponent<SpriteAnimationComponent>();	
+	this->tilePosition = GetOwner()->GetOrAddComponent<TileMapPositionComponent>();
+	this->tileMovement = GetOwner()->GetOrAddComponent<TileMovementComponent>();
+	this->pathfinder = GetOwner()->GetOrAddComponent<GhostPathfinderComponent>();
+	this->animationRenderer = GetOwner()->GetOrAddComponent<SpriteAnimationComponent>();
 	_InitAnimations();
 }
 
@@ -35,6 +35,7 @@ void GhostBehaviourComponent::Start()
 {
 	Tile* ghostHouseTile = _GetGhostHouseTargetTile();
 	this->tileMovement->SetCurrentTile(ghostHouseTile->x, ghostHouseTile->y);
+	this->tileMovement->SetSpeed(3.f);
 	this->tileMovement->SetActive(false);
 	this->pathfinder->SetActive(false);
 	//setup animations
@@ -119,6 +120,15 @@ void GhostBehaviourComponent::_Update(const float& deltaTime)
 		}
 	}
 	break;
+	case GhostStatus::Chase:
+	{
+		if (this->pathfinder->IsAtFinalDestination())
+		{
+			Tile* chaseStatusTarget = _GetChaseTargetTile();
+			this->pathfinder->SetTarget(chaseStatusTarget->x, chaseStatusTarget->y, false);
+		}
+	}
+	break;
 	}
 }
 
@@ -189,6 +199,8 @@ void GhostBehaviourComponent::_SetChaseStatus()
 	statusTimer.Reset();
 	this->animationRenderer->SetCurrentAnimation("default");
 	this->pathfinder->SetStrictObstacleAvoidance(true);
+	Tile* chaseStatusTarget = _GetChaseTargetTile();
+	this->pathfinder->SetTarget(chaseStatusTarget->x, chaseStatusTarget->y);
 }
 
 void GhostBehaviourComponent::_SetScatterStatus()
@@ -293,7 +305,11 @@ Tile* RedGhostBehaviourComponent::_GetScatterTargetTile() const
 
 Tile* RedGhostBehaviourComponent::_GetChaseTargetTile() const
 {
-	return nullptr;
+	PlayerBehaviourComponent* playerBehaviour = GameController::Instance->GetComponent<PlayerBehaviourComponent>();
+	Vector2f playerWorldPosition = playerBehaviour->GetOwner()->Position;
+	const unsigned int x = this->tilePosition->GetTileMap()->WorldPositionToTilePositionX(playerWorldPosition.X);
+	const unsigned int y = this->tilePosition->GetTileMap()->WorldPositionToTilePositionY(playerWorldPosition.Y);
+	return this->tilePosition->GetTileMap()->GetTile(x, y);
 }
 //END RED GHOST
 
@@ -329,7 +345,24 @@ Tile* OrangeGhostBehaviourComponent::_GetScatterTargetTile() const
 
 Tile* OrangeGhostBehaviourComponent::_GetChaseTargetTile() const
 {
-	return nullptr;
+	const int ghostX = (int)this->tilePosition->GetTilePositionX();
+	const int ghostY = (int)this->tilePosition->GetTilePositionY();
+
+	PlayerBehaviourComponent* playerBehaviour = GameController::Instance->GetComponent<PlayerBehaviourComponent>();
+	TileMovementComponent* playerTileMovementComponent = playerBehaviour->GetOwner()->GetComponent<TileMovementComponent>();
+	Vector2f playerWorldPosition = playerBehaviour->GetOwner()->Position;
+	const int playerX = (int)this->tilePosition->GetTileMap()->WorldPositionToTilePositionX(playerWorldPosition.X);
+	const int playerY = (int)this->tilePosition->GetTileMap()->WorldPositionToTilePositionY(playerWorldPosition.Y);
+
+	int sqrDistance = (ghostY - playerY) * (ghostY - playerY) + (ghostY - playerY) * (ghostY - playerY);
+	if (sqrDistance < 36) 
+	{
+		return _GetScatterTargetTile();
+	}
+	else 
+	{
+		return this->tilePosition->GetTileMap()->GetTile(playerX, playerY);
+	}	
 }
 //END ORANGE GHOST
 
@@ -365,7 +398,25 @@ Tile* PinkGhostBehaviourComponent::_GetScatterTargetTile() const
 
 Tile* PinkGhostBehaviourComponent::_GetChaseTargetTile() const
 {
-	return nullptr;
+	PlayerBehaviourComponent* playerBehaviour = GameController::Instance->GetComponent<PlayerBehaviourComponent>();
+	TileMovementComponent* playerTileMovementComponent = playerBehaviour->GetOwner()->GetComponent<TileMovementComponent>();
+	Vector2f playerWorldPosition = playerBehaviour->GetOwner()->Position;
+	const unsigned int playerX = this->tilePosition->GetTileMap()->WorldPositionToTilePositionX(playerWorldPosition.X);
+	const unsigned int playerY = this->tilePosition->GetTileMap()->WorldPositionToTilePositionY(playerWorldPosition.Y);
+	int playerMoveDirX = playerTileMovementComponent->GetMovementDirectionX();
+	int playerMoveDirY = playerTileMovementComponent->GetMovementDirectionY();
+
+	for (int i = 4; i >= 0; --i)
+	{
+		if (this->tilePosition->GetTileMap()->AreCoordsValid(playerX + playerMoveDirX * i, playerY + playerMoveDirY * i))
+		{
+			playerMoveDirX *= i;
+			playerMoveDirY *= i;
+			break;
+		}
+	}
+
+	return this->tilePosition->GetTileMap()->GetTile(playerX + playerMoveDirX, playerY + playerMoveDirY);
 }
 //END PINK GHOST
 
@@ -401,6 +452,29 @@ Tile* BlueGhostBehaviourComponent::_GetScatterTargetTile() const
 
 Tile* BlueGhostBehaviourComponent::_GetChaseTargetTile() const
 {
-	return nullptr;
+	//RedGhostBehaviourComponent* redGhostBehaviour = GameController::Instance->GetComponent<RedGhostBehaviourComponent>();
+	//Vector2f redGhostWorldPosition = redGhostBehaviour->GetOwner()->Position;
+	//const unsigned int redGhostX = this->tilePosition->GetTileMap()->WorldPositionToTilePositionX(redGhostWorldPosition.X);
+	//const unsigned int redGhostY = this->tilePosition->GetTileMap()->WorldPositionToTilePositionY(redGhostWorldPosition.Y);
+
+	PlayerBehaviourComponent* playerBehaviour = GameController::Instance->GetComponent<PlayerBehaviourComponent>();
+	TileMovementComponent* playerTileMovementComponent = playerBehaviour->GetOwner()->GetComponent<TileMovementComponent>();
+	Vector2f playerWorldPosition = playerBehaviour->GetOwner()->Position;
+	const unsigned int playerX = this->tilePosition->GetTileMap()->WorldPositionToTilePositionX(playerWorldPosition.X);
+	const unsigned int playerY = this->tilePosition->GetTileMap()->WorldPositionToTilePositionY(playerWorldPosition.Y);
+	int playerMoveDirX = playerTileMovementComponent->GetMovementDirectionX() * 2;
+	int playerMoveDirY = playerTileMovementComponent->GetMovementDirectionY() * 2;
+
+	for (int i = 2; i >= 0; --i) 
+	{
+		if (this->tilePosition->GetTileMap()->AreCoordsValid(playerX + playerMoveDirX * i, playerY + playerMoveDirY * i))
+		{
+			playerMoveDirX *= i;
+			playerMoveDirY *= i;
+			break;
+		}
+	}
+
+	return this->tilePosition->GetTileMap()->GetTile(playerX + playerMoveDirX, playerY + playerMoveDirY);
 }
 //END BLUE GHOST

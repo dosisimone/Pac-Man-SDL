@@ -13,18 +13,15 @@ TileMapPositionComponent::~TileMapPositionComponent()
 {
 }
 
+void TileMapPositionComponent::Awake()
+{
+	GameControllerComponent* gameControllerComponent = GameController::Instance->GetComponent<GameControllerComponent>();
+	this->tileMap = gameControllerComponent->GetTileMap();
+}
+
 TileMap* TileMapPositionComponent::GetTileMap() const
 {
 	return this->tileMap;
-}
-
-void TileMapPositionComponent::SetTileMap(TileMap* tileMap)
-{
-	if (tileMap == nullptr) 
-	{
-		return;
-	}
-	this->tileMap = tileMap;
 }
 
 void TileMapPositionComponent::SetTilePosition(const unsigned int x, const unsigned int y)

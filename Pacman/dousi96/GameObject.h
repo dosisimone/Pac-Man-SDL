@@ -62,6 +62,16 @@ public:
 		}
 		return nullptr;
 	}
+	template<class T = Component>
+	T* GetOrAddComponent()
+	{
+		T* component = GetComponent<T>();
+		if (component == nullptr) 
+		{
+			component = AddComponent<T>();
+		}
+		return component;
+	}
 	void RemoveComponent(Component* component);	
 	void SetActive(const bool active);
 

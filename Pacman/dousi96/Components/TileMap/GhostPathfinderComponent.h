@@ -21,7 +21,7 @@ public:
 	GhostPathfinderComponent();
 	~GhostPathfinderComponent() override;
 	void Awake() override;
-	void SetTarget(const unsigned int x, const unsigned int y);	
+	void SetTarget(const unsigned int x, const unsigned int y, const bool allowBackTurn = true);	
 	bool IsAtFinalDestination() const;
 	void SetStrictObstacleAvoidance(const bool strictObstacleAvoidance);
 

@@ -24,7 +24,7 @@ void GhostPathfinderComponent::Awake()
 	this->tileMapMovementComponent = GetOwner()->GetComponent<TileMovementComponent>();
 }
 
-void GhostPathfinderComponent::SetTarget(const unsigned int x, const unsigned int y)
+void GhostPathfinderComponent::SetTarget(const unsigned int x, const unsigned int y, const bool allowBackTurn)
 {
 	TileMap* tilemap = this->tileMapPositionComponent->GetTileMap();
 	if (!tilemap->AreCoordsValid(x, y))
@@ -33,79 +33,14 @@ void GhostPathfinderComponent::SetTarget(const unsigned int x, const unsigned in
 	}
 
 	this->target = tilemap->GetTile(x, y);
-	this->movementDirectionX = 0;
-	this->movementDirectionY = 0;
 
-	const int kSizeX = (int)tilemap->GetSizeX();
-	const int kSizeY = (int)tilemap->GetSizeY();
-	const int kCurrX = (int)this->tileMapMovementComponent->GetCurrentTileX();
-	const int kCurrY = (int)this->tileMapMovementComponent->GetCurrentTileY();
+	if (allowBackTurn) 
+	{
+		this->movementDirectionX = 0;
+		this->movementDirectionY = 0;
+	}
 
-	int minSqrDistance = (kSizeX * kSizeX) + (kSizeY * kSizeY) + 1;
-	//right
-	{
-		const int kRightCoordX = (kCurrX + 1) % kSizeX;
-		Tile* right = tilemap->GetTile(kRightCoordX, kCurrY);
-		if (_IsWalkable(right))
-		{
-			int sqrDistance = _GetSqrDistance(target, right);
-			if (sqrDistance < minSqrDistance)
-			{
-				this->tileMapMovementComponent->SetDestination(right->x, right->y);
-				this->movementDirectionX = 1;
-				this->movementDirectionY = 0;
-				minSqrDistance = sqrDistance;
-			}
-		}
-	}
-	// up
-	{
-		const int kUpCoordY = (kCurrY + 1) % kSizeY;
-		Tile* up = tilemap->GetTile(kCurrX, kUpCoordY);
-		if (_IsWalkable(up))
-		{
-			int sqrDistance = _GetSqrDistance(target, up);
-			if (sqrDistance < minSqrDistance)
-			{
-				this->tileMapMovementComponent->SetDestination(up->x, up->y);
-				this->movementDirectionX = 0;
-				this->movementDirectionY = 1;
-				minSqrDistance = sqrDistance;
-			}
-		}
-	}
-	//left
-	{
-		const int kLeftCoordX = (kCurrX + kSizeX - 1) % kSizeX;
-		Tile* left = tilemap->GetTile(kLeftCoordX, kCurrY);
-		if (_IsWalkable(left))
-		{
-			int sqrDistance = _GetSqrDistance(target, left);
-			if (sqrDistance < minSqrDistance)
-			{
-				this->tileMapMovementComponent->SetDestination(left->x, left->y);
-				this->movementDirectionX = -1;
-				this->movementDirectionY = 0;
-				minSqrDistance = sqrDistance;
-			}
-		}
-	}
-	//down
-	{
-		const int kDownCoordY = (kCurrY + kSizeY - 1) % kSizeY;
-		Tile* down = tilemap->GetTile(kCurrX, kDownCoordY);
-		if (_IsWalkable(down))
-		{
-			int sqrDistance = _GetSqrDistance(target, down);
-			if (sqrDistance < minSqrDistance)
-			{
-				this->tileMapMovementComponent->SetDestination(down->x, down->y);
-				this->movementDirectionX = 0;
-				this->movementDirectionY = -1;
-				minSqrDistance = sqrDistance;
-			}
-		}
-	}
+	_CalcNextDestination();
 }
 
 bool GhostPathfinderComponent::IsAtFinalDestination() const

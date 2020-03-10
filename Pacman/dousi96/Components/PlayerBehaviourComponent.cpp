@@ -27,13 +27,22 @@ PlayerBehaviourComponent::~PlayerBehaviourComponent()
 
 void PlayerBehaviourComponent::Awake()
 {
-	this->tilePosition = GetOwner()->GetComponent<TileMapPositionComponent>();
-	this->tileMovement = GetOwner()->GetComponent<TileMovementComponent>();
-	this->animationRenderer = GetOwner()->GetComponent<SpriteAnimationComponent>();
+	this->tilePosition = GetOwner()->GetOrAddComponent<TileMapPositionComponent>();
+	this->tileMovement = GetOwner()->GetOrAddComponent<TileMovementComponent>();
+	this->animationRenderer = GetOwner()->GetOrAddComponent<SpriteAnimationComponent>();
+	GetOwner()->GetOrAddComponent<CollisionComponent>();
+	//init animations
+	SpriteAnimationComponent::Animation defaultPlayerAnimation;
+	defaultPlayerAnimation.name = "default";
+	defaultPlayerAnimation.sprites = { "open_32.png" , "closed_32.png" };
+	defaultPlayerAnimation.secondsBtwFrames = 0.25f;
+	this->animationRenderer->AddAnimation(defaultPlayerAnimation);
 }
 
 void PlayerBehaviourComponent::Start()
 {
+	this->tilePosition->SetTilePosition(14, 7);
+	this->tileMovement->SetSpeed(4.f);
 	// setup collisions	
 	CollisionComponent* collisionComponent = GetOwner()->GetComponent<CollisionComponent>();
 	std::vector<GameObject*> ghostObjects = GameController::Instance->GetGameObjectsByTag(GameObjectTag::Ghost);
@@ -57,7 +66,6 @@ void PlayerBehaviourComponent::Start()
 		collisionComponent->AddTarget(dotObject);
 	}
 	collisionComponent->Subscribe((CollisionEventListener*)this);
-
 	// subscribe to events
 
 

@@ -124,7 +124,6 @@ void GameControllerComponent::_InstanceMapObjects()
 
 			GameObject* tileObject = GameController::Instance->CreateGameObject();
 			TileMapPositionComponent* tileMapPosition = tileObject->AddComponent<TileMapPositionComponent>();
-			tileMapPosition->SetTileMap(this->GetTileMap());
 			tileMapPosition->SetTilePosition(x, y);
 			switch (tile->type)
 			{
@@ -208,38 +207,15 @@ void GameControllerComponent::_InstancePlayer()
 {
 	GameObject* playerObject = GameController::Instance->CreateGameObject();
 	playerObject->Tag = GameObjectTag::Player;
-	SpriteRendererComponent* spriteRenderer = playerObject->AddComponent<SpriteRendererComponent>();
-	SpriteAnimationComponent* spriteAnimationRenderer = playerObject->AddComponent<SpriteAnimationComponent>();
-	SpriteAnimationComponent::Animation defaultPlayerAnimation;
-	defaultPlayerAnimation.name = "default";
-	defaultPlayerAnimation.sprites = { "open_32.png" , "closed_32.png" };
-	defaultPlayerAnimation.secondsBtwFrames = 0.25f;
-	spriteAnimationRenderer->AddAnimation(defaultPlayerAnimation);
-
-	TileMapPositionComponent* tileMapPosition = playerObject->AddComponent<TileMapPositionComponent>();
-	tileMapPosition->SetTileMap(this->GetTileMap());
-	tileMapPosition->SetTilePosition(14, 7);
-	TileMovementComponent* tileMovement = playerObject->AddComponent<TileMovementComponent>();
-	tileMovement->SetSpeed(4.f);
-	CollisionComponent* collisionComponent = playerObject->AddComponent<CollisionComponent>();
 	PlayerBehaviourComponent* playerBehaviourComponent = playerObject->AddComponent<PlayerBehaviourComponent>();
 }
 
 void GameControllerComponent::_InstanceGhosts()
 {
-	//ghost 1
+	//red ghost
 	{
 		GameObject* ghostObject = GameController::Instance->CreateGameObject();
 		ghostObject->Tag = GameObjectTag::Ghost;
-		// rendering
-		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
-		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
-		// tilemap position & movement
-		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
-		tileMapPosition->SetTileMap(this->GetTileMap());
-		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
-		tileMovement->SetSpeed(3.f);
-		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
 		RedGhostBehaviourComponent* redGhostBehaviourComponent = ghostObject->AddComponent<RedGhostBehaviourComponent>();
 		ghostBehaviours.push_back(redGhostBehaviourComponent);
 	}
@@ -247,15 +223,6 @@ void GameControllerComponent::_InstanceGhosts()
 	{
 		GameObject* ghostObject = GameController::Instance->CreateGameObject();
 		ghostObject->Tag = GameObjectTag::Ghost;
-		// rendering
-		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
-		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
-		// tilemap position & movement
-		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
-		tileMapPosition->SetTileMap(this->GetTileMap());
-		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
-		tileMovement->SetSpeed(3.f);
-		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
 		BlueGhostBehaviourComponent* blueGhostBehaviourComponent = ghostObject->AddComponent<BlueGhostBehaviourComponent>();
 		ghostBehaviours.push_back(blueGhostBehaviourComponent);
 	}
@@ -263,15 +230,6 @@ void GameControllerComponent::_InstanceGhosts()
 	{
 		GameObject* ghostObject = GameController::Instance->CreateGameObject();
 		ghostObject->Tag = GameObjectTag::Ghost;
-		// rendering
-		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
-		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
-		// tilemap position & movement
-		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
-		tileMapPosition->SetTileMap(this->GetTileMap());
-		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
-		tileMovement->SetSpeed(3.f);
-		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
 		PinkGhostBehaviourComponent* pinkGhostBehaviourComponent = ghostObject->AddComponent<PinkGhostBehaviourComponent>();
 		ghostBehaviours.push_back(pinkGhostBehaviourComponent);
 	}
@@ -279,15 +237,6 @@ void GameControllerComponent::_InstanceGhosts()
 	{
 		GameObject* ghostObject = GameController::Instance->CreateGameObject();
 		ghostObject->Tag = GameObjectTag::Ghost;
-		// rendering
-		SpriteRendererComponent* spriteRenderer = ghostObject->AddComponent<SpriteRendererComponent>();
-		SpriteAnimationComponent* spriteAnimationRenderer = ghostObject->AddComponent<SpriteAnimationComponent>();
-		// tilemap position & movement
-		TileMapPositionComponent* tileMapPosition = ghostObject->AddComponent<TileMapPositionComponent>();
-		tileMapPosition->SetTileMap(this->GetTileMap());
-		TileMovementComponent* tileMovement = ghostObject->AddComponent<TileMovementComponent>();
-		tileMovement->SetSpeed(3.f);
-		GhostPathfinderComponent* tileMapPathfinder = ghostObject->AddComponent<GhostPathfinderComponent>();
 		OrangeGhostBehaviourComponent* orangeGhostBehaviourComponent = ghostObject->AddComponent<OrangeGhostBehaviourComponent>();
 		ghostBehaviours.push_back(orangeGhostBehaviourComponent);
 	}
