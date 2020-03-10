@@ -13,8 +13,6 @@
 
 PlayerBehaviourComponent::PlayerBehaviourComponent()
 {
-	this->points = 0;
-	this->lives = 2;
 	this->animationRenderer = nullptr;
 	this->tilePosition = nullptr;
 	this->tileMovement = nullptr;
@@ -66,16 +64,6 @@ void PlayerBehaviourComponent::Start()
 		collisionComponent->AddTarget(dotObject);
 	}
 	collisionComponent->Subscribe((CollisionEventListener*)this);
-	// subscribe to events
-
-
-	// update the UI
-	LivesValueUpdatedEventArgs livesValueUpdatedEventArgs;
-	livesValueUpdatedEventArgs.lives = this->lives;
-	LivesValueUpdatedEventDispatcher::Invoke(livesValueUpdatedEventArgs);
-	PointsValueUpdatedEventArgs pointsUpdatedEventArgs;
-	pointsUpdatedEventArgs.points = this->points;
-	PointsValueUpdatedEventDispatcher::Invoke(pointsUpdatedEventArgs);
 }
 
 void PlayerBehaviourComponent::_Update(const float& deltaTime)
@@ -114,16 +102,6 @@ void PlayerBehaviourComponent::_Update(const float& deltaTime)
 	this->animationRenderer->SetFlip(kFlipX, false);	
 }
 
-unsigned int PlayerBehaviourComponent::GetLives() const
-{
-	return this->lives;
-}
-
-unsigned int PlayerBehaviourComponent::GetPoints() const
-{
-	return this->points;
-}
-
 void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const CollisionEventDispatcher& sender)
 {
 	switch (event.hit->Tag) 
@@ -131,12 +109,12 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 		case GameObjectTag::BigDot:
 		{
 			_BigDotCollected();
+			GameController::Instance->Destroy(event.hit);
 		}
+		break;
 		case GameObjectTag::Dot:
 		{
-			DotComponent* dot = event.hit->GetComponent<DotComponent>();
-			_AddPoints(dot->GetPointsToAdd());
-			//destroy the dot on the map
+			_SimpleDotCollected();
 			GameController::Instance->Destroy(event.hit);
 		}
 		break;
@@ -168,7 +146,6 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 				if (ghost->GetStatus() == GhostBehaviourComponent::GhostStatus::Frightened)
 				{
 					ghost->Kill();
-					_AddPoints(200);
 				}
 				else 
 				{
@@ -180,13 +157,10 @@ void PlayerBehaviourComponent::OnEvent(const CollisionEventArgs& event, const Co
 	}
 }
 
-void PlayerBehaviourComponent::_AddPoints(const unsigned int pointsToAdd)
+void PlayerBehaviourComponent::_SimpleDotCollected()
 {
-	this->points += pointsToAdd;
-	//invoke the event
-	PointsValueUpdatedEventArgs pointsUpdatedEventArgs;
-	pointsUpdatedEventArgs.points = this->points;
-	PointsValueUpdatedEventDispatcher::Invoke(pointsUpdatedEventArgs);
+	SimpleDotCollectedEventArgs simpleDotCollectedEventArgs;
+	SimpleDotCollectedEventDispatcher::Invoke(simpleDotCollectedEventArgs);
 }
 
 void PlayerBehaviourComponent::_BigDotCollected()
@@ -197,10 +171,8 @@ void PlayerBehaviourComponent::_BigDotCollected()
 
 void PlayerBehaviourComponent::_Death()
 {
-	this->lives -= 1;
-	LivesValueUpdatedEventArgs livesValueUpdatedEventArgs;
-	livesValueUpdatedEventArgs.lives = this->lives;
-	LivesValueUpdatedEventDispatcher::Invoke(livesValueUpdatedEventArgs);
+	PlayerDeathEventArgs playerDeathArgs;
+	PlayerDeathEventDispatcher::Invoke(playerDeathArgs);
 }
 
 bool PlayerBehaviourComponent::_IsPlayerWalkable(const unsigned int x, const unsigned int y) const

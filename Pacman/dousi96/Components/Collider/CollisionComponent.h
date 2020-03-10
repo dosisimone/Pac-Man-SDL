@@ -15,7 +15,6 @@ private:
 public:
 	CollisionComponent();
 	~CollisionComponent() override;
-	void Start() override;	
 	void AddTarget(GameObject* newTarget);
 	void Subscribe(CollisionEventListener* listener) { CollisionEventDispatcher::Subscribe(listener); }
 	void Unsubscribe(CollisionEventListener* listener) { CollisionEventDispatcher::Unsubscribe(listener); }

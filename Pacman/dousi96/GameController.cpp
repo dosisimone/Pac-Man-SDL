@@ -77,8 +77,25 @@ void GameController::Destroy(GameObject* gameObject)
 	{
 		return;
 	}
+	for (GameObject* gameObjectToDestroy : gameObjectsToDestroy) 
+	{
+		if (gameObjectToDestroy == gameObject) 
+		{
+			return;
+		}
+	}
 	gameObject->SetActive(false);
 	gameObjectsToDestroy.push_back(gameObject);
+}
+
+std::vector<GameObject*> GameController::GetAllGameObjects() const
+{
+	std::vector<GameObject*> result;
+	for (GameObject* obj : gameObjects)
+	{	
+		result.push_back(obj);
+	}
+	return result;
 }
 
 std::vector<GameObject*> GameController::GetGameObjectsByTag(const GameObjectTag& tag)

@@ -31,7 +31,7 @@ GameControllerComponent::~GameControllerComponent()
 
 void GameControllerComponent::Awake()
 {
-	this->SetDurationChangeState(0.0f);
+	this->SetDurationChangeState(3.0f);
 }
 
 void GameControllerComponent::Start()
@@ -41,15 +41,6 @@ void GameControllerComponent::Start()
 	_InstanceUIObjects();
 	_InstancePlayer();
 	_InstanceGhosts();
-
-	playerBehaviour = GameController::Instance->GetComponent<PlayerBehaviourComponent>();
-	playerBehaviour->GetOwner()->SetActive(false);
-
-	ghostBehaviours  = GameController::Instance->GetComponents<GhostBehaviourComponent>();
-	for (GhostBehaviourComponent* ghostBehaviour : ghostBehaviours)
-	{		
-		ghostBehaviour->GetOwner()->SetActive(false);
-	}
 }
 
 void GameControllerComponent::SetDurationChangeState(const float duration)
@@ -60,6 +51,51 @@ void GameControllerComponent::SetDurationChangeState(const float duration)
 TileMap* GameControllerComponent::GetTileMap() const
 {
 	return this->tileMap;
+}
+
+void GameControllerComponent::OnEvent(const PlayerDeathEventArgs& event, const PlayerDeathEventDispatcher& sender)
+{
+	if (this->state != GameState::Playing) 
+	{
+		return;
+	}
+
+	if (lives == 0) 
+	{
+		_GameOver();
+		return;
+	}
+
+	lives--;
+
+	_ResetGame();	
+}
+
+void GameControllerComponent::OnEvent(const SimpleDotCollectedEventArgs& event, const SimpleDotCollectedEventDispatcher& sender)
+{
+	totDotsOnMap--;
+	_AddPoints(10);
+
+	if (totDotsOnMap == 0) 
+	{
+		_PlayerWin();
+	}
+}
+
+void GameControllerComponent::OnEvent(const BigDotCollectedEventArgs& event, const BigDotCollectedEventDispatcher& sender)
+{
+	totDotsOnMap--;
+	_AddPoints(50);
+
+	if (totDotsOnMap == 0)
+	{
+		_PlayerWin();
+	}
+}
+
+void GameControllerComponent::OnEvent(const GhostKilledEventArgs& event, const GhostKilledEventDispatcher& sender)
+{
+	_AddPoints(200);
 }
 
 void GameControllerComponent::_Update(const float& deltaTime)
@@ -75,20 +111,15 @@ void GameControllerComponent::_Update(const float& deltaTime)
 		case GameState::Paused:
 		{
 			this->state = GameState::Playing;
-
-			playerBehaviour->GetOwner()->SetActive(true);
+			playerBehaviour->SetActive(true);
 
 			int timerIndex = 0;
 			for (GhostBehaviourComponent* ghostBehaviour : ghostBehaviours)
-			{				
-				ghostBehaviour->ForceTimer(3.f * timerIndex + 1.f);
-				ghostBehaviour->GetOwner()->SetActive(true);
+			{						
+				ghostBehaviour->ForceTimer(5.f * timerIndex + 1.f);
+				ghostBehaviour->SetActive(true);				
 				timerIndex++;
 			}
-
-
-
-
 		}
 		break;
 	}
@@ -128,12 +159,11 @@ void GameControllerComponent::_InstanceMapObjects()
 			switch (tile->type)
 			{
 			case TileType::Dot:
-			{
+			{				
 				tileObject->Tag = GameObjectTag::Dot;
 				SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();
 				spriteRenderer->SetSprite("Small_Dot_32.png");
-				DotComponent* dot = tileObject->AddComponent<DotComponent>();
-				dot->SetPointsToAdd(10);
+				totDotsOnMap++;
 			}
 			break;
 			case TileType::BigDot:
@@ -141,8 +171,7 @@ void GameControllerComponent::_InstanceMapObjects()
 				tileObject->Tag = GameObjectTag::BigDot;
 				SpriteRendererComponent* spriteRenderer = tileObject->AddComponent<SpriteRendererComponent>();
 				spriteRenderer->SetSprite("Big_Dot_32.png");
-				DotComponent* dot = tileObject->AddComponent<DotComponent>();
-				dot->SetPointsToAdd(50);
+				totDotsOnMap++;
 			}
 			break;
 			case TileType::Teleport:
@@ -207,7 +236,13 @@ void GameControllerComponent::_InstancePlayer()
 {
 	GameObject* playerObject = GameController::Instance->CreateGameObject();
 	playerObject->Tag = GameObjectTag::Player;
-	PlayerBehaviourComponent* playerBehaviourComponent = playerObject->AddComponent<PlayerBehaviourComponent>();
+	this->playerBehaviour = playerObject->AddComponent<PlayerBehaviourComponent>();
+	this->playerBehaviour->SetActive(false);
+	//subscribe to player events
+	this->playerBehaviour->Subscribe((PlayerDeathEventListener*)this);
+	this->playerBehaviour->Subscribe((SimpleDotCollectedEventListener*)this);
+	this->playerBehaviour->Subscribe((BigDotCollectedEventListener*)this);
+	this->playerBehaviour->Subscribe((GhostKilledEventListener*)this);
 }
 
 void GameControllerComponent::_InstanceGhosts()
@@ -240,4 +275,75 @@ void GameControllerComponent::_InstanceGhosts()
 		OrangeGhostBehaviourComponent* orangeGhostBehaviourComponent = ghostObject->AddComponent<OrangeGhostBehaviourComponent>();
 		ghostBehaviours.push_back(orangeGhostBehaviourComponent);
 	}
+
+	for (GhostBehaviourComponent* ghostBehaviour : ghostBehaviours) 
+	{
+		ghostBehaviour->SetActive(false);
+	}
+}
+
+void GameControllerComponent::_GameOver()
+{
+	this->state = GameState::GameOver;
+
+	std::vector<GameObject*> allGameObjects = GameController::Instance->GetAllGameObjects();
+	for (GameObject* obj : allGameObjects) 
+	{
+		GameController::Instance->Destroy(obj);
+	}
+
+	GameObject* scoreLabelTextUIObject = GameController::Instance->CreateGameObject();
+	scoreLabelTextUIObject->Tag = GameObjectTag::UI;
+	UITextComponent* scoreLabelTextUIComponent = scoreLabelTextUIObject->AddComponent<UITextComponent>();
+	scoreLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+	scoreLabelTextUIComponent->SetScreenPosition(20, 50);
+	scoreLabelTextUIComponent->SetText("GAME OVER");
+}
+
+void GameControllerComponent::_PlayerWin()
+{
+	this->state = GameState::GameOver;
+
+	std::vector<GameObject*> allGameObjects = GameController::Instance->GetAllGameObjects();
+	for (GameObject* obj : allGameObjects)
+	{
+		GameController::Instance->Destroy(obj);
+	}
+
+	GameObject* scoreLabelTextUIObject = GameController::Instance->CreateGameObject();
+	scoreLabelTextUIObject->Tag = GameObjectTag::UI;
+	UITextComponent* scoreLabelTextUIComponent = scoreLabelTextUIObject->AddComponent<UITextComponent>();
+	scoreLabelTextUIComponent->SetFont("freefont-ttf\\sfd\\FreeMonoBold.ttf");
+	scoreLabelTextUIComponent->SetScreenPosition(20, 50);
+	scoreLabelTextUIComponent->SetText("PLAYER WIN!");
+}
+
+void GameControllerComponent::_ResetGame()
+{
+	this->state = GameState::Paused;
+	changeStateTimer.Reset();	
+
+	for (GhostBehaviourComponent* ghost : ghostBehaviours)
+	{
+		GameController::Instance->Destroy(ghost->GetOwner());
+	}
+	ghostBehaviours.clear();
+
+	GameController::Instance->Destroy(playerBehaviour->GetOwner());	
+
+	_InstancePlayer();
+	_InstanceGhosts();
+
+	//setup UI
+	LivesValueUpdatedEventArgs livesValueUpdatedEventArgs;
+	livesValueUpdatedEventArgs.lives = lives;
+	LivesValueUpdatedEventDispatcher::Invoke(livesValueUpdatedEventArgs);
+}
+
+void GameControllerComponent::_AddPoints(const unsigned int pointsToAdd)
+{
+	points += pointsToAdd;
+	PointsValueUpdatedEventArgs pointsValueUpdatedEventArgs;
+	pointsValueUpdatedEventArgs.points = points;
+	PointsValueUpdatedEventDispatcher::Invoke(pointsValueUpdatedEventArgs);
 }

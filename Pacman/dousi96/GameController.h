@@ -29,6 +29,7 @@ public:
 	Drawer* GetDrawer() const;
 	GameObject* CreateGameObject(const Vector2f& position = Vector2f::ZERO);
 	void Destroy(GameObject* gameObject);
+	std::vector<GameObject*> GetAllGameObjects() const;
 	std::vector<GameObject*> GetGameObjectsByTag(const GameObjectTag& tag);
 	template<class T = Component>
 	std::vector<GameObject*> GetGameObjectsByComponent() 

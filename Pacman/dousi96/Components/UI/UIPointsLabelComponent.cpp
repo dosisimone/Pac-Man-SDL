@@ -5,7 +5,7 @@
 #include "UIPointsLabelComponent.h"
 #include <string>
 #include <sstream>
-#include "../PlayerBehaviourComponent.h"
+#include "../GameControllerComponent.h"
 
 UIPointsLabelComponent::UIPointsLabelComponent()
 {
@@ -20,8 +20,8 @@ void UIPointsLabelComponent::Start()
 {
 	this->textComponent = GetOwner()->GetComponent<UITextComponent>();
 	//subscribe to the player event
-	PlayerBehaviourComponent* playerBehaviour = GameController::Instance->GetComponent<PlayerBehaviourComponent>();
-	playerBehaviour->Subscribe((PointsValueUpdatedEventListener*)this);
+	GameControllerComponent* gameControllerComponent = GameController::Instance->GetComponent<GameControllerComponent>();
+	gameControllerComponent->Subscribe((PointsValueUpdatedEventListener*)this);
 }
 
 void UIPointsLabelComponent::OnEvent(const PointsValueUpdatedEventArgs& event, const PointsValueUpdatedEventDispatcher& sender)

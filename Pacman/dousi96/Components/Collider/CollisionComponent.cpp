@@ -9,10 +9,6 @@ CollisionComponent::~CollisionComponent()
 {
 }
 
-void CollisionComponent::Start()
-{
-}
-
 void CollisionComponent::AddTarget(GameObject* newTarget)
 {
 	if (newTarget == nullptr) 
